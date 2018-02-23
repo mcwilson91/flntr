@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+
+{% load staticfiles %}
+
+<html>
+<head lang="en">
+	<meta charset="utf-8">
+	<title>
+	flntr - 
+	{% block title_block %}
+		this is a flntr page
+	{% endblock %}
+	</title>
+</head>
+<body>
+	<div>
+		{% block body_block %}
+		{% endblock %}
+	</div>
+	<hr />
+	</body>
+</html>
