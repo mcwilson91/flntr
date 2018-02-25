@@ -19,9 +19,23 @@ from django.conf.urls import include
 from django.conf import settings
 from django.conf.urls.static import static
 from flntr_app import views
+from registration.backends.simple.views import RegistrationView
+
+class MyRegistrationView(RegistrationView):
+    def get_success_url(self, request, user):
+        return '/flntr/'
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^flntr/', include('flntr_app.urls')),
     url(r'^admin/', admin.site.urls),
+    url(r'^accounts/register/$', MyRegistrationView.as_view(), name='registration_register'),
+    url(r'^accounts/', include('registration.backends.simple.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# registration.backends.simple.urls:
+# • registration->/accounts/register/
+# • registrationcomplete->/accounts/register/complete/ • login->/accounts/login/
+# • logout->/accounts/logout/
+# • passwordchange->/password/change/
+# • passwordreset->/password/reset/

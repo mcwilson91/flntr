@@ -2,8 +2,18 @@
 {% load staticfiles %}
 
 {% block title_block %}
-	this page works
+	Login
 {% endblock %}
-	
+
 {% block body_block %}
+<h1>Login to flnt</h1>
+<form class="" id="login_form" action="index.html" method="post">
+	{% csrf_token %}
+	Username: <input type="text" name="username" value="" size="50" />
+	<br>
+	Password: <input type="text" name="password" value=""	size="50" />
+	<br>
+	<input type="submit" name="" value="submit" />
+
+</form>
 {% endblock %}

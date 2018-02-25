@@ -1,5 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
+from django.contrib.auth import authenticate, login
+from django.core.urlresolvers import reverse
+
 
 # Create your views here.
 def index(request):
@@ -15,7 +18,24 @@ def register(request):
     return render(request, 'flntr/register.html')
 
 def user_login(request):
-    return render(request, 'flntr/login.html')
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(username=username, password=password)
+        if user:
+            if user.is_active:
+                login(request, user)
+                return HttpResponseRedirect(reverse('index'))
+            else:
+                # An inactive account was used - no logging in!
+                return HttpResponse("Your flntr account is disabled.")
+        else:
+            # Bad login details were provided. So we can't log the user in.
+            print("Invalid login details: {0}, {1}").format(username, password)
+            return HttpResponse("Invalid login details supplied.")
+    else:
+        return render(request, 'flntr/login.html')
 
 def property(request):
     return render(request, 'flntr/property.html')
