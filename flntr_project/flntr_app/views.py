@@ -2,11 +2,14 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse
+from flntr_app.models import Room
 
 
 # Create your views here.
 def index(request):
-    return render(request, 'flntr/index.html')
+    top_property_list = Room.objects.order_by('-price')[:5]
+    context_dict = {'topproperties': top_property_list}
+    return render(request, 'flntr/index.html', context_dict)
 
 def about(request):
     return render(request, 'flntr/about.html')
@@ -38,10 +41,13 @@ def user_login(request):
         return render(request, 'flntr/login.html')
 
 def property(request):
-    return render(request, 'flntr/property.html')
+    all_property_list = Room.objects.order_by('-price')
+    context_dict = {'allproperties': all_property_list}
+    return render(request, 'flntr/property.html', context_dict)
 
-def show_property(request):
+def show_property(request, property_id_slug):
     return render(request, 'flntr/show_property.html')
+
 
 def user(request):
     return render(request, 'flntr/user.html')

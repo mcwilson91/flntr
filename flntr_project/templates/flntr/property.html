@@ -6,4 +6,19 @@
 {% endblock %}
 	
 {% block body_block %}
+	<div>
+		<h2>All Rooms</h2>
+		{% if allproperties %}
+			<ul>
+			{% for room in allproperties %} 
+				<li>{{ room.location }}</li>
+				<ul>
+					<li>Price: {{ room.price }}</li>
+				</ul>
+			{% endfor %} 
+			</ul>
+		{% else %}
+			There are no rooms
+		{% endif %}
+	</div>
 {% endblock %}

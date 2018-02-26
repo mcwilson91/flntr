@@ -2,8 +2,23 @@
 {% load staticfiles %}
 
 {% block title_block %}
-	this page works
+
 {% endblock %}
 	
 {% block body_block %}
+<h2>Homepage</h2>
+	<div>
+		<h2>Most Expensive Rooms</h2>
+		{% if topproperties %}
+			<ul>
+			{% for room in topproperties %} 
+				<li>{{ room.location }}</li>
+				<ul>
+					<li>Price: {{ room.price }}</li>
+				</ul>
+			{% endfor %} 
+			</ul>
+		{% else %}
+			There are no rooms
+		{% endif %}
 {% endblock %}
