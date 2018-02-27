@@ -9,6 +9,46 @@
 <div>
 	{% if property %}
 		<h1>{{ property.location }}</h1>
+		<style>
+			#map {
+			height: 400px;
+			width: 50%;
+			}
+		</style>
+		
+		<div id="map"></div>
+		<script>
+					
+			
+		function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 16,
+          center: {lat: 55.872978, lng: -4.296508}
+        });
+        var geocoder = new google.maps.Geocoder();
+		geocodeAddress(geocoder, map);
+      }
+		
+		function geocodeAddress(geocoder, resultsMap) {
+        var address = "{{ property.location }}";
+        geocoder.geocode({'address': address}, function(results, status) {
+          if (status === 'OK') {
+            resultsMap.setCenter(results[0].geometry.location);
+            var marker = new google.maps.Marker({
+              map: resultsMap,
+              position: results[0].geometry.location
+            });
+          } else {
+            alert('Geocode was not successful for the following reason: ' + status);
+          }
+        });
+      }
+			
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBW0crhPrG5Yc6_hh9fbjb8_LqqW2Je3Ho&callback=initMap">
+    </script>
+		
 	{% else %}
 		Does not exist
 	{% endif %}
