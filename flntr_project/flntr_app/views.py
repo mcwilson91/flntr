@@ -46,7 +46,13 @@ def property(request):
     return render(request, 'flntr/property.html', context_dict)
 
 def show_property(request, property_id_slug):
-    return render(request, 'flntr/show_property.html')
+    context_dict = {}
+    try:
+        property = Room.objects.get(slug=property_id_slug)
+        context_dict['property'] = property
+    except Room.DoesNotExist:
+        context_dict['property'] = None
+    return render(request, 'flntr/show_property.html', context_dict)
 
 
 def user(request):
