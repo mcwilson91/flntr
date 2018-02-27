@@ -2,7 +2,8 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse
-from flntr_app.models import Room
+from flntr_app.models import Room, Landlord
+from flntr_app.forms import RoomForm, RoomDescriptionForm
 
 
 # Create your views here.
@@ -81,3 +82,24 @@ def show_user_properties_aProperty(request):
 
 def user_logout(request):
     return render(request, 'flntr/user_logout.html')
+
+def add_room(request):
+	if request.method == 'POST':
+		room_form = RoomForm(data=request.POST)
+		description_form = RoomDescriptionForm(data=request.POST)
+		if room_form.is_valid() and description_form.is_valid():
+			room = room_form.save(commit=False)
+			room.owner = Landlord.objects.get(pk=1)
+			room.save()
+			description = description_form.save(commit=False)
+			description.room = room
+			if 'picture' in request.FILES:
+				description.picture = request.FILES['picture']
+			description.save()
+			return index(request)
+		else:
+			print(room_form.errors, description_form.errors)
+	else:	
+		room_form = RoomForm()
+		description_form = RoomDescriptionForm()
+	return render(request, 'flntr/add_room.html', {'room_form':room_form, 'description_form':description_form})
