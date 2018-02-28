@@ -12,7 +12,7 @@
 		{% if topproperties %}
 			<ul>
 			{% for room in topproperties %} 
-				<li><a href="/flntr/property/{{ room.slug }}">{{ room.location }}</a></li>
+				<li><a href="/flntr/property/{{ room.slug }}">{{ room.streetAddress }}</a></li>
 				<ul>
 					<li>Price: {{ room.price }}</li>
 				</ul>

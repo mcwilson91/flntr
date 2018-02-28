@@ -8,7 +8,7 @@
 {% block body_block %}
 <div>
 	{% if property %}
-		<h1>{{ property.location }}</h1>
+		<h1>{{ property.streetAddress }}</h1>
 		<style>
 			#map {
 			height: 400px;
@@ -30,7 +30,7 @@
       }
 		
 		function geocodeAddress(geocoder, resultsMap) {
-        var address = "{{ property.location }}";
+        var address = "{{ property.streetAddress }}";
         geocoder.geocode({'address': address}, function(results, status) {
           if (status === 'OK') {
             resultsMap.setCenter(results[0].geometry.location);
