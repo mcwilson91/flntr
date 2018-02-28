@@ -17,7 +17,7 @@ class Flat(models.Model):
 	dayAdded = models.DateField(default=datetime.now)
 
 	def save(self, *args, **kwargs):
-		self.slug = slugify(self.location)
+		self.slug = slugify(self.streetAddress)
 		super(Flat, self).save(*args, **kwargs)
 	def __str__(self):
 		return self.title
@@ -32,6 +32,6 @@ class StudentProfile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE,)
 	picture = models.ImageField(upload_to='profile_images', blank=True)
 	bio = models.TextField(blank=True)
-	properties = models.ForeignKey(Flat)
+	properties = models.ForeignKey(Flat, null=True, blank=True)
 	def __str__(self):
 		return self.user.fname
