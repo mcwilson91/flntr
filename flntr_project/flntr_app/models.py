@@ -1,57 +1,36 @@
 from django.db import models
-
+from django.contrib.auth.models import User, Group
 from django.template.defaultfilters import slugify
 
-#class FlntrUser(models.Model):
-#	fname = models.CharField(max_length=32)
-#	sname = models.CharField(max_length=32)
-#	email = models.CharField(max_length=64)
-#
-#	def __str__(self):
-#			return self.fname + ' ' + self.sname
 
-
-class Student(models.Model):
-	fname = models.CharField(max_length=32)
-	sname = models.CharField(max_length=32)
-	email = models.CharField(max_length=64)
-
-	def __str__(self):
-			return self.fname + ' ' + self.sname
-
-class Landlord(models.Model):
-	fname = models.CharField(max_length=32)
-	sname = models.CharField(max_length=32)
-	email = models.CharField(max_length=64)
-
-	def __str__(self):
-			return self.fname + ' ' + self.sname
-
-class Room(models.Model):
-	owner = models.ForeignKey(Landlord)
-	location = models.CharField(max_length=64)
+class Flat(models.Model):
+	owner = models.ForeignKey(User)
+	title = model.CharField(max_length=250)
+	numberOfRooms = models.IntegerField(max_length=2)
+	streetAddress = models.CharField(max_length=64)
+	postCode = models.CharField(max_length=8)
+	# picture = models.ImageField(upload_to='flat_images', blank=True)
+	description = models.TextField(blank=True)
 	price = models.DecimalField(max_digits=6, decimal_places=2)
 	slug = models.SlugField(unique=True)
+	dayAdded = models.DateField(default=datetime.now)
 
 	def save(self, *args, **kwargs):
-		self.slug = slugify(self.location) 
-		super(Room, self).save(*args, **kwargs)
-
+		self.slug = slugify(self.location)
+		super(Flat, self).save(*args, **kwargs)
 	def __str__(self):
-		return self.location
+		return self.title
+
+class FlatImage(models.Model):
+    flat = models.ForeignKey(Flat, related_name='images')
+    image = models.ImageField(upload_to='flat_images', blank=True)
+	def __str__(self):
+		return self.flat.title
 
 class StudentProfile(models.Model):
-	student = models.OneToOneField(Student, on_delete=models.CASCADE,)
+	user = models.OneToOneField(User, on_delete=models.CASCADE,)
 	picture = models.ImageField(upload_to='profile_images', blank=True)
 	bio = models.TextField(blank=True)
-
+	properties = models.ForeignKey(Property)
 	def __str__(self):
-		return self.student.fname
-
-class RoomDescription(models.Model):
-	room = models.OneToOneField(Room, on_delete=models.CASCADE,)
-	picture = models.ImageField(upload_to='profile_images', blank=True)
-	description = models.TextField(blank=True)
-
-	def __str__(self):
-		return self.room.location
+		return self.user.fname

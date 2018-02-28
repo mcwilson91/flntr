@@ -1,15 +1,15 @@
 from django import forms
-from flntr_app.models import Room, RoomDescription
+from django.contrib.auth.models import User
+from flntr_app.models import Student, StudentProfile, Room, Landlord, RoomDescription
+
+
+
+
 
 class RoomForm(forms.ModelForm):
-	location = forms.CharField(max_length=64)
-	price = forms.DecimalField(max_digits=6, decimal_places=2)
-	
-	class Meta:
-		model = Room
-		fields = ('location', 'price',)
-		
-class RoomDescriptionForm(forms.ModelForm):
-	class Meta:
-		model = RoomDescription
-		fields = ('description', 'picture')
+    # Owner = ?
+    location = forms.CharField(help_text="Please enter the adress of the room")
+    
+    class Meta:
+        model = RoomDescription
+        fields = ('description', 'picture')
