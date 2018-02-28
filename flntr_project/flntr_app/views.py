@@ -2,13 +2,13 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse
-from flntr_app.models import Room, Landlord
-from flntr_app.forms import RoomForm, RoomDescriptionForm
+from flntr_app.models import Flat, FlatImage, StudentProfile
+# from flntr_app.forms import RoomForm, RoomDescriptionForm
 
 
 # Create your views here.
 def index(request):
-    top_property_list = Room.objects.order_by('-price')[:5]
+    top_property_list = Flat.objects.order_by('-price')[:5]
     context_dict = {'topproperties': top_property_list}
     return render(request, 'flntr/index.html', context_dict)
 

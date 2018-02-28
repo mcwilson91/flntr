@@ -1,11 +1,8 @@
 from django.contrib import admin
-from flntr_app.models import Student, Landlord, Room, StudentProfile, RoomDescription
+from flntr_app.models import Flat, FlatImage, StudentProfile
 
-class RoomAdmin(admin.ModelAdmin):
-    prepopulated_fields = {'slug':('location',)}
+# class FlatAdmin(admin.ModelAdmin):
+#     prepopulated_fields = {'slug':('title',)}
 
-admin.site.register(Student)
-admin.site.register(Landlord)
-admin.site.register(Room, RoomAdmin)
+admin.site.register(Flat)
 admin.site.register(StudentProfile)
-admin.site.register(RoomDescription)
