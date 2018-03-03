@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse
 from flntr_app.models import Flat, FlatImage, StudentProfile
-from flntr_app.forms import FlatForm
+from flntr_app.forms import FlatForm, FlatSearchForm, RoommateSearchForm
 from django.contrib.auth.models import User
 
 
@@ -16,11 +16,33 @@ def index(request):
 def about(request):
     return render(request, 'flntr/about.html')
 
-def search(request):
-    return render(request, 'flntr/search.html')
+def search(request):	
+	search_form = FlatSearchForm();
+	roommate_form = RoommateSearchForm();
+	if request.method == 'POST':
+		room_form = FlatSearchForm(request.POST)
+		if room_form.is_valid(): # All validation rules pass
+			#print(room_form.cleaned_data['min_price'])
+			min_price = room_form.cleaned_data['min_price']
+			max_price = room_form.cleaned_data['max_price']
+			min_rooms = room_form.cleaned_data['min_rooms']
+			max_rooms = room_form.cleaned_data['max_rooms']
+			params = {'min_price': min_price, 'max_price':max_price, 'min_rooms':min_rooms, 'max_rooms':max_rooms}
+			return results(request, params)
+	return render(request, 'flntr/search.html', {'search_form':search_form, 'roommate_form':roommate_form})
 
+def results(request, params):
+	results = Flat.objects.filter(
+						price__gte=params['min_price'], 
+						price__lte=params['max_price'],
+						numberOfRooms__gte=params['min_rooms'],
+						numberOfRooms__lte=params['max_rooms'],)
+
+	context_dict = {'results':results}
+	return render(request, 'flntr/results.html', context_dict)
+	
 def register(request):
-    return render(request, 'flntr/register.html')
+	return render(request, 'flntr/register.html')
 
 def user_login(request):
     if request.method == 'POST':
@@ -88,24 +110,13 @@ def add_room(request):
 	form = FlatForm();
 	if request.method == 'POST':
 		room_form = FlatForm(data=request.POST)
-		#description_form = RoomDescriptionForm(data=request.POST)
 		if room_form.is_valid():
-#		and description_form.is_valid():
 			room = room_form.save(commit=False)
-			#room.owner = Landlord.objects.get(pk=1)
 			room.owner = User.objects.get(username="willie.mcsporran@yahoo.com")
-			
 			room.save()
-		#	description = description_form.save(commit=False)
-		#	description.room = room
-		#	if 'picture' in request.FILES:
-		#		description.picture = request.FILES['picture']
-		#	description.save()
 			return index(request)
 		else:
 			print(room_form.errors, description_form.errors)
 	else:	
 		room_form = FlatForm()
-		#description_form = RoomDescriptionForm()
-	#return render(request, 'flntr/add_room.html', {'room_form':room_form, 'description_form':description_form})
 	return render(request, 'flntr/add_room.html', {'room_form':room_form})

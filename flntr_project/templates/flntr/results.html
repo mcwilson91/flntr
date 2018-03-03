@@ -1,0 +1,30 @@
+{% extends 'flntr/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+	this page works
+{% endblock %}
+	
+{% block body_block %}
+
+	<h1>Results</h1>
+
+	{% if results %}
+		<ul>
+		{% for room in results %} 
+			<li><a href="/flntr/property/{{ room.slug }}">{{ room.title }}</a>
+			<ul>
+				<li>{{room.streetAddress}}</li>
+				<li>{{room.price}}</li>
+				<li> Rooms: {{room.numberOfRooms}}</li>	
+			</ul>
+			</li>
+		{% endfor %} 
+		</ul>
+	{% else %}
+		There are no rooms
+	{% endif %}
+
+
+
+{% endblock %}

@@ -6,4 +6,62 @@
 {% endblock %}
 	
 {% block body_block %}
+
+<h1>Search</h1>
+<div>
+	<form id="room_form" method="post">
+		 {% csrf_token %}
+		<h3>Room</h3>
+		{{ search_form.as_p }}
+		<h3>Flatmates</h3>
+		{{ roommate_form.as_p }}
+		<input type="submit" name="submit" value="Submit"/>
+	</form>
+</div>
+
+<script>
+//set max price and max rooms to be max values by default
+var maxPriceOption = document.getElementById('id_max_price');
+    maxPriceOption.value = 9999;
+var maxRoomsOption = document.getElementById('id_max_rooms');
+    maxRoomsOption.value = 99;
+
+var minPriceOption = document.getElementById('id_min_price');
+var minRoomsOption = document.getElementById('id_min_rooms');
+
+//if min ischange to more than max or max is changed to more than min, set them to be equal
+maxPriceOption.onchange = function(){
+	if(maxPriceOption.value < minPriceOption.value){
+		minPriceOption.value = maxPriceOption.value;
+	}
+};
+
+minPriceOption.onchange = function(){
+	if(minPriceOption.value > maxPriceOption.value){
+		if(minPriceOption.value == 800){
+			maxPriceOption.value = 9999;
+		} else {
+			maxPriceOption.value = minPriceOption.value;
+		}
+	}
+};
+
+maxRoomsOption.onchange = function(){
+	if(maxRoomsOption.value < minRoomsOption.value){
+		minRoomsOption.value = maxRoomsOption.value;
+	}
+};
+
+minRoomsOption.onchange = function(){
+	if(minRoomsOption.value > maxRoomsOption.value){
+		if(minRoomsOption.value == 4){
+			maxRoomsOption.value = 99;
+		} else {
+			maxRoomsOption.value = minRoomsOption.value;
+		}
+	}
+};
+
+</script>
+
 {% endblock %}
