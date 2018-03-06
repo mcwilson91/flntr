@@ -3,9 +3,8 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse
 from flntr_app.models import Flat, FlatImage, StudentProfile
-from flntr_app.forms import FlatForm, FlatSearchForm, RoommateSearchForm
+from flntr_app.forms import FlatForm, FlatSearchForm, RoommateSearchForm, RegistrationForm
 from django.contrib.auth.models import User
-
 
 # Create your views here.
 def index(request):
@@ -47,7 +46,7 @@ def register(request):
     if request.method == 'POST':
         user_form = RegistrationForm(data=request.POST)
 
-        if user_form.is_valid()
+        if user_form.is_valid():
             user = user_form.save()
             user.set_password(user.password)
             user.save()
@@ -56,11 +55,10 @@ def register(request):
 
     return render(request, 'flntr/register.html',
                     {'user_form': user_form,
-                    'profile_form': profile_form,
                     'registered': registered})
 
 
-    
+
 
 def user_login(request):
     if request.method == 'POST':
