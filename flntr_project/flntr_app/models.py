@@ -3,6 +3,16 @@ from django.contrib.auth.models import User, Group
 from django.template.defaultfilters import slugify
 from datetime import datetime
 
+class Landlord(models.Model):
+	user = models.OneToOneField(User, on_delete=models.CASCADE,)
+	slug = models.SlugField()
+
+	def save(self, *args, **kwargs):
+		self.slug = slugify(self.user.first_name + " " + self.user.last_name)
+		super(Landlord, self).save(*args, **kwargs)
+
+	def __str__(self):
+		return self.user.fname
 
 class Flat(models.Model):
 	owner = models.ForeignKey(User)
@@ -15,6 +25,7 @@ class Flat(models.Model):
 	price = models.DecimalField(max_digits=6, decimal_places=2)
 	slug = models.SlugField(unique=True)
 	dayAdded = models.DateField(default=datetime.now)
+	views = models.IntegerField(default=0)
 
 	def save(self, *args, **kwargs):
 		self.slug = slugify(self.streetAddress)
@@ -33,5 +44,15 @@ class StudentProfile(models.Model):
 	picture = models.ImageField(upload_to='profile_images', blank=True)
 	bio = models.TextField(blank=True)
 	properties = models.ForeignKey(Flat, null=True, blank=True)
+	age = models.IntegerField(default=0)
+	gender = models.CharField(max_length=10)
+	slug = models.SlugField()
+
+	def save(self, *args, **kwargs):
+		self.slug = slugify(self.user.first_name + " " + self.user.last_name)
+		super(StudentProfile, self).save(*args, **kwargs)
+
 	def __str__(self):
 		return self.user.fname
+
+
