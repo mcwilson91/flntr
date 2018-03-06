@@ -7,8 +7,16 @@
 	
 {% block body_block %}
 <div>
-	{% if property %}
-		<h1>{{ property.streetAddress }}</h1>
+	{% if flat %}
+		<h1>{{ flat.title }}</h1>
+		<ul>
+			<li>Location: {{ flat.streetAddress }}</li>
+			<li>Price: {{ flat.price }}</li>
+			<li>Number of rooms: {{ flat.numberOfRooms }}</li>
+			<li>Description: {{ flat.description }}</li>
+		</ul>
+	</div>
+	<div>
 		<style>
 			#map {
 			height: 400px;
@@ -30,7 +38,7 @@
       }
 		
 		function geocodeAddress(geocoder, resultsMap) {
-        var address = "{{ property.streetAddress }}";
+        var address = "{{ flat.postCode }}";
         geocoder.geocode({'address': address, componentRestrictions: {country: 'GB'}}, function(results, status) {
           if (status === 'OK') {
             resultsMap.setCenter(results[0].geometry.location);
@@ -48,9 +56,17 @@
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBW0crhPrG5Yc6_hh9fbjb8_LqqW2Je3Ho&callback=initMap">
     </script>
-		
+	</div>
+	<div>
+		<ul>
+			<li>Request to join flat</li>
+			<li>Contact Landlord</li>
+			<li>View Landord's other flats</li>
+		</ul>
+	</div>		
 	{% else %}
 		Does not exist
 	{% endif %}
+
 </div>
 {% endblock %}

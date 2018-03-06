@@ -8,17 +8,25 @@
 {% block body_block %}
 <h2>Homepage</h2>
 	<div>
-		<h2>Most Expensive Rooms</h2>
-		{% if topproperties %}
+		<h2>Most Recent Flats</h2>
+		{% if recentflats %}
 			<ul>
-			{% for room in topproperties %} 
-				<li><a href="/flntr/property/{{ room.slug }}">{{ room.streetAddress }}</a></li>
+			{% for flat in recentflats %} 
+				<li><a href="/flntr/property/{{ flat.slug }}">{{ flat.title }}</a></li>
 				<ul>
-					<li>Price: {{ room.price }}</li>
+					<li>Location: {{ flat.streetAddress }}</li>
+					<li>Price: {{ flat.price }}</li>
+					<li>Date added: {{ flat.dayAdded }}</li>
 				</ul>
 			{% endfor %} 
 			</ul>
 		{% else %}
 			There are no rooms
 		{% endif %}
+	</div>
+	<div> 
+		<ul>
+			<li><a href="{% url 'property' %}">View all flats</a></li>
+		</ul>
+	</div>
 {% endblock %}

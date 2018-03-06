@@ -9,7 +9,7 @@ urlpatterns = [
     url(r'^register/$', views.register, name='register'),
     url(r'^login/$', views.user_login, name='login'),
     url(r'^property/$', views.property, name='property'),
-    url(r'^property/(?P<property_id_slug>[\w\-]+)/$',
+    url(r'^property/(?P<flat_id_slug>[\w\-]+)/$',
         views.show_property, name='show_property'),
     url(r'^user/$', views.user, name='user'),
     url(r'^user/(?P<user_id_slug>[\w\-]+)/$',

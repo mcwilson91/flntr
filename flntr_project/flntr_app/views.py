@@ -9,8 +9,8 @@ from django.contrib.auth.models import User
 
 # Create your views here.
 def index(request):
-    top_property_list = Flat.objects.order_by('-price')[:5]
-    context_dict = {'topproperties': top_property_list}
+    recent_flat_list = Flat.objects.order_by('-price')[:3]
+    context_dict = {'recentflats': recent_flat_list}
     return render(request, 'flntr/index.html', context_dict)
 
 def about(request):
@@ -65,17 +65,17 @@ def user_login(request):
         return render(request, 'flntr/login.html')
 
 def property(request):
-    all_property_list = Flat.objects.order_by('-price')
-    context_dict = {'allproperties': all_property_list}
+    all_flat_list = Flat.objects.order_by('-price')
+    context_dict = {'allflats': all_flat_list}
     return render(request, 'flntr/property.html', context_dict)
 
-def show_property(request, property_id_slug):
+def show_property(request, flat_id_slug):
     context_dict = {}
     try:
-        property = Flat.objects.get(slug=property_id_slug)
-        context_dict['property'] = property
+        flat = Flat.objects.get(slug=flat_id_slug)
+        context_dict['flat'] = flat
     except Flat.DoesNotExist:
-        context_dict['property'] = None
+        context_dict['flat'] = None
     return render(request, 'flntr/show_property.html', context_dict)
 
 

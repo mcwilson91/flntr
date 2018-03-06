@@ -7,13 +7,15 @@
 	
 {% block body_block %}
 	<div>
-		<h2>All Properties</h2>
-		{% if allproperties %}
+		<h2>All Flats</h2>
+		{% if allflats %}
 			<ul>
-			{% for room in allproperties %} 
-				<li><a href="/flntr/property/{{ room.slug }}">{{ room.location }}</a></li>
+			{% for flat in allflats %} 
+				<li><a href="/flntr/property/{{ flat.slug }}">{{ flat.title }}</a></li>
 				<ul>
-					<li>Price: {{ room.price }}</li>
+					<li>Location: {{ flat.streetAddress }}</li>
+					<li>Price: {{ flat.price }}</li>
+					<li>Date added: {{ flat.dayAdded }}</li>
 				</ul>
 			{% endfor %} 
 			</ul>
