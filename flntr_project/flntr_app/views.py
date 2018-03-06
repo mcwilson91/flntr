@@ -16,7 +16,7 @@ def index(request):
 def about(request):
     return render(request, 'flntr/about.html')
 
-def search(request):	
+def search(request):
 	search_form = FlatSearchForm();
 	roommate_form = RoommateSearchForm();
 	if request.method == 'POST':
@@ -33,16 +33,34 @@ def search(request):
 
 def results(request, params):
 	results = Flat.objects.filter(
-						price__gte=params['min_price'], 
+						price__gte=params['min_price'],
 						price__lte=params['max_price'],
 						numberOfRooms__gte=params['min_rooms'],
 						numberOfRooms__lte=params['max_rooms'],)
 
 	context_dict = {'results':results}
 	return render(request, 'flntr/results.html', context_dict)
-	
+
 def register(request):
-	return render(request, 'flntr/register.html')
+    registered = False
+
+    if request.method == 'POST':
+        user_form = RegistrationForm(data=request.POST)
+
+        if user_form.is_valid()
+            user = user_form.save()
+            user.set_password(user.password)
+            user.save()
+    else:
+            user_form = RegistrationForm()
+
+    return render(request, 'flntr/register.html',
+                    {'user_form': user_form,
+                    'profile_form': profile_form,
+                    'registered': registered})
+
+
+    
 
 def user_login(request):
     if request.method == 'POST':
@@ -117,6 +135,6 @@ def add_room(request):
 			return index(request)
 		else:
 			print(room_form.errors, description_form.errors)
-	else:	
+	else:
 		room_form = FlatForm()
 	return render(request, 'flntr/add_room.html', {'room_form':room_form})
