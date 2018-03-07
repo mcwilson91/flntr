@@ -9,6 +9,7 @@ from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from datetime import datetime
+from django.contrib import messages
 
 # Create your views here.
 def index(request):
@@ -96,10 +97,11 @@ def user_login(request):
                 return HttpResponse("Your flntr account is disabled.")
         else:
             # Bad login details were provided. So we can't log the user in.
-            print("Invalid login details: {0}, {1}").format(username, password)
-            return HttpResponse("Invalid login details supplied.")
+            messages.info(request, 'Invalid login details')
+            # print("Invalid login details: {0}, {1}".format(username, password))
+            return HttpResponseRedirect(reverse('login'))
     else:
-        return render(request, 'flntr/login.html')
+        return render(request, 'flntr/login.html', {})
 
 def property(request):
     all_flat_list = Flat.objects.order_by('-price')
@@ -148,16 +150,16 @@ def show_user_properties_aProperty(request):
 @login_required
 def user_logout(request):
     logout(request)
-    return HttpResponseRedirect(reverse('index.html'))
+    return HttpResponseRedirect(reverse('index'))
 
 def add_room(request):
 	form = FlatForm();
 	if request.method == 'POST':
 		room_form = FlatForm(data=request.POST)
 		if room_form.is_valid():
-			room = room_form.save(commit=False)			
+			room = room_form.save(commit=False)
 			room.owner = Landlord.objects.get(pk=1)
-			
+
 			originAddress = room_form.cleaned_data['streetAddress'].replace(" ", "+")
 			destinationAddress = "University of Glasgow".replace(" ", "+")
 			key = "AIzaSyBW0crhPrG5Yc6_hh9fbjb8_LqqW2Je3Ho"
@@ -169,7 +171,7 @@ def add_room(request):
 			room.distanceFromUniversity = distance
 			room.distanceText = js['rows'][0]['elements'][0]['distance']['text']
 			print(distance)
-			
+
 			room.save()
 			return index(request)
 		else:

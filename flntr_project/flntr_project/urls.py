@@ -29,8 +29,6 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^flntr/', include('flntr_app.urls')),
     url(r'^admin/', admin.site.urls),
-    url(r'^accounts/register/$', MyRegistrationView.as_view(), name='registration_register'),
-    url(r'^accounts/', include('registration.backends.simple.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # registration.backends.simple.urls:

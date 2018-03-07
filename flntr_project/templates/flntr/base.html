@@ -6,7 +6,7 @@
 <head lang="en">
 	<meta charset="utf-8">
 	<title>
-	flntr - 
+	flntr -
 	{% block title_block %}
 		this is a flntr page
 	{% endblock %}
@@ -19,12 +19,18 @@
 	</div>
 	<div>
 		<ul>
-			<li><a href="{% url 'logout' %}">Logout</a></li> 
-			<li><a href="{% url 'about' %}">About</a></li>
-			<li><a href="{% url 'index' %}">Homepage</a></li>
+			{% if user.is_authenticated %}
+			<li><a href="{% url 'logout' %}">Logout</a></li>
+		<!--	{% if user.groups == landlords %}
+				<li><a href="{% url 'add_room' %}">Add Room</a></li>
+				{% endif %} -->
+			{% else %}
 			<li><a href="{% url 'login' %}">Log In</a></li>
 			<li><a href="{% url 'register' %}">Register</a></li>
-			<li><a href="{% url 'add_room' %}">Add Room</a></li>
+			{% endif %}
+			<li><a href="{% url 'about' %}">About</a></li>
+			<li><a href="{% url 'index' %}">Homepage</a></li>
+
 			<li><a href="{% url 'search' %}">Search</a></li>
 		</ul>
 	</div>
