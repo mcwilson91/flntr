@@ -32,7 +32,7 @@ class FlatSearchForm(forms.Form):
 	max_room_options = [ (1, '1'), (2, '2'), (3, '3'), (99, '4+') ]
 	max_rooms = forms.CharField(label='Max number of rooms', widget=forms.Select(choices=max_room_options))
 
-	distance_options = [ (0.5, '0.5'), (1, '1'), (1.5, '1.5'), (2, '2'), (3, '3'), (4, '4'), (5, '5+') ]
+	distance_options = [ (800, '0.5'), (1600, '1'), (2400, '1.5'), (3200, '2'), (3, '3'), (4800, '4'), (500000, '5+') ]
 	distance = forms.CharField(label='Max distance from University', widget=forms.Select(choices=distance_options))
 
 	date_options = [ (1, 'today'), (7, 'this week'), (30, 'this month'), (999, 'all') ]

@@ -31,16 +31,16 @@ def populate():
 		}]
 
 	rooms1 = [
-		{"address": "123 Byres Road", "price": 123.45, "rooms": 2, "postcode": "G12 8TT", "description": description, "title": "A quaint 2 bedroom abode in the heart of Glasgow's west end"},
-		{"address": "456 Dumbarton Road", "price": 678.90, "rooms": 3, "postcode": "G11 6SQ", "description": description, "title": "A dilapidated shack"},
-		{"address": "25 Great George Street", "price": 445.00, "rooms": 3, "postcode": "G12 8LN", "description": description, "title": "Spacious 3 bedroom flat near Glasgow University"},
-		{"address": "101 Great Western Road", "price": 760.00, "rooms": 2, "postcode": "G4 9AH", "description": description, "title": "Recently Refurbished 2 bedroom flat"}]
+		{"address": "123 Byres Road", "price": 123.45, "rooms": 2, "postcode": "G12 8TT", "description": description, "title": "A quaint 2 bedroom abode in the heart of Glasgow's west end", "distance": 174},
+		{"address": "456 Dumbarton Road", "price": 678.90, "rooms": 3, "postcode": "G11 6SQ", "description": description, "title": "A dilapidated shack", "distance": 1526},
+		{"address": "25 Great George Street", "price": 445.00, "rooms": 3, "postcode": "G12 8LN", "description": description, "title": "Spacious 3 bedroom flat near Glasgow University", "distance": 560},
+		{"address": "101 Great Western Road", "price": 760.00, "rooms": 2, "postcode": "G4 9AH", "description": description, "title": "Recently Refurbished 2 bedroom flat", "distance": 2205}]
 		
 	rooms2 = [
-		{"address": "168 Great George Street", "price": 400.00, "rooms": 2, "postcode": "G12 8AJ", "description": description, "title": "Traditional two bedroom apartment"},
-		{"address": "9 Turnberry Road", "price": 890.50, "rooms": 5, "postcode": "G11 5AG", "description": description, "title": "Spacious five bedroom tenement flat"},
-		{"address": "38 Clarence Drive", "price": 459.00, "rooms": 3, "postcode": "G12 9TQ", "description": description, "title": "Commanding 3 bedroom, red sandstone tenement flat"},
-		{"address": "Kelvingrove Art Gallery and Museum", "price": 9950.32, "rooms": 40, "postcode": "G3 8AG", "description": description, "title": "40 bedroom Neo-Gothic mansion (beware of dinosarurs)"}]
+		{"address": "168 Great George Street", "price": 400.00, "rooms": 2, "postcode": "G12 8AJ", "description": description, "title": "Traditional two bedroom apartment", "distance": 278},
+		{"address": "9 Turnberry Road", "price": 890.50, "rooms": 5, "postcode": "G11 5AG", "description": description, "title": "Spacious five bedroom tenement flat", "distance": 765},
+		{"address": "38 Clarence Drive", "price": 459.00, "rooms": 3, "postcode": "G12 9TQ", "description": description, "title": "Commanding 3 bedroom, red sandstone tenement flat", "distance": 1077},
+		{"address": "Kelvingrove Art Gallery and Museum", "price": 9950.32, "rooms": 40, "postcode": "G3 8AG", "description": description, "title": "40 bedroom Neo-Gothic mansion (beware of dinosarurs)", "distance": 914}]
 		
 	landlords = [
 		{
@@ -66,7 +66,7 @@ def populate():
 	for l in landlords:
 		owner = add_landlord(l['fname'], l['sname'], l['email'])
 		for r in l['rooms']:
-			add_room(owner, r['address'], r['price'], r['postcode'], r['rooms'], r['description'], r['title'])
+			add_room(owner, r['address'], r['price'], r['postcode'], r['rooms'], r['description'], r['title'], r['distance'])
 
 	
 
@@ -96,8 +96,8 @@ def add_landlord(fname, sname, email):
 	print(fname, sname, email)
 	return p;
 
-def add_room(owner, location, price, postcode, rooms, description, title):
-	r = Flat.objects.get_or_create(owner=owner, streetAddress=location, price=price, postCode=postcode, numberOfRooms=rooms, description=description, title=title)[0]
+def add_room(owner, location, price, postcode, rooms, description, title, distance):
+	r = Flat.objects.get_or_create(owner=owner, streetAddress=location, price=price, postCode=postcode, numberOfRooms=rooms, description=description, title=title, distanceFromUniversity=distance)[0]
 	r.save()
 	#d = RoomDescription.objects.get_or_create(room=r)[0]
 	#d.save()
@@ -106,3 +106,5 @@ def add_room(owner, location, price, postcode, rooms, description, title):
 if __name__ == '__main__':
 	print('populating')
 	populate()
+	print('creating superuser')
+	User.objects.create_superuser(username='superuser', password='superuser', email='')
