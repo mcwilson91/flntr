@@ -22,7 +22,7 @@ class FlatForm(forms.ModelForm):
 class FlatSearchForm(forms.Form):
 
 	min_price_options = [ (0, '<100'), (100, '100'), (200, '200'), (300, '300'), (400, '400'), (500, '500'), (600, '600'), (700, '700'), (800, '800') ]
-	max_price_options = [ (0, '<100'), (100, '100'), (200, '200'), (300, '300'), (400, '400'), (500, '500'), (600, '600'), (700, '700'), (9999, '800+') ]
+	max_price_options = [ (100, '100'), (100, '100'), (200, '200'), (300, '300'), (400, '400'), (500, '500'), (600, '600'), (700, '700'), (9999, '800+') ]
 	min_price = forms.CharField(label='Min price', widget=forms.Select(choices=min_price_options))
 	max_price = forms.CharField(label='Max price', widget=forms.Select(choices=max_price_options))
 
@@ -35,7 +35,7 @@ class FlatSearchForm(forms.Form):
 	distance_options = [ (0.5, '0.5'), (1, '1'), (1.5, '1.5'), (2, '2'), (3, '3'), (4, '4'), (5, '5+') ]
 	distance = forms.CharField(label='Max distance from University', widget=forms.Select(choices=distance_options))
 
-	date_options = [ (1, 'past hour'), (2, 'today'), (3, 'this week'), (4, 'this month'), (5, 'all') ]
+	date_options = [ (1, 'today'), (7, 'this week'), (30, 'this month'), (999, 'all') ]
 	date = forms.CharField(label='date added', widget=forms.Select(choices=date_options))
 
 class RoommateSearchForm(forms.Form):
