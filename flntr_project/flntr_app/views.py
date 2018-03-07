@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse
 from flntr_app.models import Flat, FlatImage, StudentProfile
-from flntr_app.forms import FlatForm, FlatSearchForm, RoommateSearchForm, RegistrationForm
+from flntr_app.forms import FlatForm, FlatSearchForm, RoommateSearchForm, AgeForm, UserForm
 from django.contrib.auth.models import User
 from datetime import datetime, timedelta
 
@@ -33,14 +33,14 @@ def search(request):
 	return render(request, 'flntr/search.html', {'search_form':search_form, 'roommate_form':roommate_form})
 
 def results(request, params):
-	
+
 	results = Flat.objects.filter(
 						price__gte=params['min_price'],
 						price__lte=params['max_price'],
 						numberOfRooms__gte=params['min_rooms'],
 						numberOfRooms__lte=params['max_rooms'],
 						dayAdded__gte=datetime.now() - timedelta(days=int(params['date_added'])),)
-	
+
 
 	context_dict = {'results':results}
 	return render(request, 'flntr/results.html', context_dict)
@@ -49,17 +49,28 @@ def register(request):
     registered = False
 
     if request.method == 'POST':
-        user_form = RegistrationForm(data=request.POST)
-
-        if user_form.is_valid():
+        user_form = UserForm(data=request.POST)
+        age_form = AgeForm(data=request.POST)
+        if user_form.is_valid() and age_form.is_valid:
             user = user_form.save()
             user.set_password(user.password)
             user.save()
+
+            profile = age_form.save(commit=False)
+            profile.user = user
+
+            profile.save()
+
+            registered = True
+        else:
+            print(user_form.errors, age_form.errors)
     else:
-            user_form = RegistrationForm()
+        user_form = UserForm()
+        age_form = AgeForm()
 
     return render(request, 'flntr/register.html',
                     {'user_form': user_form,
+                    'age_form': age_form,
                     'registered': registered})
 
 
