@@ -153,8 +153,20 @@ def add_room(request):
 	if request.method == 'POST':
 		room_form = FlatForm(data=request.POST)
 		if room_form.is_valid():
-			room = room_form.save(commit=False)
-			room.owner = User.objects.get(username="willie.mcsporran@yahoo.com")
+			room = room_form.save(commit=False)			
+			room.owner = Landlord.objects.get(pk=1)
+			
+			originAddress = room_form.cleaned_data['streetAddress'].replace(" ", "+")
+			destinationAddress = "University of Glasgow".replace(" ", "+")
+			key = "AIzaSyBW0crhPrG5Yc6_hh9fbjb8_LqqW2Je3Ho"
+			url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins={},Glasgow&destinations={}&key={}".format(originAddress, destinationAddress, key)
+			print(url)
+			r = requests.get(url)
+			js = r.json()
+			distance = int(js['rows'][0]['elements'][0]['distance']['value'])
+			room.distanceFromUniversity = distance
+			print(distance)
+			
 			room.save()
 			return index(request)
 		else:
