@@ -6,4 +6,18 @@
 {% endblock %}
 	
 {% block body_block %}
+<div>
+	{% if studentprofile %}
+		<h2>{{ studentprofile.user.first_name }} {{ studentprofile.user.last_name }}'s Profile</h2>
+</div>
+<div>
+	<ul>
+		<li>Age: {{ studentprofile.age }}</li>
+		<li>Gender: {{ studentprofile.gender }}</li>
+		<li>Bio: {{ studentprofile.bio }}</li>
+	</ul>
+</div>
+	{% else %}
+		Does not exist
+	{% endif %}	
 {% endblock %}
