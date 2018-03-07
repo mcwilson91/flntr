@@ -27,6 +27,7 @@ class Flat(models.Model):
 	dayAdded = models.DateField(default=datetime.now)
 	views = models.IntegerField(default=0)
 	distanceFromUniversity = models.IntegerField(default = 0)
+	distanceText = models.CharField(max_length=8, default = "0 mi")
 
 	def save(self, *args, **kwargs):
 		self.slug = slugify(self.streetAddress)
