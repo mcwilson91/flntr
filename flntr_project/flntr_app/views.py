@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse
-from flntr_app.models import Flat, FlatImage, StudentProfile
+from flntr_app.models import Flat, FlatImage, StudentProfile, Landlord
 from flntr_app.forms import FlatForm, FlatSearchForm, RoommateSearchForm, RegistrationForm
 from django.contrib.auth.models import User
 from datetime import datetime, timedelta
@@ -119,9 +119,11 @@ def show_user_profile(request):
     return render(request, 'flntr/show_user_profile.html')
 
 def show_user_properties(request, landlord_id_slug):
+    context_dict = {}
     landlord = Landlord.objects.get(slug=landlord_id_slug)
-    landlord_flat_list = Flat.objects.filter(owner=landlord.user).order_by('-dayAdded')
-    context_dict = {'landlordflats': landlord_flat_list}
+    context_dict['landlordname'] = landlord.user.first_name + " " + landlord.user.last_name
+    landlord_flat_list = Flat.objects.filter(owner=landlord).order_by('-dayAdded')
+    context_dict['landlordflats'] = landlord_flat_list
     return render(request, 'flntr/show_user_properties.html', context_dict)
 
 def show_user_properties_aProperty(request):

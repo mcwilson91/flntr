@@ -15,7 +15,7 @@ class Landlord(models.Model):
 		return self.user.first_name
 
 class Flat(models.Model):
-	owner = models.ForeignKey(User)
+	owner = models.ForeignKey(Landlord)
 	title = models.CharField(max_length=250)
 	numberOfRooms = models.IntegerField()
 	streetAddress = models.CharField(max_length=64)
