@@ -30,16 +30,33 @@ def populate():
 		"email": "rosef@gmail.com"
 		}]
 
+	rooms1 = [
+		{"address": "123 Byres Road", "price": 123.45, "rooms": 2, "postcode": "G12 8TT", "description": description, "title": "A quaint 2 bedroom abode in the heart of Glasgow's west end"},
+		{"address": "456 Dumbarton Road", "price": 678.90, "rooms": 3, "postcode": "G11 6SQ", "description": description, "title": "A dilapidated shack"},
+		{"address": "25 Great George Street", "price": 445.00, "rooms": 3, "postcode": "G12 8LN", "description": description, "title": "Spacious 3 bedroom flat near Glasgow University"},
+		{"address": "101 Great Western Road", "price": 760.00, "rooms": 2, "postcode": "G4 9AH", "description": description, "title": "Recently Refurbished 2 bedroom flat"}]
+		
+	rooms2 = [
+		{"address": "168 Great George Street", "price": 400.00, "rooms": 2, "postcode": "G12 8AJ", "description": description, "title": "Traditional two bedroom apartment"},
+		{"address": "9 Turnberry Road", "price": 890.50, "rooms": 5, "postcode": "G11 5AG", "description": description, "title": "Spacious five bedroom tenement flat"},
+		{"address": "38 Clarence Drive", "price": 459.00, "rooms": 3, "postcode": "G12 9TQ", "description": description, "title": "Commanding 3 bedroom, red sandstone tenement flat"},
+		{"address": "Kelvingrove Art Gallery and Museum", "price": 9950.32, "rooms": 40, "postcode": "G3 8AG", "description": description, "title": "40 bedroom Neo-Gothic mansion (beware of dinosarurs)"}]
+		
 	landlords = [
 		{
 		"fname": "Willie",
 		"sname": "McSporran",
 		"email": "willie.mcsporran@yahoo.com",
-		"rooms": [
-		{"address": "123 Byres Road", "price": 123.45, "rooms": 2, "postcode": "G12 8TT", "description": description, "title": "A quaint 2 bedroom abode in the heart of Glasgow's west end"},
-		{"address": "456 Dumbarton Road", "price": 678.90, "rooms": 3, "postcode": "G81 4DR", "description": description, "title": "A dilapidated shack"}]
+		"rooms": rooms1
+		},
+		{
+		"fname": "Ebenezer",
+		"sname": "Scrooge",
+		"email": "scrooge@humbug.com",
+		"rooms": rooms2
 		}]
-
+		
+		
 	for k in groups:
 		add_groups(k['name'])
 
