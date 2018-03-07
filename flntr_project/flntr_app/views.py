@@ -31,7 +31,8 @@ def search(request):
 			min_rooms = room_form.cleaned_data['min_rooms']
 			max_rooms = room_form.cleaned_data['max_rooms']
 			date_added = room_form.cleaned_data['date']
-			params = {'min_price': min_price, 'max_price':max_price, 'min_rooms':min_rooms, 'max_rooms':max_rooms, 'date_added':date_added}
+			max_distance = room_form.cleaned_data['distance']
+			params = {'min_price': min_price, 'max_price':max_price, 'min_rooms':min_rooms, 'max_rooms':max_rooms, 'date_added':date_added, 'max_distance':max_distance}
 			return results(request, params)
 	return render(request, 'flntr/search.html', {'search_form':search_form, 'roommate_form':roommate_form})
 
@@ -42,7 +43,8 @@ def results(request, params):
 						price__lte=params['max_price'],
 						numberOfRooms__gte=params['min_rooms'],
 						numberOfRooms__lte=params['max_rooms'],
-						dayAdded__gte=datetime.now() - timedelta(days=int(params['date_added'])),)
+						dayAdded__gte=datetime.now() - timedelta(days=int(params['date_added'])),
+						distanceFromUniversity__lte=params['max_distance'])
 
 
 	context_dict = {'results':results}
@@ -165,6 +167,7 @@ def add_room(request):
 			js = r.json()
 			distance = int(js['rows'][0]['elements'][0]['distance']['value'])
 			room.distanceFromUniversity = distance
+			room.distanceText = js['rows'][0]['elements'][0]['distance']['text']
 			print(distance)
 			
 			room.save()
