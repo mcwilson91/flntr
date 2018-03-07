@@ -2,10 +2,11 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse
-from flntr_app.models import Flat, FlatImage, StudentProfile
+from flntr_app.models import Flat, FlatImage, StudentProfile, Landlord
 from flntr_app.forms import FlatForm, FlatSearchForm, RoommateSearchForm, AgeForm, UserForm
 from django.contrib.auth.models import User
 from datetime import datetime, timedelta
+import requests
 
 # Create your views here.
 def index(request):
@@ -149,7 +150,19 @@ def add_room(request):
 		room_form = FlatForm(data=request.POST)
 		if room_form.is_valid():
 			room = room_form.save(commit=False)
-			room.owner = User.objects.get(username="willie.mcsporran@yahoo.com")
+			room.owner = Landlord.objects.get(pk=1)
+			
+			originAddress = room_form.cleaned_data['streetAddress'].replace(" ", "+")
+			destinationAddress = "University of Glasgow".replace(" ", "+")
+			key = "AIzaSyBW0crhPrG5Yc6_hh9fbjb8_LqqW2Je3Ho"
+			url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins={},Glasgow&destinations={}&key={}".format(originAddress, destinationAddress, key)
+			print(url)
+			r = requests.get(url)
+			js = r.json()
+			distance = int(js['rows'][0]['elements'][0]['distance']['value'])
+			room.distanceFromUniversity = distance
+			print(distance)
+			
 			room.save()
 			return index(request)
 		else:
