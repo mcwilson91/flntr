@@ -94,7 +94,7 @@ def add_landlord(fname, sname, email):
 	p = Landlord.objects.get_or_create(user=l)[0]
 	p.save()
 	print(fname, sname, email)
-	return l;
+	return p;
 
 def add_room(owner, location, price, postcode, rooms, description, title):
 	r = Flat.objects.get_or_create(owner=owner, streetAddress=location, price=price, postCode=postcode, numberOfRooms=rooms, description=description, title=title)[0]

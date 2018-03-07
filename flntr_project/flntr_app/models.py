@@ -5,17 +5,17 @@ from datetime import datetime
 
 class Landlord(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE,)
-	slug = models.SlugField()
+	slug = models.SlugField(unique=True)
 
 	def save(self, *args, **kwargs):
 		self.slug = slugify(self.user.first_name + " " + self.user.last_name)
 		super(Landlord, self).save(*args, **kwargs)
 
 	def __str__(self):
-		return self.user.fname
+		return self.user.first_name
 
 class Flat(models.Model):
-	owner = models.ForeignKey(User)
+	owner = models.ForeignKey(Landlord)
 	title = models.CharField(max_length=250)
 	numberOfRooms = models.IntegerField()
 	streetAddress = models.CharField(max_length=64)
@@ -46,13 +46,13 @@ class StudentProfile(models.Model):
 	properties = models.ForeignKey(Flat, null=True, blank=True)
 	age = models.IntegerField(default=0)
 	gender = models.CharField(max_length=10)
-	slug = models.SlugField()
+	slug = models.SlugField(unique=True)
 
 	def save(self, *args, **kwargs):
 		self.slug = slugify(self.user.first_name + " " + self.user.last_name)
 		super(StudentProfile, self).save(*args, **kwargs)
 
 	def __str__(self):
-		return self.user.fname
+		return self.user.first_name
 
 

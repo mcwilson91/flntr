@@ -2,8 +2,31 @@
 {% load staticfiles %}
 
 {% block title_block %}
-	this page works
+
 {% endblock %}
 	
 {% block body_block %}
+<div>
+	{% if landlordname %}
+		<h2>{{ landlordname }}'s Flats</h2>
+	{% else %}
+		Does not exist
+	{% endif %}
+</div>
+<div>
+	{% if landlordflats %}
+		<ul>
+		{% for flat in landlordflats %} 
+			<li><a href="/flntr/property/{{ flat.slug }}">{{ flat.title }}</a></li>
+			<ul>
+				<li>Location: {{ flat.streetAddress }}</li>
+				<li>Price: {{ flat.price }}</li>
+				<li>Date added: {{ flat.dayAdded }}</li>
+			</ul>
+		{% endfor %} 
+		</ul>
+	{% else %}
+		There are no rooms
+	{% endif %}
+</div>
 {% endblock %}
