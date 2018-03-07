@@ -113,8 +113,11 @@ def show_user_account(request):
 def show_user_profile(request):
     return render(request, 'flntr/show_user_profile.html')
 
-def show_user_properties(request):
-    return render(request, 'flntr/show_user_properties.html')
+def show_user_properties(request, landlord_id_slug):
+    landlord = Landlord.objects.get(slug=landlord_id_slug)
+    landlord_flat_list = Flat.objects.filter(owner=landlord.user).order_by('-dayAdded')
+    context_dict = {'landlordflats': landlord_flat_list}
+    return render(request, 'flntr/show_user_properties.html', context_dict)
 
 def show_user_properties_aProperty(request):
     return render(request, 'flntr/show_user_properties_aProperties.html')

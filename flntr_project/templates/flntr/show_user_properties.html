@@ -2,7 +2,22 @@
 {% load staticfiles %}
 
 {% block title_block %}
-	this page works
+	<div>
+		{% if landlordflats %}
+			<ul>
+			{% for flat in landlordflats %} 
+				<li><a href="/flntr/property/{{ flat.slug }}">{{ flat.title }}</a></li>
+				<ul>
+					<li>Location: {{ flat.streetAddress }}</li>
+					<li>Price: {{ flat.price }}</li>
+					<li>Date added: {{ flat.dayAdded }}</li>
+				</ul>
+			{% endfor %} 
+			</ul>
+		{% else %}
+			There are no rooms
+		{% endif %}
+	</div>
 {% endblock %}
 	
 {% block body_block %}

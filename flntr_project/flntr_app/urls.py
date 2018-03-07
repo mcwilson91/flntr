@@ -22,7 +22,7 @@ urlpatterns = [
         views.show_user_profile, name='show_user_profile'),
     url(r'^user/(?P<user_id_slug>[\w\-]+)/invitations/$',
         views.show_user_invitations, name='show_user_invitations'),
-    url(r'^user/(?P<user_id_slug>[\w\-]+)/property/$',
+    url(r'^user/(?P<landlord_id_slug>[\w\-]+)/property/$',
         views.show_user_properties, name='show_user_properties'),
     url(r'^user/(?P<user_id_slug>[\w\-]+)//property/(?P<property_id_slug>[\w\-]+)/$',
         views.show_user_properties_aProperty, name='show_user_properties_aProperty'),
