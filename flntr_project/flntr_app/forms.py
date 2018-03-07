@@ -48,7 +48,7 @@ class RoommateSearchForm(forms.Form):
 
 class UserForm(forms.ModelForm):
 	password = forms.CharField(widget=forms.PasswordInput())
-	group_options = [ (1, 'Student'), (2, 'Landlord')]
+	group_options = [ (1, 'Student'), (2, 'Landlord') ]
 	groups = forms.ChoiceField(label='I am a ', choices=group_options, widget=forms.RadioSelect())
 
 	class Meta:
@@ -58,6 +58,8 @@ class UserForm(forms.ModelForm):
 class AgeForm(forms.ModelForm):
 	age  = forms.ChoiceField(choices=[(x, x) for x in range(16, 99)])
 
+	gender_options = [ (1, 'Female'), (2, 'Male'), (3, 'Other') ]
+	gender = forms.ChoiceField(label='Gender', choices=gender_options, widget=forms.RadioSelect())
 	class Meta:
 		model = StudentProfile
-		fields = ('age',)
+		fields = ('age', 'gender',)

@@ -2,10 +2,13 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse
-from flntr_app.models import Flat, FlatImage, StudentProfile
+from flntr_app.models import Flat, FlatImage, StudentProfile, Landlord
 from flntr_app.forms import FlatForm, FlatSearchForm, RoommateSearchForm, AgeForm, UserForm
 from django.contrib.auth.models import User
 from datetime import datetime, timedelta
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
+from datetime import datetime
 
 # Create your views here.
 def index(request):
@@ -143,7 +146,7 @@ def show_user_properties_aProperty(request):
 @login_required
 def user_logout(request):
     logout(request)
-    return render(request, 'flntr/user_logout.html')
+    return HttpResponseRedirect(reverse('index.html'))
 
 def add_room(request):
 	form = FlatForm();
