@@ -4,7 +4,7 @@
 {% block title_block %}
 	this page works
 {% endblock %}
-	
+
 {% block body_block %}
 <div>
 	{% if flat %}
@@ -16,6 +16,11 @@
 			<li>Description: {{ flat.description }}</li>
 		</ul>
 	</div>
+
+	<div>
+		<img src="{{ MEDIA_URL }}{{ image.image }}" width="300" height="300" alt="{{image.image}}" />
+	</div>
+
 	<div>
 		<style>
 			#map {
@@ -23,11 +28,11 @@
 			width: 50%;
 			}
 		</style>
-		
+
 		<div id="map"></div>
 		<script>
-					
-			
+
+
 		function initMap() {
         var map = new google.maps.Map(document.getElementById('map'), {
           zoom: 16,
@@ -36,7 +41,7 @@
         var geocoder = new google.maps.Geocoder();
 		geocodeAddress(geocoder, map);
       }
-		
+
 		function geocodeAddress(geocoder, resultsMap) {
         var address = "{{ flat.postCode }}";
         geocoder.geocode({'address': address, componentRestrictions: {country: 'GB'}}, function(results, status) {
@@ -51,7 +56,7 @@
           }
         });
       }
-			
+
     </script>
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBW0crhPrG5Yc6_hh9fbjb8_LqqW2Je3Ho&callback=initMap">
@@ -63,7 +68,7 @@
 			<li>Contact Landlord</li>
 			<li><a href="{% url 'show_user_properties' flat.owner.slug %}">View Landord's other flats</a></li>
 		</ul>
-	</div>		
+	</div>
 	{% else %}
 		Does not exist
 	{% endif %}

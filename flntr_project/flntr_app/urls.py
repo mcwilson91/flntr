@@ -27,5 +27,5 @@ urlpatterns = [
     url(r'^user/(?P<landlord_id_slug>[\w\-]+)/property/(?P<flat_id_slug>[\w\-]+)/$',
         views.show_user_properties_aProperty, name='show_user_properties_aProperty'),
     url(r'^logout/$', views.user_logout, name='logout'),
-	url(r'^add_room/$', views.add_room, name='add_room'),
+	url(r'^add_flat/$', views.add_flat, name='add_flat'),
 ]

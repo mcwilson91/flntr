@@ -6,7 +6,7 @@ from flntr_app.models import Flat, FlatImage, StudentProfile
 
 
 
-class FlatForm(forms.ModelForm):
+class AddFlatForm(forms.ModelForm):
 	streetAddress = forms.CharField(help_text="Please enter the adress of the room")
 	title =  forms.CharField(help_text="Please enter a brief description of the room")
 	postCode = forms.CharField()
@@ -18,6 +18,10 @@ class FlatForm(forms.ModelForm):
 		model = Flat
 		fields = ('streetAddress', 'title', 'postCode', 'numberOfRooms', 'description', 'price')
 
+class AddFlatImageForm(forms.ModelForm):
+	class Meta:
+		model = FlatImage
+		fields = ('image',)
 
 class FlatSearchForm(forms.Form):
 

@@ -3,13 +3,14 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse
 from flntr_app.models import Flat, FlatImage, StudentProfile, Landlord
-from flntr_app.forms import FlatForm, FlatSearchForm, RoommateSearchForm, AgeForm, UserForm
+from flntr_app.forms import AddFlatForm, FlatSearchForm, RoommateSearchForm, AgeForm, UserForm, AddFlatImageForm
 from django.contrib.auth.models import User
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from datetime import datetime
 from django.contrib import messages
+import requests
 
 # Create your views here.
 def index(request):
@@ -109,13 +110,15 @@ def property(request):
     return render(request, 'flntr/property.html', context_dict)
 
 def show_property(request, flat_id_slug):
-    context_dict = {}
-    try:
-        flat = Flat.objects.get(slug=flat_id_slug)
-        context_dict['flat'] = flat
-    except Flat.DoesNotExist:
-        context_dict['flat'] = None
-    return render(request, 'flntr/show_property.html', context_dict)
+	context_dict = {}
+	try:
+		flat = Flat.objects.get(slug=flat_id_slug)
+		image = FlatImage.objects.get(flat=flat)
+		context_dict['flat'] = flat
+		context_dict['image'] = image
+	except Flat.DoesNotExist:
+		context_dict['flat'] = None
+	return render(request, 'flntr/show_property.html', context_dict)
 
 
 def user(request):
@@ -164,15 +167,17 @@ def user_logout(request):
     logout(request)
     return HttpResponseRedirect(reverse('index'))
 
-def add_room(request):
-	form = FlatForm();
+def add_flat(request):
+	flat_form = AddFlatForm()
+	image_form = AddFlatImageForm()
 	if request.method == 'POST':
-		room_form = FlatForm(data=request.POST)
-		if room_form.is_valid():
-			room = room_form.save(commit=False)
-			room.owner = Landlord.objects.get(pk=1)
+		flat_form = AddFlatForm(request.POST)
+		image_form = AddFlatImageForm(request.POST, request.FILES)
+		if flat_form.is_valid():
+			flat = flat_form.save(commit=False)
+			flat.owner = Landlord.objects.get(pk=1)
 
-			originAddress = room_form.cleaned_data['streetAddress'].replace(" ", "+")
+			originAddress = flat_form.cleaned_data['streetAddress'].replace(" ", "+")
 			destinationAddress = "University of Glasgow".replace(" ", "+")
 			key = "AIzaSyBW0crhPrG5Yc6_hh9fbjb8_LqqW2Je3Ho"
 			url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins={},Glasgow&destinations={}&key={}".format(originAddress, destinationAddress, key)
@@ -180,14 +185,20 @@ def add_room(request):
 			r = requests.get(url)
 			js = r.json()
 			distance = int(js['rows'][0]['elements'][0]['distance']['value'])
-			room.distanceFromUniversity = distance
-			room.distanceText = js['rows'][0]['elements'][0]['distance']['text']
+			flat.distanceFromUniversity = distance
+			flat.distanceText = js['rows'][0]['elements'][0]['distance']['text']
 			print(distance)
 
-			room.save()
+			flat.save()
+			
+			picture = image_form.save(commit=False)
+			picture.flat = flat
+			if 'image' in request.FILES:
+				picture.image = request.FILES['image']
+			picture.save()
 			return index(request)
 		else:
-			print(room_form.errors, description_form.errors)
+			print(flat_form.errors)
 	else:
-		room_form = FlatForm()
-	return render(request, 'flntr/add_room.html', {'room_form':room_form})
+		room_form = AddFlatForm()
+	return render(request, 'flntr/add_flat.html', {'flat_form':flat_form, 'image_form':image_form})
