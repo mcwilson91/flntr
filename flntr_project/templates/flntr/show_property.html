@@ -17,9 +17,11 @@
 		</ul>
 	</div>
 
-	<div>
-		<img src="{{ MEDIA_URL }}{{ image.image }}" width="300" height="300" alt="{{image.image}}" />
-	</div>
+	{% if image.image %}
+		<div>
+			<img src="{{ MEDIA_URL }}{{ image.image }}" width="300" height="300" alt="{{image.image}}" />
+		</div>
+	{% endif %}
 
 	<div>
 		<style>
