@@ -113,9 +113,12 @@ def show_property(request, flat_id_slug):
 	context_dict = {}
 	try:
 		flat = Flat.objects.get(slug=flat_id_slug)
-		image = FlatImage.objects.get(flat=flat)
 		context_dict['flat'] = flat
-		context_dict['image'] = image
+		try:
+			image = FlatImage.objects.get(flat=flat)
+			context_dict['image'] = image
+		except FlatImage.DoesNotExist:
+			context_dict['image'] = None
 	except Flat.DoesNotExist:
 		context_dict['flat'] = None
 	return render(request, 'flntr/show_property.html', context_dict)
