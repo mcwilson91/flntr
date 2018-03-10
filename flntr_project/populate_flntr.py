@@ -21,16 +21,8 @@ def populate():
 	]
 
 	students = [
-		{
-		"fname": "Nils",
-		"sname": "Nilsson",
-		"email": "n.nilsson@gmail.com"
-		},
-		{
-		"fname": "Rosebud",
-		"sname": "Forsyth",
-		"email": "rosef@gmail.com"
-		}]
+		{"fname": "Nils", "sname": "Nilsson", "email": "n.nilsson@gmail.com", "pictureName": "nils-nilsson.png" , "bio": description, "age": 19, "gender": "Male"},
+		{"fname": "Rosebud", "sname": "Forsyth", "email": "rosef@gmail.com", "pictureName": "rosebud-forsyth.png", "bio": description, "age": 24, "gender": "Female"}]
 
 	images = [{ "imagename": "Kelvingrove-Art-Gallery-and-Museum.jpg"}, {"imagename": "Kelvingrove-Art-Gallery-2.jpg"}]
 
@@ -93,7 +85,7 @@ def populate():
 		add_groups(k['name'])
 
 	for s in students:
-		add_student(s['fname'], s['sname'], s['email'])
+		add_student(s['fname'], s['sname'], s['email'], s['pictureName'], s['bio'], s['age'], s['gender'])
 
 	for l in landlords:
 		owner = add_landlord(l['fname'], l['sname'], l['email'])
@@ -115,13 +107,15 @@ def add_groups(name):
 	k.save()
 	print(name)
 
-def add_student(fname, sname, email):
+def add_student(fname, sname, email, pictureName, bio, age, gender):
 	s = User.objects.get_or_create(username = email, first_name=fname, last_name=sname, email=email)[0]
 	s.set_password("piaudwefhpdf")
 	g = Group.objects.get(name='students')
 	g.user_set.add(s)
 	s.save()
-	p = StudentProfile.objects.get_or_create(user=s)[0]
+	p = StudentProfile.objects.get_or_create(user=s, bio=bio, age=age, gender=gender)[0]
+	file = open("%s/%s" % (settings.MEDIA_ROOT, pictureName), 'rb')
+	p.picture.save(pictureName, file, save=False)
 	p.save()
 	print(fname, sname, email)
 

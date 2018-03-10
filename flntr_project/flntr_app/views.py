@@ -85,10 +85,13 @@ def register(request):
 
 def user_login(request):
 	if request.method == 'POST':
+		
 		username = request.POST.get('username')
 		password = request.POST.get('password')
 
 		user = authenticate(username=username, password=password)
+
+
 		if user:
 			if user.is_active:
 				login(request, user)
@@ -208,7 +211,7 @@ def add_flat(request):
 			print(distance)
 
 			flat.save()
-			
+
 			picture = image_form.save(commit=False)
 			picture.flat = flat
 			if 'image' in request.FILES:
