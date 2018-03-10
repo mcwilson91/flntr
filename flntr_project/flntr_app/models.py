@@ -12,7 +12,7 @@ class Landlord(models.Model):
 		super(Landlord, self).save(*args, **kwargs)
 
 	def __str__(self):
-		return self.user.first_name
+		return self.user.username
 
 class Flat(models.Model):
 	owner = models.ForeignKey(Landlord)
@@ -22,7 +22,7 @@ class Flat(models.Model):
 	postCode = models.CharField(max_length=8)
 	# picture = models.ImageField(upload_to='flat_images', blank=True)
 	description = models.TextField(blank=True)
-	price = models.DecimalField(max_digits=6, decimal_places=2)
+	averageRoomPrice = models.DecimalField(max_digits=6, decimal_places=2)
 	slug = models.SlugField(unique=True)
 	dayAdded = models.DateField(default=datetime.now)
 	views = models.IntegerField(default=0)
@@ -34,12 +34,6 @@ class Flat(models.Model):
 		super(Flat, self).save(*args, **kwargs)
 	def __str__(self):
 		return self.title
-
-class FlatImage(models.Model):
-	flat = models.ForeignKey(Flat, related_name='images')
-	image = models.ImageField(upload_to='flat_images', blank=True)
-	def __str__(self):
-		return self.flat.title
 
 class StudentProfile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE,)
@@ -55,6 +49,24 @@ class StudentProfile(models.Model):
 		super(StudentProfile, self).save(*args, **kwargs)
 
 	def __str__(self):
-		return self.user.first_name
+		return self.user.username
+
+class Room(models.Model):
+	flat = models.ForeignKey(Flat)
+	roomNumber = models.IntegerField()
+	size = models.CharField(max_length=8)
+	price = models.DecimalField(max_digits=9, decimal_places=2)
+	student = models.OneToOneField(StudentProfile, null=True, blank=True)
+
+	def __str__(self):
+		return "%s %s" % (self.flat.title, self.roomNumber)
+
+class FlatImage(models.Model):
+	flat = models.ForeignKey(Flat, related_name='images')
+	image = models.ImageField(upload_to='flat_images', blank=True)
+	
+	def __str__(self):
+		return self.flat.title
+
 
 

@@ -11,16 +11,18 @@
 		<h1>{{ flat.title }}</h1>
 		<ul>
 			<li>Location: {{ flat.streetAddress }}</li>
-			<li>Price: {{ flat.price }}</li>
 			<li>Number of rooms: {{ flat.numberOfRooms }}</li>
 			<li>Description: {{ flat.description }}</li>
+			<li>Distance from University: {{ flat.distanceFromUniversity }}</li>
 		</ul>
 	</div>
 
-	{% if image.image %}
+	{% if flat.image %}
 		<div>
-			<img src="{{ MEDIA_URL }}{{ image.image }}" width="300" height="300" alt="{{image.image}}" />
+			<img src="{{ MEDIA_URL }}{{ flat.image }}" width="300" height="300" alt="{{flat.image}}" />
 		</div>
+	{% else %}
+		No image for this flat
 	{% endif %}
 
 	<div>
@@ -65,8 +67,27 @@
     </script>
 	</div>
 	<div>
+		{% if roomlist %}
 		<ul>
-			<li>Request to join flat</li>
+			{% for room in roomlist %}
+			<li>Room {{ room.roomNumber }}</li>
+			<ul>
+				<li>Price: £{{ room.price }}</li>
+				<li>Size: {{ room.size }}</li>
+				{% if room.student %}
+				<li>Currently taken by {{ room.student.user.username }}</li>
+				{% else %}
+				<li>This room is available</li>
+				<li>Request this room</li>
+				{% endif %}
+			</ul>
+			{% endfor %}
+		</ul>
+		{% else %}
+		failure
+		{% endif %}
+	<div>
+		<ul>
 			<li>Contact Landlord</li>
 			<li><a href="{% url 'show_user_properties' flat.owner.slug %}">View Landord's other flats</a></li>
 		</ul>

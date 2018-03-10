@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse
-from flntr_app.models import Flat, FlatImage, StudentProfile, Landlord
+from flntr_app.models import Flat, FlatImage, StudentProfile, Landlord, Room
 from flntr_app.forms import AddFlatForm, FlatSearchForm, RoommateSearchForm, AgeForm, UserForm, AddFlatImageForm
 from django.contrib.auth.models import User
 from datetime import datetime, timedelta
@@ -14,12 +14,12 @@ import requests
 
 # Create your views here.
 def index(request):
-    recent_flat_list = Flat.objects.order_by('-price')[:3]
-    context_dict = {'recentflats': recent_flat_list}
-    return render(request, 'flntr/index.html', context_dict)
+	recent_flat_list = Flat.objects.order_by('-dayAdded')[:3]
+	context_dict = {'recentflats': recent_flat_list}
+	return render(request, 'flntr/index.html', context_dict)
 
 def about(request):
-    return render(request, 'flntr/about.html')
+	return render(request, 'flntr/about.html')
 
 def search(request):
 	search_form = FlatSearchForm();
@@ -53,61 +53,61 @@ def results(request, params):
 	return render(request, 'flntr/results.html', context_dict)
 
 def register(request):
-    registered = False
+	registered = False
 
-    if request.method == 'POST':
-        user_form = UserForm(data=request.POST)
-        age_form = AgeForm(data=request.POST)
-        if user_form.is_valid() and age_form.is_valid:
-            user = user_form.save()
-            user.set_password(user.password)
-            user.save()
+	if request.method == 'POST':
+		user_form = UserForm(data=request.POST)
+		age_form = AgeForm(data=request.POST)
+		if user_form.is_valid() and age_form.is_valid:
+			user = user_form.save()
+			user.set_password(user.password)
+			user.save()
 
-            profile = age_form.save(commit=False)
-            profile.user = user
+			profile = age_form.save(commit=False)
+			profile.user = user
 
-            profile.save()
+			profile.save()
 
-            registered = True
-        else:
-            print(user_form.errors, age_form.errors)
-    else:
-        user_form = UserForm()
-        age_form = AgeForm()
+			registered = True
+		else:
+			print(user_form.errors, age_form.errors)
+	else:
+		user_form = UserForm()
+		age_form = AgeForm()
 
-    return render(request, 'flntr/register.html',
-                    {'user_form': user_form,
-                    'age_form': age_form,
-                    'registered': registered})
+	return render(request, 'flntr/register.html',
+					{'user_form': user_form,
+					'age_form': age_form,
+					'registered': registered})
 
 
 
 
 def user_login(request):
-    if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
+	if request.method == 'POST':
+		username = request.POST.get('username')
+		password = request.POST.get('password')
 
-        user = authenticate(username=username, password=password)
-        if user:
-            if user.is_active:
-                login(request, user)
-                return HttpResponseRedirect(reverse('index'))
-            else:
-                # An inactive account was used - no logging in!
-                return HttpResponse("Your flntr account is disabled.")
-        else:
-            # Bad login details were provided. So we can't log the user in.
-            messages.info(request, 'Invalid login details')
-            # print("Invalid login details: {0}, {1}".format(username, password))
-            return HttpResponseRedirect(reverse('login'))
-    else:
-        return render(request, 'flntr/login.html', {})
+		user = authenticate(username=username, password=password)
+		if user:
+			if user.is_active:
+				login(request, user)
+				return HttpResponseRedirect(reverse('index'))
+			else:
+				# An inactive account was used - no logging in!
+				return HttpResponse("Your flntr account is disabled.")
+		else:
+			# Bad login details were provided. So we can't log the user in.
+			messages.info(request, 'Invalid login details')
+			# print("Invalid login details: {0}, {1}".format(username, password))
+			return HttpResponseRedirect(reverse('login'))
+	else:
+		return render(request, 'flntr/login.html', {})
 
 def property(request):
-    all_flat_list = Flat.objects.order_by('-price')
-    context_dict = {'allflats': all_flat_list}
-    return render(request, 'flntr/property.html', context_dict)
+	all_flat_list = Flat.objects.order_by('-dayAdded')
+	context_dict = {'allflats': all_flat_list}
+	return render(request, 'flntr/property.html', context_dict)
 
 def show_property(request, flat_id_slug):
 	context_dict = {}
@@ -119,56 +119,71 @@ def show_property(request, flat_id_slug):
 			context_dict['image'] = image
 		except FlatImage.DoesNotExist:
 			context_dict['image'] = None
+		try:
+			room_list = Room.objects.filter(flat=flat).order_by('roomNumber')
+			context_dict['roomlist'] = room_list
+		except Room.DoesNotExist:
+			context_dict['roomlist'] = None
 	except Flat.DoesNotExist:
 		context_dict['flat'] = None
 	return render(request, 'flntr/show_property.html', context_dict)
 
 
 def user(request):
-    return render(request, 'flntr/user.html')
+	return render(request, 'flntr/user.html')
 
 def show_user(request):
-    return render(request, 'flntr/show_user.html')
+	return render(request, 'flntr/show_user.html')
 
 def show_user_invitations(request):
-    return render(request, 'flntr/show_user_invitations.html')
+	return render(request, 'flntr/show_user_invitations.html')
 
 def show_user_requests(request):
-    return render(request, 'flntr/show_user_requests.html')
+	return render(request, 'flntr/show_user_requests.html')
 
 def show_user_account(request):
-    return render(request, 'flntr/show_user_account.html')
+	return render(request, 'flntr/show_user_account.html')
 
 def show_user_profile(request, student_profile_slug):
-    context_dict = {}
-    try:
-        profile = StudentProfile.objects.get(slug=student_profile_slug)
-        context_dict['studentprofile'] = profile
-    except StudentProfile.DoesNotExist:
-        context_dict['studentprofile'] = None
-    return render(request, 'flntr/show_user_profile.html', context_dict)
+	context_dict = {}
+	try:
+		profile = StudentProfile.objects.get(slug=student_profile_slug)
+		context_dict['studentprofile'] = profile
+	except StudentProfile.DoesNotExist:
+		context_dict['studentprofile'] = None
+	return render(request, 'flntr/show_user_profile.html', context_dict)
 
 def show_user_properties(request, landlord_id_slug):
-    context_dict = {}
-    landlord = Landlord.objects.get(slug=landlord_id_slug)
-    context_dict['landlordname'] = landlord.user.first_name + " " + landlord.user.last_name
-    landlord_flat_list = Flat.objects.filter(owner=landlord).order_by('-dayAdded')
-    context_dict['landlordflats'] = landlord_flat_list
-    return render(request, 'flntr/show_user_properties.html', context_dict)
+	context_dict = {}
+	landlord = Landlord.objects.get(slug=landlord_id_slug)
+	context_dict['landlordname'] = landlord.user.first_name + " " + landlord.user.last_name
+	landlord_flat_list = Flat.objects.filter(owner=landlord).order_by('-dayAdded')
+	context_dict['landlordflats'] = landlord_flat_list
+	return render(request, 'flntr/show_user_properties.html', context_dict)
 
 def show_user_properties_aProperty(request, landlord_id_slug, flat_id_slug):
-    context_dict = {}
-    try:
-        flat = Flat.objects.get(slug=flat_id_slug)
-        context_dict['flat'] = flat
-    except Flat.DoesNotExist:
-        context_dict['flat'] = None
-    return render(request, 'flntr/show_property.html', context_dict)
+	context_dict = {}
+	try:
+		flat = Flat.objects.get(slug=flat_id_slug)
+		context_dict['flat'] = flat
+		try:
+			image = FlatImage.objects.get(flat=flat)
+			context_dict['image'] = image
+		except FlatImage.DoesNotExist:
+			context_dict['image'] = None
+		try:
+			room_list = Room.objects.filter(flat=flat).order_by('roomNumber')
+			context_dict['roomlist'] = room_list
+		except Room.DoesNotExist:
+			context_dict['roomlist'] = None
+	except Flat.DoesNotExist:
+		context_dict['flat'] = None
+	return render(request, 'flntr/show_property.html', context_dict)
 
 @login_required
 def user_logout(request):
-    logout(request)
-    return HttpResponseRedirect(reverse('index'))
+	logout(request)
+	return HttpResponseRedirect(reverse('index'))
 
 def add_flat(request):
 	flat_form = AddFlatForm()
