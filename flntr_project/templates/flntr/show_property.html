@@ -17,10 +17,14 @@
 		</ul>
 	</div>
 
-	{% if flat.image %}
-		<div>
-			<img src="{{ MEDIA_URL }}{{ flat.image }}" width="300" height="300" alt="{{flat.image}}" />
-		</div>
+	{% if imagelist %}
+	<ul>
+	{% for flatimage in imagelist %}
+		<li>
+			<img src="{{ MEDIA_URL }}{{ flatimage.image.url }}" width="300" height="300" alt="{{ flatimage.image }}" />
+		</li>
+	{% endfor %}
+	</ul>
 	{% else %}
 		No image for this flat
 	{% endif %}

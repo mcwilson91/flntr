@@ -115,10 +115,10 @@ def show_property(request, flat_id_slug):
 		flat = Flat.objects.get(slug=flat_id_slug)
 		context_dict['flat'] = flat
 		try:
-			image = FlatImage.objects.get(flat=flat)
-			context_dict['image'] = image
+			image_list = FlatImage.objects.filter(flat=flat)
+			context_dict['imagelist'] = image_list
 		except FlatImage.DoesNotExist:
-			context_dict['image'] = None
+			context_dict['imagelist'] = None
 		try:
 			room_list = Room.objects.filter(flat=flat).order_by('roomNumber')
 			context_dict['roomlist'] = room_list

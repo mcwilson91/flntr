@@ -12,10 +12,10 @@
 		{% if recentflats %}
 			<ul>
 			{% for flat in recentflats %} 
-				<li><a href="/flntr/property/{{ flat.slug }}">{{ flat.title }}</a></li>
+				<li><a href="{% url 'show_property' flat.slug %}">{{ flat.title }}</a></li>
 				<ul>
 					<li>Location: {{ flat.streetAddress }}</li>
-					<li>Price: {{ flat.price }}</li>
+					<li>Average Price per Room: {{ flat.averageRoomPrice }}</li>
 					<li>Date added: {{ flat.dayAdded }}</li>
 				</ul>
 			{% endfor %} 

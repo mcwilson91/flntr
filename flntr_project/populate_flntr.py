@@ -1,9 +1,11 @@
 import os
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'flntr_project.settings')
 
+from django.core.files.images import ImageFile
 import django
 django.setup()
 from flntr_app.models import Flat, StudentProfile, FlatImage, Landlord, Room
+from flntr_project import settings
 from django.contrib.auth.models import User, Group
 
 description = "In publishing and graphic design, lorem ipsum is a filler text or greeking commonly used to demonstrate the textual elements of a graphic document or visual presentation. Replacing meaningful content with placeholder text allows designers to design the form of the content before the content itself has been produced."
@@ -29,6 +31,8 @@ def populate():
 		"sname": "Forsyth",
 		"email": "rosef@gmail.com"
 		}]
+
+	images = [{ "imagename": "Kelvingrove-Art-Gallery-and-Museum.jpg"}, {"imagename": "Kelvingrove-Art-Gallery-2.jpg"}]
 
 	rooms1 = [
 		{"size": "double", "price": 123.45}, {"size": "single", "price": 123.45}]
@@ -59,16 +63,16 @@ def populate():
 
 
 	flats1 = [
-		{"address": "123 Byres Road", "averageRoomPrice": 123.45, "numberOfRooms": 2, "postcode": "G12 8TT", "description": description, "title": "A quaint 2 bedroom abode in the heart of Glasgow's west end", "distance": 174, "distanceText": "0.1 mi", "rooms": rooms1},
-		{"address": "456 Dumbarton Road", "averageRoomPrice": 678.90, "numberOfRooms": 3, "postcode": "G11 6SQ", "description": description, "title": "A dilapidated shack", "distance": 1526, "distanceText": "0.9 mi", "rooms": rooms2},
-		{"address": "25 Great George Street", "averageRoomPrice": 445.00, "numberOfRooms": 3, "postcode": "G12 8LN", "description": description, "title": "Spacious 3 bedroom flat near Glasgow University", "distance": 560, "distanceText": "0.3 mi", "rooms": rooms3},
-		{"address": "101 Great Western Road", "averageRoomPrice": 760.00, "numberOfRooms": 2, "postcode": "G4 9AH", "description": description, "title": "Recently Refurbished 2 bedroom flat", "distance": 2205, "distanceText": "1.4 mi", "rooms": rooms4}]
+		{"address": "123 Byres Road", "averageRoomPrice": 123.45, "numberOfRooms": 2, "postcode": "G12 8TT", "description": description, "title": "A quaint 2 bedroom abode in the heart of Glasgow's west end", "distance": 174, "distanceText": "0.1 mi", "rooms": rooms1, "images": None},
+		{"address": "456 Dumbarton Road", "averageRoomPrice": 678.90, "numberOfRooms": 3, "postcode": "G11 6SQ", "description": description, "title": "A dilapidated shack", "distance": 1526, "distanceText": "0.9 mi", "rooms": rooms2, "images": None},
+		{"address": "25 Great George Street", "averageRoomPrice": 445.00, "numberOfRooms": 3, "postcode": "G12 8LN", "description": description, "title": "Spacious 3 bedroom flat near Glasgow University", "distance": 560, "distanceText": "0.3 mi", "rooms": rooms3, "images": None},
+		{"address": "101 Great Western Road", "averageRoomPrice": 760.00, "numberOfRooms": 2, "postcode": "G4 9AH", "description": description, "title": "Recently Refurbished 2 bedroom flat", "distance": 2205, "distanceText": "1.4 mi", "rooms": rooms4, "images": None}]
 		
 	flats2 = [
-		{"address": "168 Great George Street", "averageRoomPrice": 400.00, "numberOfRooms": 2, "postcode": "G12 8AJ", "description": description, "title": "Traditional two bedroom apartment", "distance": 278, "distanceText": "0.2 mi", "rooms": rooms5},
-		{"address": "9 Turnberry Road", "averageRoomPrice": 890.50, "numberOfRooms": 5, "postcode": "G11 5AG", "description": description, "title": "Spacious five bedroom tenement flat", "distance": 765, "distanceText": "0.5 mi", "rooms": rooms6},
-		{"address": "38 Clarence Drive", "averageRoomPrice": 459.00, "numberOfRooms": 3, "postcode": "G12 9TQ", "description": description, "title": "Commanding 3 bedroom, red sandstone tenement flat", "distance": 1077, "distanceText": "0.7 mi", "rooms": rooms7},
-		{"address": "Kelvingrove Art Gallery and Museum", "averageRoomPrice": 950.32, "numberOfRooms": 20, "postcode": "G3 8AG", "description": description, "title": "40 bedroom Neo-Gothic mansion (beware of dinosarurs)", "distance": 914, "distanceText": "0.6 mi", "rooms": rooms8}]
+		{"address": "168 Great George Street", "averageRoomPrice": 400.00, "numberOfRooms": 2, "postcode": "G12 8AJ", "description": description, "title": "Traditional two bedroom apartment", "distance": 278, "distanceText": "0.2 mi", "rooms": rooms5, "images": None},
+		{"address": "9 Turnberry Road", "averageRoomPrice": 890.50, "numberOfRooms": 5, "postcode": "G11 5AG", "description": description, "title": "Spacious five bedroom tenement flat", "distance": 765, "distanceText": "0.5 mi", "rooms": rooms6, "images": None},
+		{"address": "38 Clarence Drive", "averageRoomPrice": 459.00, "numberOfRooms": 3, "postcode": "G12 9TQ", "description": description, "title": "Commanding 3 bedroom, red sandstone tenement flat", "distance": 1077, "distanceText": "0.7 mi", "rooms": rooms7, "images": None},
+		{"address": "Kelvingrove Art Gallery and Museum", "averageRoomPrice": 950.32, "numberOfRooms": 20, "postcode": "G3 8AG", "description": description, "title": "40 bedroom Neo-Gothic mansion (beware of dinosarurs)", "distance": 914, "distanceText": "0.6 mi", "rooms": rooms8, "images": images}]
 		
 	landlords = [
 		{
@@ -95,6 +99,11 @@ def populate():
 		owner = add_landlord(l['fname'], l['sname'], l['email'])
 		for f in l['flats']:
 			flat = add_flat(owner, f['address'], f['averageRoomPrice'], f['postcode'], f['numberOfRooms'], f['description'], f['title'], f['distance'], f['distanceText'])
+			if (f['images'] != None):
+				i = 1
+				for fi in f['images']:
+					add_flat_image(flat, i, fi['imagename'])
+					i = i + 1
 			i = 1
 			for r in f['rooms']:
 				add_room(flat, i, r['size'], r['price'])
@@ -134,6 +143,12 @@ def add_flat(owner, location, averageRoomPrice, postcode, numberOfRooms, descrip
 	#d.save()
 	print(owner, location, averageRoomPrice)
 	return f;
+
+def add_flat_image(flat, imageNumber, imagename):
+	fi = FlatImage.objects.get_or_create(flat=flat, imageNumber=imageNumber)[0]
+	file = open("%s/%s" % (settings.MEDIA_ROOT, imagename), 'rb')
+	fi.image.save(imagename, file, save=False)
+	fi.save()
 
 def add_room(flat, roomNumber, size, price):
 	r = Room.objects.get_or_create(flat=flat, roomNumber=roomNumber, size=size, price=price)[0]
