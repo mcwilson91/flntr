@@ -16,6 +16,13 @@
 			<li>Distance from University: {{ flat.distanceText }}</li>
 		</ul>
 	</div>
+	<div>
+		{% if user.username == flat.owner.user.username %}
+		<ul>
+			<li>Edit Flat Details</li>
+			<li>Delete Flat</li>
+		</ul>
+		{% endif %}
 
 	{% if imagelist %}
 	<ul>
@@ -81,7 +88,7 @@
 				<li><a href="{% url 'show_property_user_profile' flat.slug room.student.slug %}">{{ room.student.user.username }}</a></li>
 				<li><img src="{{ MEDIA_URL }}{{ room.student.picture.url }}" width="60" height="60" alt="{{ room.student.picture }}" /></li>
 				<li>Age: {{ room.student.age }}</li>
-					{% if user == room.student.user %}
+					{% if user.username == room.student.user.username %}
 					<li>Remove</li>
 					{% endif %}
 				{% else %}
