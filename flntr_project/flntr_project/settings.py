@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'flntr_app',
-    'registration'
 ]
 
 MIDDLEWARE_CLASSES = [

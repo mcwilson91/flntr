@@ -58,7 +58,7 @@ def register(request):
 	if request.method == 'POST':
 		user_form = UserForm(data=request.POST)
 		age_form = AgeForm(data=request.POST)
-		if user_form.is_valid() and age_form.is_valid:
+		if user_form.is_valid() and age_form.is_valid():
 			user = user_form.save()
 			user.set_password(user.password)
 			user.save()
@@ -67,7 +67,7 @@ def register(request):
 			profile.user = user
 
 			profile.save()
-
+			user.save()
 			registered = True
 		else:
 			print(user_form.errors, age_form.errors)
@@ -85,7 +85,7 @@ def register(request):
 
 def user_login(request):
 	if request.method == 'POST':
-		
+
 		username = request.POST.get('username')
 		password = request.POST.get('password')
 
