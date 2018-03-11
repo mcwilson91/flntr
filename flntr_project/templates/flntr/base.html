@@ -21,9 +21,12 @@
 		<ul>
 			{% if user.is_authenticated %}
 			<li><a href="{% url 'logout' %}">Logout</a></li>
-		<!--	{% if user.groups == landlords %}
-				<li><a href="{% url 'add_room' %}">Add Room</a></li>
-				{% endif %} -->
+				{% if perms.flntr_app.add_flat %}
+				<li><a href="{% url 'add_flat' %}">Add Flat</a></li>
+				{% endif %} 
+				{% if perms.flntr_app.change_studentprofile %}
+				<li><a href="{% url 'show_user_account' user.username %}">View My Profile</a></li>
+				{% endif %}
 			{% else %}
 			<li><a href="{% url 'login' %}">Log In</a></li>
 			<li><a href="{% url 'register' %}">Register</a></li>
