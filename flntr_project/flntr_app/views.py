@@ -58,16 +58,15 @@ def register(request):
 	if request.method == 'POST':
 		user_form = UserForm(data=request.POST)
 		age_form = AgeForm(data=request.POST)
-		if user_form.is_valid() and age_form.is_valid:
+		if user_form.is_valid() and age_form.is_valid():
 			user = user_form.save()
 			user.set_password(user.password)
 			user.save()
+			if user.groups == students:
+				profile = age_form.save(commit=False)
+				profile.user = user
 
-			profile = age_form.save(commit=False)
-			profile.user = user
-
-			profile.save()
-
+				profile.save()
 			registered = True
 		else:
 			print(user_form.errors, age_form.errors)
@@ -85,10 +84,13 @@ def register(request):
 
 def user_login(request):
 	if request.method == 'POST':
+
 		username = request.POST.get('username')
 		password = request.POST.get('password')
 
 		user = authenticate(username=username, password=password)
+
+
 		if user:
 			if user.is_active:
 				login(request, user)
@@ -217,7 +219,7 @@ def add_flat(request):
 			print(distance)
 
 			flat.save()
-			
+
 			picture = image_form.save(commit=False)
 			picture.flat = flat
 			if 'image' in request.FILES:
