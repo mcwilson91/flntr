@@ -132,8 +132,14 @@ def show_property(request, flat_id_slug):
 	return render(request, 'flntr/show_property.html', context_dict)
 
 
-def user(request):
-	return render(request, 'flntr/user.html')
+def show_property_user_profile(request, flat_id_slug, student_profile_slug):
+	context_dict = {}
+	try:
+		profile = StudentProfile.objects.get(slug=student_profile_slug)
+		context_dict['studentprofile'] = profile
+	except StudentProfile.DoesNotExist:
+		context_dict['studentprofile'] = None
+	return render(request, 'flntr/show_user_profile.html', context_dict)
 
 def show_user(request):
 	return render(request, 'flntr/show_user.html')
@@ -170,10 +176,10 @@ def show_user_properties_aProperty(request, landlord_id_slug, flat_id_slug):
 		flat = Flat.objects.get(slug=flat_id_slug)
 		context_dict['flat'] = flat
 		try:
-			image = FlatImage.objects.get(flat=flat)
-			context_dict['image'] = image
+			image_list = FlatImage.objects.filter(flat=flat)
+			context_dict['imagelist'] = image_list
 		except FlatImage.DoesNotExist:
-			context_dict['image'] = None
+			context_dict['imagelist'] = None
 		try:
 			room_list = Room.objects.filter(flat=flat).order_by('roomNumber')
 			context_dict['roomlist'] = room_list
@@ -182,6 +188,7 @@ def show_user_properties_aProperty(request, landlord_id_slug, flat_id_slug):
 	except Flat.DoesNotExist:
 		context_dict['flat'] = None
 	return render(request, 'flntr/show_property.html', context_dict)
+
 
 @login_required
 def user_logout(request):

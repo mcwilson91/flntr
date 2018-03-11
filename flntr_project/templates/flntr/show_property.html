@@ -78,7 +78,7 @@
 			<ul>
 				{% if room.student %}
 				<li>This room is taken ..</li> 
-				<li><a href="{% url 'show_user_profile' room.student.slug %}">{{ room.student.user.username }}</a></li>
+				<li><a href="{% url 'show_property_user_profile' flat.slug room.student.slug %}">{{ room.student.user.username }}</a></li>
 				<li><img src="{{ MEDIA_URL }}{{ room.student.picture.url }}" width="60" height="60" alt="{{ room.student.picture }}" /></li>
 				<li>Age: {{ room.student.age }}</li>
 				{% else %}
