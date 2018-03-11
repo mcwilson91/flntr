@@ -62,7 +62,7 @@ def register(request):
 			user = user_form.save()
 			user.set_password(user.password)
 			user.save()
-			if user.groups == students:
+			if user.groups.name == 'students':
 				profile = age_form.save(commit=False)
 				profile.user = user
 
@@ -151,8 +151,12 @@ def show_user_requests(request):
 
 def show_user_account(request, username):
 	user = User.objects.get(username=username)
-	studentProfile = StudentProfile.objects.get(user=user)
-	return redirect('show_user_profile', student_profile_slug=studentProfile.slug)
+	try:
+		studentProfile = StudentProfile.objects.get(user=user)
+		return redirect('show_user_profile', student_profile_slug=studentProfile.slug)
+	except StudentProfile.DoesNotExist:
+		landlord = Landlord.objects.get(user=user)
+		return redirect('show_user_properties', landlord_id_slug=landlord.slug)
 
 def show_user_profile(request, student_profile_slug):
 	context_dict = {}

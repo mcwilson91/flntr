@@ -20,7 +20,7 @@
 			<li><a href="{% url 'show_user_properties_aProperty' flat.owner.slug flat.slug %}">{{ flat.title }}</a></li>
 			<ul>
 				<li>Location: {{ flat.streetAddress }}</li>
-				<li>Price: {{ flat.price }}</li>
+				<li>Average Price per Room: {{ flat.averageRoomPrice }}</li>
 				<li>Date added: {{ flat.dayAdded }}</li>
 			</ul>
 		{% endfor %} 
