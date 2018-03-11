@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from flntr_app.models import Flat, FlatImage, StudentProfile
 from flntr_app.forms import FlatForm, FlatSearchForm, RoommateSearchForm, RegistrationForm
 from django.contrib.auth.models import User

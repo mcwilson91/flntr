@@ -15,7 +15,7 @@ class Landlord(models.Model):
 		return self.user.fname
 
 class Flat(models.Model):
-	owner = models.ForeignKey(User)
+	owner = models.ForeignKey(User, on_delete=models.CASCADE,)
 	title = models.CharField(max_length=250)
 	numberOfRooms = models.IntegerField()
 	streetAddress = models.CharField(max_length=64)
@@ -34,7 +34,7 @@ class Flat(models.Model):
 		return self.title
 
 class FlatImage(models.Model):
-	flat = models.ForeignKey(Flat, related_name='images')
+	flat = models.ForeignKey(Flat, related_name='images', on_delete=models.CASCADE,)
 	image = models.ImageField(upload_to='flat_images', blank=True)
 	def __str__(self):
 		return self.flat.title
@@ -43,7 +43,7 @@ class StudentProfile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE,)
 	picture = models.ImageField(upload_to='profile_images', blank=True)
 	bio = models.TextField(blank=True)
-	properties = models.ForeignKey(Flat, null=True, blank=True)
+	properties = models.ForeignKey(Flat, null=True, blank=True, on_delete=models.CASCADE,)
 	age = models.IntegerField(default=0)
 	gender = models.CharField(max_length=10)
 	slug = models.SlugField()
