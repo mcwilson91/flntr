@@ -62,11 +62,10 @@ def register(request):
 			user = user_form.save()
 			user.set_password(user.password)
 			user.save()
-			if user.groups.name == 'students':
-				profile = age_form.save(commit=False)
-				profile.user = user
+			profile = age_form.save(commit=False)
+			profile.user = user
 
-				profile.save()
+			profile.save()
 			registered = True
 		else:
 			print(user_form.errors, age_form.errors)
@@ -158,7 +157,19 @@ def show_user_account(request, username):
 		landlord = Landlord.objects.get(user=user)
 		return redirect('show_user_properties', landlord_id_slug=landlord.slug)
 
+
 def show_user_profile(request, student_profile_slug):
+		context_dict = {}
+		try:
+			profile = StudentProfile.objects.get(slug=student_profile_slug)
+			context_dict['studentprofile'] = profile
+			profile_form = UserForm(initial={'bio': profile.bio, 'picture': profile.picture})
+			age_form = AgeForm(initial={'age': profile.age, 'gender': profile.gender})
+		except StudentProfile.DoesNotExist:
+			context_dict['studentprofile'] = None
+		return render(request, 'flntr/show_user_profile.html', context_dict)
+
+def edit_profile(request, edit_profile_slug):
 	edit = False
 	current_user = request.user
 	if  request.method == 'POST':
@@ -175,12 +186,10 @@ def show_user_profile(request, student_profile_slug):
 				profile.picture = request.FILES['picture']
 
 			profile.save()
-			edit = False
+			edit = True
 		else:
 			print(profile_form.errors, age_form.errors)
 	else:
-
-
 		context_dict = {}
 		try:
 			profile = StudentProfile.objects.get(slug=student_profile_slug)
@@ -189,7 +198,7 @@ def show_user_profile(request, student_profile_slug):
 			age_form = AgeForm(initial={'age': profile.age, 'gender': profile.gender})
 		except StudentProfile.DoesNotExist:
 			context_dict['studentprofile'] = None
-		return render(request, 'flntr/show_user_profile.html', context_dict)
+		return render(request, 'flntr/edit_profile.html', context_dict)
 
 def show_user_properties(request, landlord_id_slug):
 	context_dict = {}

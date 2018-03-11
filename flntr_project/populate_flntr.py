@@ -166,9 +166,5 @@ if __name__ == '__main__':
 	print('populating')
 	populate()
 	print('creating superuser')
-<<<<<<< HEAD
-	# User.objects.create_superuser(username='superuser', password='superuser', email='')
-=======
-	User.objects.create_superuser(username='superuser', password='superuser', email='')
 
->>>>>>> 34c2ffcfa7893fbbce07de61b36b269e2b5348fc
+	User.objects.create_superuser(username='superuser', password='superuser', email='')

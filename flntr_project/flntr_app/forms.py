@@ -62,7 +62,7 @@ class UserForm(forms.ModelForm):
 class AgeForm(forms.ModelForm):
 	age  = forms.ChoiceField(choices=[(x, x) for x in range(16, 99)])
 
-	gender_options = [ (1, 'Female'), (2, 'Male'), (3, 'Other') ]
+	gender_options = [ ('Female', 'Female'), ('Male', 'Male'), ('Other', 'Other') ]
 	gender = forms.ChoiceField(label='Gender', choices=gender_options, widget=forms.RadioSelect())
 	class Meta:
 		model = StudentProfile
