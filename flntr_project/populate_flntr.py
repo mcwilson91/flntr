@@ -6,7 +6,7 @@ import django
 django.setup()
 from flntr_app.models import Flat, StudentProfile, FlatImage, Landlord, Room
 from flntr_project import settings
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User, Group, Permission
 
 description = "In publishing and graphic design, lorem ipsum is a filler text or greeking commonly used to demonstrate the textual elements of a graphic document or visual presentation. Replacing meaningful content with placeholder text allows designers to design the form of the content before the content itself has been produced."
 
@@ -103,7 +103,20 @@ def populate():
 	
 
 def add_groups(name):
+
+	studentPermissions = [{ "code": "add_studentprofile"}, { "code": "change_studentprofile"}, { "code": "delete_studentprofile"}]
+	landlordPermissions = [{ "code": "add_flat"}, {"code": "change_flat"}, {"code": "delete_flat"}, {"code": "add_flatimage"}, {"code": "change_flatimage"}, {"code": "delete_flatimage"},
+			{"code": "add_room"}, {"code": "change_room"}, {"code": "delete_room"}]
+
 	k = Group.objects.get_or_create(name= name)[0]
+	if (name == 'students'):
+		for p in studentPermissions:
+			perm = Permission.objects.get(codename=p['code'])
+			k.permissions.add(perm)
+	else:
+		for p in landlordPermissions:
+			perm = Permission.objects.get(codename=p['code'])
+			k.permissions.add(perm)
 	k.save()
 	print(name)
 
@@ -153,4 +166,5 @@ if __name__ == '__main__':
 	print('populating')
 	populate()
 	print('creating superuser')
-	User.objects.create_superuser(username='superuser', password='superuser', email='')
+	# User.objects.create_superuser(username='superuser', password='superuser', email='')
+

@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse
@@ -150,8 +150,10 @@ def show_user_invitations(request):
 def show_user_requests(request):
 	return render(request, 'flntr/show_user_requests.html')
 
-def show_user_account(request):
-	return render(request, 'flntr/show_user_account.html')
+def show_user_account(request, username):
+	user = User.objects.get(username=username)
+	studentProfile = StudentProfile.objects.get(user=user)
+	return redirect('show_user_profile', student_profile_slug=studentProfile.slug)
 
 def show_user_profile(request, student_profile_slug):
 	context_dict = {}

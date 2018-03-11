@@ -12,7 +12,9 @@
 </div>
 <div>
 	<ul>
+		{% if studentprofile.picture %}
 		<li><img src="{{ MEDIA_URL }}{{ studentprofile.picture.url }}" width="300" height="300" alt="{{ room.studentprofile.picture }}" /></li>
+		{% endif %}
 		<li>Age: {{ studentprofile.age }}</li>
 		<li>Gender: {{ studentprofile.gender }}</li>
 		<li>Bio: {{ studentprofile.bio }}</li>

@@ -17,7 +17,7 @@ urlpatterns = [
         views.show_user, name='show_user'),
     url(r'^user/(?P<user_id_slug>[\w\-]+)/requests/$',
         views.show_user_requests, name='show_user_requests'),
-    url(r'^user/(?P<user_id_slug>[\w\-]+)/my-account/$',
+    url(r'^user/(?P<username>[\w\-]+)/my-account/$',
         views.show_user_account, name='show_user_account'),
     url(r'^user/(?P<student_profile_slug>[\w\-]+)/profile/$',
         views.show_user_profile, name='show_user_profile'),

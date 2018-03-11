@@ -81,6 +81,9 @@
 				<li><a href="{% url 'show_property_user_profile' flat.slug room.student.slug %}">{{ room.student.user.username }}</a></li>
 				<li><img src="{{ MEDIA_URL }}{{ room.student.picture.url }}" width="60" height="60" alt="{{ room.student.picture }}" /></li>
 				<li>Age: {{ room.student.age }}</li>
+					{% if user == room.student.user %}
+					<li>Remove</li>
+					{% endif %}
 				{% else %}
 				<li>This room is available</li>
 				<li>Price: £{{ room.price }}</li>
