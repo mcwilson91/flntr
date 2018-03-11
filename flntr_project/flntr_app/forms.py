@@ -57,7 +57,7 @@ class UserForm(forms.ModelForm):
 
 	class Meta:
 		model = User
-		fields = ('first_name', 'last_name', 'username', 'email', 'groups',)
+		fields = ('first_name', 'last_name', 'username', 'email', 'groups', 'password')
 
 class AgeForm(forms.ModelForm):
 	age  = forms.ChoiceField(choices=[(x, x) for x in range(16, 99)])

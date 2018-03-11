@@ -15,7 +15,7 @@
 </ul>
 {% endif %}
 
-<form id="login_form" action="{% url 'login' %}" method="post">
+<form id="login_form" action="/flntr/login/" method="post">
 	{% csrf_token %}
 	Username: <input type="text" name="username" value="" size="50" />
 	<br>

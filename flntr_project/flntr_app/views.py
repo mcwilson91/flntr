@@ -62,12 +62,11 @@ def register(request):
 			user = user_form.save()
 			user.set_password(user.password)
 			user.save()
+			if user.groups == students:
+				profile = age_form.save(commit=False)
+				profile.user = user
 
-			profile = age_form.save(commit=False)
-			profile.user = user
-
-			profile.save()
-			user.save()
+				profile.save()
 			registered = True
 		else:
 			print(user_form.errors, age_form.errors)
