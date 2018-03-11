@@ -171,17 +171,18 @@ def show_user_profile(request, student_profile_slug):
 
 def edit_profile(request, edit_profile_slug):
 	edit = False
-	current_user = request.user
+	user = request.user
+	current_user = user
 	if  request.method == 'POST':
 
 		profile_form = ProfileForm(data=request.POST)
 		age_form = AgeForm(data=request.POST)
 		if profile_form.is_valid() and age_form.is_valid():
 			profile = profile_form.save(commit=False)
-			profile = age_form.save(commit=False)
+			age = age_form.save(commit=False)
 
 			profile.user = current_user
-
+			age.user = current_user
 			if 'picture' in request.FILES:
 				profile.picture = request.FILES['picture']
 
@@ -192,10 +193,12 @@ def edit_profile(request, edit_profile_slug):
 	else:
 		context_dict = {}
 		try:
-			profile = StudentProfile.objects.get(slug=student_profile_slug)
+			profile = StudentProfile.objects.get(user=user)
 			context_dict['studentprofile'] = profile
-			profile_form = UserForm(initial={'bio': profile.bio, 'picture': profile.picture})
+			profile_form = ProfileForm(initial={'bio': profile.bio, 'picture': profile.picture})
 			age_form = AgeForm(initial={'age': profile.age, 'gender': profile.gender})
+			context_dict['profile_form'] = profile_form
+			context_dict['age_form'] = age_form
 		except StudentProfile.DoesNotExist:
 			context_dict['studentprofile'] = None
 		return render(request, 'flntr/edit_profile.html', context_dict)

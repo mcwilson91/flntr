@@ -70,6 +70,7 @@ class AgeForm(forms.ModelForm):
 
 
 class ProfileForm(forms.ModelForm):
+	bio = forms.CharField(widget=forms.Textarea, help_text="Tell us a little about yourself")
 	class Meta:
 		model = StudentProfile
 		fields = ('bio', 'picture')
