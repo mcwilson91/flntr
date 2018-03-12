@@ -24,7 +24,14 @@ def populate():
 		{"fname": "Nils", "sname": "Nilsson", "email": "n.nilsson@gmail.com", "pictureName": "nils-nilsson.png" , "bio": description, "age": 19, "gender": "Male"},
 		{"fname": "Rosebud", "sname": "Forsyth", "email": "rosef@gmail.com", "pictureName": "rosebud-forsyth.png", "bio": description, "age": 24, "gender": "Female"}]
 
-	images = [{ "imagename": "Kelvingrove-Art-Gallery-and-Museum.jpg"}, {"imagename": "Kelvingrove-Art-Gallery-2.jpg"}]
+	kelvinimages = [{ "imagename": "Kelvingrove-Art-Gallery-and-Museum.jpg"}, {"imagename": "Kelvingrove-Art-Gallery-2.jpg"}]
+	25georgeimages = [{ "imagename": "25-great-george-street.jpg"}]
+	byresimages = [{ "imagename": "byres-road.jpg"}]
+	dumbartonimages = [{"imagename": "shack.jpg"}]
+	clarenceimages = [{"imagename": "dumbarton-road.jpg"}, {"imagename": "dumbarton-road-interior.jpg"}]
+	gwrimages = [{"imagename": "Great-Western-Rd-Glasgow.jpg"}, {"imagename": "great-western-road-interior.jpg"}]
+	turnberryimages = [{"imagename": "Turnberry_Road.jpg"}]
+
 
 	rooms1 = [
 		{"size": "double", "price": 123.45}, {"size": "single", "price": 123.45}]
@@ -55,16 +62,16 @@ def populate():
 
 
 	flats1 = [
-		{"address": "123 Byres Road", "averageRoomPrice": 123.45, "numberOfRooms": 2, "postcode": "G12 8TT", "description": description, "title": "A quaint 2 bedroom abode in the heart of Glasgow's west end", "distance": 174, "distanceText": "0.1 mi", "rooms": rooms1, "images": None},
-		{"address": "456 Dumbarton Road", "averageRoomPrice": 678.90, "numberOfRooms": 3, "postcode": "G11 6SQ", "description": description, "title": "A dilapidated shack", "distance": 1526, "distanceText": "0.9 mi", "rooms": rooms2, "images": None},
-		{"address": "25 Great George Street", "averageRoomPrice": 445.00, "numberOfRooms": 3, "postcode": "G12 8LN", "description": description, "title": "Spacious 3 bedroom flat near Glasgow University", "distance": 560, "distanceText": "0.3 mi", "rooms": rooms3, "images": None},
-		{"address": "101 Great Western Road", "averageRoomPrice": 760.00, "numberOfRooms": 2, "postcode": "G4 9AH", "description": description, "title": "Recently Refurbished 2 bedroom flat", "distance": 2205, "distanceText": "1.4 mi", "rooms": rooms4, "images": None}]
+		{"address": "123 Byres Road", "averageRoomPrice": 123.45, "numberOfRooms": 2, "postcode": "G12 8TT", "description": description, "title": "A quaint 2 bedroom abode in the heart of Glasgow's west end", "distance": 174, "distanceText": "0.1 mi", "rooms": rooms1, "images": byresimages},
+		{"address": "456 Dumbarton Road", "averageRoomPrice": 678.90, "numberOfRooms": 3, "postcode": "G11 6SQ", "description": description, "title": "A dilapidated shack", "distance": 1526, "distanceText": "0.9 mi", "rooms": rooms2, "images": dumbartonimages},
+		{"address": "25 Great George Street", "averageRoomPrice": 445.00, "numberOfRooms": 3, "postcode": "G12 8LN", "description": description, "title": "Spacious 3 bedroom flat near Glasgow University", "distance": 560, "distanceText": "0.3 mi", "rooms": rooms3, "images": 25georgeimages},
+		{"address": "101 Great Western Road", "averageRoomPrice": 760.00, "numberOfRooms": 2, "postcode": "G4 9AH", "description": description, "title": "Recently Refurbished 2 bedroom flat", "distance": 2205, "distanceText": "1.4 mi", "rooms": rooms4, "images": gwrimages}]
 		
 	flats2 = [
 		{"address": "168 Great George Street", "averageRoomPrice": 400.00, "numberOfRooms": 2, "postcode": "G12 8AJ", "description": description, "title": "Traditional two bedroom apartment", "distance": 278, "distanceText": "0.2 mi", "rooms": rooms5, "images": None},
-		{"address": "9 Turnberry Road", "averageRoomPrice": 890.50, "numberOfRooms": 5, "postcode": "G11 5AG", "description": description, "title": "Spacious five bedroom tenement flat", "distance": 765, "distanceText": "0.5 mi", "rooms": rooms6, "images": None},
-		{"address": "38 Clarence Drive", "averageRoomPrice": 459.00, "numberOfRooms": 3, "postcode": "G12 9TQ", "description": description, "title": "Commanding 3 bedroom, red sandstone tenement flat", "distance": 1077, "distanceText": "0.7 mi", "rooms": rooms7, "images": None},
-		{"address": "Kelvingrove Art Gallery and Museum", "averageRoomPrice": 950.32, "numberOfRooms": 20, "postcode": "G3 8AG", "description": description, "title": "40 bedroom Neo-Gothic mansion (beware of dinosarurs)", "distance": 914, "distanceText": "0.6 mi", "rooms": rooms8, "images": images}]
+		{"address": "9 Turnberry Road", "averageRoomPrice": 890.50, "numberOfRooms": 5, "postcode": "G11 5AG", "description": description, "title": "Spacious five bedroom tenement flat", "distance": 765, "distanceText": "0.5 mi", "rooms": rooms6, "images": turnberryimages},
+		{"address": "38 Clarence Drive", "averageRoomPrice": 459.00, "numberOfRooms": 3, "postcode": "G12 9TQ", "description": description, "title": "Commanding 3 bedroom, red sandstone tenement flat", "distance": 1077, "distanceText": "0.7 mi", "rooms": rooms7, "images": clarenceimages},
+		{"address": "Kelvingrove Art Gallery and Museum", "averageRoomPrice": 950.32, "numberOfRooms": 20, "postcode": "G3 8AG", "description": description, "title": "40 bedroom Neo-Gothic mansion (beware of dinosarurs)", "distance": 914, "distanceText": "0.6 mi", "rooms": rooms8, "images": kelvinimages}]
 		
 	landlords = [
 		{
