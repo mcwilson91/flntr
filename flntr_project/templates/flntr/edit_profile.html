@@ -11,7 +11,7 @@
 		<br>
 		<h2>{{ studentprofile.user.first_name }} {{ studentprofile.user.last_name }}'s Profile</h2>
 	</div>
-  <form Id="profile_form" action="{% url 'edit_profile' user.username %}" method="post" enctype="multipart/form-data">
+  <form Id="profile_form" action="{% url 'edit_profile' %}" method="post" enctype="multipart/form-data">
 		{% csrf_token %}
 
 		{{ profile_form.as_p }}
