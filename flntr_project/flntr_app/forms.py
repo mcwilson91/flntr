@@ -52,9 +52,9 @@ class RoommateSearchForm(forms.Form):
 
 class UserForm(forms.ModelForm):
 	password = forms.CharField(min_length=6, widget=forms.PasswordInput())
-	group_options = [ (1, 'Student'), (1, 'Landlord') ]
-	groups = forms.ChoiceField(label='I am a ', choices=group_options, widget=forms.RadioSelect())
-
+	groups = forms.ModelChoiceField(label='I am a',
+	queryset=Group.objects.all(),
+	required=True)
 	class Meta:
 		model = User
 		fields = ('first_name', 'last_name', 'username', 'email', 'groups', 'password')

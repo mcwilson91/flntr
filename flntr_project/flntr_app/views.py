@@ -57,25 +57,21 @@ def register(request):
 
 	if request.method == 'POST':
 		user_form = UserForm(data=request.POST)
-		age_form = AgeForm(data=request.POST)
-		if user_form.is_valid() and age_form.is_valid():
+
+		if user_form.is_valid():
 			user = user_form.save()
 			user.set_password(user.password)
 			user.save()
-			profile = age_form.save(commit=False)
-			profile.user = user
 
-			profile.save()
 			registered = True
 		else:
-			print(user_form.errors, age_form.errors)
+			print(user_form.errors)
 	else:
 		user_form = UserForm()
-		age_form = AgeForm()
+
 
 	return render(request, 'flntr/register.html',
 					{'user_form': user_form,
-					'age_form': age_form,
 					'registered': registered})
 
 
@@ -222,11 +218,11 @@ def delete_profile(request):
 		if user:
 			user.delete()
 			messages.success(request, "User deleted")
-			deleted = True
+			#deleted = True
 			return redirect('index')
 		else:
 			user = request.user
-			# do something that alerts unsuccessful 
+			# do something that alerts unsuccessful
 	context_dict = {}
 	profile = StudentProfile.objects.get(user=request.user)
 	context_dict['studentprofile'] = profile
@@ -304,3 +300,5 @@ def add_flat(request):
 	else:
 		room_form = AddFlatForm()
 	return render(request, 'flntr/add_flat.html', {'flat_form':flat_form, 'image_form':image_form})
+
+#def edit_flat(request):
