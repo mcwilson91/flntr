@@ -25,7 +25,7 @@ def populate():
 		{"fname": "Rosebud", "sname": "Forsyth", "email": "rosef@gmail.com", "pictureName": "rosebud-forsyth.png", "bio": description, "age": 24, "gender": "Female"}]
 
 	kelvinimages = [{ "imagename": "Kelvingrove-Art-Gallery-and-Museum.jpg"}, {"imagename": "Kelvingrove-Art-Gallery-2.jpg"}]
-	25georgeimages = [{ "imagename": "25-great-george-street.jpg"}]
+	georgeimages = [{ "imagename": "25-great-george-street.jpg"}]
 	byresimages = [{ "imagename": "byres-road.jpg"}]
 	dumbartonimages = [{"imagename": "shack.jpg"}]
 	clarenceimages = [{"imagename": "dumbarton-road.jpg"}, {"imagename": "dumbarton-road-interior.jpg"}]
@@ -64,7 +64,7 @@ def populate():
 	flats1 = [
 		{"address": "123 Byres Road", "averageRoomPrice": 123.45, "numberOfRooms": 2, "postcode": "G12 8TT", "description": description, "title": "A quaint 2 bedroom abode in the heart of Glasgow's west end", "distance": 174, "distanceText": "0.1 mi", "rooms": rooms1, "images": byresimages},
 		{"address": "456 Dumbarton Road", "averageRoomPrice": 678.90, "numberOfRooms": 3, "postcode": "G11 6SQ", "description": description, "title": "A dilapidated shack", "distance": 1526, "distanceText": "0.9 mi", "rooms": rooms2, "images": dumbartonimages},
-		{"address": "25 Great George Street", "averageRoomPrice": 445.00, "numberOfRooms": 3, "postcode": "G12 8LN", "description": description, "title": "Spacious 3 bedroom flat near Glasgow University", "distance": 560, "distanceText": "0.3 mi", "rooms": rooms3, "images": 25georgeimages},
+		{"address": "25 Great George Street", "averageRoomPrice": 445.00, "numberOfRooms": 3, "postcode": "G12 8LN", "description": description, "title": "Spacious 3 bedroom flat near Glasgow University", "distance": 560, "distanceText": "0.3 mi", "rooms": rooms3, "images": georgeimages},
 		{"address": "101 Great Western Road", "averageRoomPrice": 760.00, "numberOfRooms": 2, "postcode": "G4 9AH", "description": description, "title": "Recently Refurbished 2 bedroom flat", "distance": 2205, "distanceText": "1.4 mi", "rooms": rooms4, "images": gwrimages}]
 		
 	flats2 = [
@@ -174,4 +174,4 @@ if __name__ == '__main__':
 	populate()
 	print('creating superuser')
 
-	User.objects.create_superuser(username='superuser', password='superuser', email='')
+	#User.objects.create_superuser(username='superuser', password='superuser', email='')
