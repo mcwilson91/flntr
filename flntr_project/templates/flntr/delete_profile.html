@@ -1,0 +1,34 @@
+{% extends 'flntr/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+	this page works
+{% endblock %}
+
+{% block body_block %}
+	<div>
+		<br>
+		<br>
+		<h2>{{ studentprofile.user.first_name }} {{ studentprofile.user.last_name }}'s Profile</h2>
+	</div>
+  {% if deleted %}
+  <ul class="messages">
+      {% for message in messages %}
+      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+      {% endfor %}
+  </ul>
+  {% else %}
+
+    <form id="delete_form" action="/flntr/delete-profile/" method="post">
+    	{% csrf_token %}
+    	To delete your profile type in your password below. This can not be reversed.
+      <br>
+      <br>
+    	Password: <input type="password" name="password" value=""	size="50" />
+    	<br>
+      <br>
+    	<input type="submit" name="submit" value="Delete Profile" />
+    </form>
+	<br><br>
+{% endif %}
+{% endblock %}

@@ -212,6 +212,30 @@ def edit_profile(request):
 
 		return render(request, 'flntr/edit_profile.html', context_dict)
 
+def delete_profile(request):
+
+	deleted = False
+	if request.method == 'POST':
+		password = request.POST.get('password')
+		username = request.user.username
+		user = authenticate(username=username, password=password)
+		if user:
+			user.delete()
+			messages.success(request, "User deleted")
+			deleted = True
+			return redirect('index')
+		else:
+			user = request.user
+			# do something that alerts unsuccessful 
+	context_dict = {}
+	profile = StudentProfile.objects.get(user=request.user)
+	context_dict['studentprofile'] = profile
+	context_dict['deleted'] = deleted
+	return render(request, 'flntr/delete_profile.html', context_dict)
+
+
+
+
 def show_user_properties(request, landlord_id_slug):
 	context_dict = {}
 	landlord = Landlord.objects.get(slug=landlord_id_slug)
