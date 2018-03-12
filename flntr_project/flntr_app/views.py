@@ -171,14 +171,18 @@ def show_user_profile(request, student_profile_slug):
 			context_dict['studentprofile'] = None
 		return render(request, 'flntr/show_user_profile.html', context_dict)
 
-def edit_profile(request, edit_profile_slug):
+def edit_profile(request):
 	edit = False
 	user = request.user
 	current_user = user
+	try:
+		profile = StudentProfile.objects.get(user=user)
+	except StudentProfile.DoesNotExist:
+		profile = None
 	if  request.method == 'POST':
 
-		profile_form = ProfileForm(data=request.POST)
-		age_form = AgeForm(data=request.POST)
+		profile_form = ProfileForm(data=request.POST, instance=profile)
+		age_form = AgeForm(data=request.POST, instance=profile)
 		if profile_form.is_valid() and age_form.is_valid():
 			profile = profile_form.save(commit=False)
 			age = age_form.save(commit=False)
@@ -190,6 +194,8 @@ def edit_profile(request, edit_profile_slug):
 
 			profile.save()
 			edit = True
+			return redirect('show_user_profile', student_profile_slug=profile.slug)
+			#HttpResponseRedirect(reverse('show_user_account user.username'))
 		else:
 			print(profile_form.errors, age_form.errors)
 	else:
@@ -197,12 +203,13 @@ def edit_profile(request, edit_profile_slug):
 		try:
 			profile = StudentProfile.objects.get(user=user)
 			context_dict['studentprofile'] = profile
-			profile_form = ProfileForm(initial={'bio': profile.bio, 'picture': profile.picture})
-			age_form = AgeForm(initial={'age': profile.age, 'gender': profile.gender})
+			profile_form = ProfileForm(instance=profile, initial={'bio': profile.bio, 'picture': profile.picture})
+			age_form = AgeForm(instance=profile, initial={'age': profile.age, 'gender': profile.gender})
 			context_dict['profile_form'] = profile_form
 			context_dict['age_form'] = age_form
 		except StudentProfile.DoesNotExist:
 			context_dict['studentprofile'] = None
+
 		return render(request, 'flntr/edit_profile.html', context_dict)
 
 def show_user_properties(request, landlord_id_slug):
