@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse
 from flntr_app.models import Flat, FlatImage, StudentProfile, Landlord, Room
-from flntr_app.forms import AddFlatForm, FlatSearchForm, RoommateSearchForm, AgeForm, UserForm, AddFlatImageForm
+from flntr_app.forms import AddFlatForm, FlatSearchForm, RoommateSearchForm, AgeForm, UserForm, AddFlatImageForm, ProfileForm
 from django.contrib.auth.models import User
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
@@ -62,11 +62,10 @@ def register(request):
 			user = user_form.save()
 			user.set_password(user.password)
 			user.save()
-			if user.groups.name == 'students':
-				profile = age_form.save(commit=False)
-				profile.user = user
+			profile = age_form.save(commit=False)
+			profile.user = user
 
-				profile.save()
+			profile.save()
 			registered = True
 		else:
 			print(user_form.errors, age_form.errors)
@@ -115,6 +114,8 @@ def show_property(request, flat_id_slug):
 	context_dict = {}
 	try:
 		flat = Flat.objects.get(slug=flat_id_slug)
+		flat.views = flat.views + 1
+		flat.save()
 		context_dict['flat'] = flat
 		try:
 			image_list = FlatImage.objects.filter(flat=flat)
@@ -158,14 +159,51 @@ def show_user_account(request, username):
 		landlord = Landlord.objects.get(user=user)
 		return redirect('show_user_properties', landlord_id_slug=landlord.slug)
 
+
 def show_user_profile(request, student_profile_slug):
-	context_dict = {}
-	try:
-		profile = StudentProfile.objects.get(slug=student_profile_slug)
-		context_dict['studentprofile'] = profile
-	except StudentProfile.DoesNotExist:
-		context_dict['studentprofile'] = None
-	return render(request, 'flntr/show_user_profile.html', context_dict)
+		context_dict = {}
+		try:
+			profile = StudentProfile.objects.get(slug=student_profile_slug)
+			context_dict['studentprofile'] = profile
+			profile_form = UserForm(initial={'bio': profile.bio, 'picture': profile.picture})
+			age_form = AgeForm(initial={'age': profile.age, 'gender': profile.gender})
+		except StudentProfile.DoesNotExist:
+			context_dict['studentprofile'] = None
+		return render(request, 'flntr/show_user_profile.html', context_dict)
+
+def edit_profile(request, edit_profile_slug):
+	edit = False
+	user = request.user
+	current_user = user
+	if  request.method == 'POST':
+
+		profile_form = ProfileForm(data=request.POST)
+		age_form = AgeForm(data=request.POST)
+		if profile_form.is_valid() and age_form.is_valid():
+			profile = profile_form.save(commit=False)
+			age = age_form.save(commit=False)
+
+			profile.user = current_user
+			age.user = current_user
+			if 'picture' in request.FILES:
+				profile.picture = request.FILES['picture']
+
+			profile.save()
+			edit = True
+		else:
+			print(profile_form.errors, age_form.errors)
+	else:
+		context_dict = {}
+		try:
+			profile = StudentProfile.objects.get(user=user)
+			context_dict['studentprofile'] = profile
+			profile_form = ProfileForm(initial={'bio': profile.bio, 'picture': profile.picture})
+			age_form = AgeForm(initial={'age': profile.age, 'gender': profile.gender})
+			context_dict['profile_form'] = profile_form
+			context_dict['age_form'] = age_form
+		except StudentProfile.DoesNotExist:
+			context_dict['studentprofile'] = None
+		return render(request, 'flntr/edit_profile.html', context_dict)
 
 def show_user_properties(request, landlord_id_slug):
 	context_dict = {}

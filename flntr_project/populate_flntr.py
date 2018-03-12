@@ -86,8 +86,8 @@ def populate():
 		"email": "scrooge@humbug.com",
 		"flats": flats2
 		}]
-		
-		
+
+
 	for k in groups:
 		add_groups(k['name'])
 
@@ -107,7 +107,7 @@ def populate():
 			for r in f['rooms']:
 				add_room(flat, i, r['size'], r['price'])
 				i = i + 1
-	
+
 
 def add_groups(name):
 
@@ -173,5 +173,5 @@ if __name__ == '__main__':
 	print('populating')
 	populate()
 	print('creating superuser')
-	User.objects.create_superuser(username='superuser', password='superuser', email='')
 
+	User.objects.create_superuser(username='superuser', password='superuser', email='')

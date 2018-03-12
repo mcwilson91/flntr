@@ -1,0 +1,24 @@
+{% extends 'flntr/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+	this page works
+{% endblock %}
+
+{% block body_block %}
+	<div>
+		<br>
+		<br>
+		<h2>{{ studentprofile.user.first_name }} {{ studentprofile.user.last_name }}'s Profile</h2>
+	</div>
+  <form Id="profile_form" action="{% url 'edit_profile' user.username %}" method="post" enctype="multipart/form-data">
+		{% csrf_token %}
+
+		{{ profile_form.as_p }}
+      {{ age_form.as_p }}
+
+		<input type="submit" name="submit" value="Update Profile" />
+
+	</form>
+
+{% endblock %}
