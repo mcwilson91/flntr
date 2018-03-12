@@ -114,6 +114,8 @@ def show_property(request, flat_id_slug):
 	context_dict = {}
 	try:
 		flat = Flat.objects.get(slug=flat_id_slug)
+		flat.views = flat.views + 1
+		flat.save()
 		context_dict['flat'] = flat
 		try:
 			image_list = FlatImage.objects.filter(flat=flat)
