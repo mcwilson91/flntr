@@ -15,7 +15,8 @@ import requests
 # Create your views here.
 def index(request):
 	recent_flat_list = Flat.objects.order_by('-dayAdded')[:3]
-	context_dict = {'recentflats': recent_flat_list}
+	most_viewed_flats = Flat.objects.order_by('-views')[:3]
+	context_dict = {'recentflats': recent_flat_list, 'mostviewed':most_viewed_flats}
 	return render(request, 'flntr/index.html', context_dict)
 
 def about(request):
@@ -41,8 +42,8 @@ def search(request):
 def results(request, params):
 
 	results = Flat.objects.filter(
-						price__gte=params['min_price'],
-						price__lte=params['max_price'],
+						averageRoomPrice__gte=params['min_price'],
+						averageRoomPrice__lte=params['max_price'],
 						numberOfRooms__gte=params['min_rooms'],
 						numberOfRooms__lte=params['max_rooms'],
 						dayAdded__gte=datetime.now() - timedelta(days=int(params['date_added'])),

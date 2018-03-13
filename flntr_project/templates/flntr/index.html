@@ -4,27 +4,46 @@
 {% block title_block %}
 
 {% endblock %}
-	
+
 {% block body_block %}
 <h2>Homepage</h2>
 	<div>
 		<h2>Most Recent Flats</h2>
 		{% if recentflats %}
 			<ul>
-			{% for flat in recentflats %} 
+			{% for flat in recentflats %}
 				<li><a href="{% url 'show_property' flat.slug %}">{{ flat.title }}</a></li>
 				<ul>
 					<li>Location: {{ flat.streetAddress }}</li>
 					<li>Average Price per Room: {{ flat.averageRoomPrice }}</li>
 					<li>Date added: {{ flat.dayAdded }}</li>
 				</ul>
-			{% endfor %} 
+			{% endfor %}
 			</ul>
 		{% else %}
 			There are no rooms
 		{% endif %}
 	</div>
-	<div> 
+
+	<div>
+		<h2>Most Viewed Flats</h2>
+		{% if mostviewed %}
+			<ul>
+			{% for flat in mostviewed %}
+				<li><a href="{% url 'show_property' flat.slug %}">{{ flat.title }}</a></li>
+				<ul>
+					<li>Location: {{ flat.streetAddress }}</li>
+					<li>Average Price per Room: {{ flat.averageRoomPrice }}</li>
+					<li>Date added: {{ flat.dayAdded }}</li>
+				</ul>
+			{% endfor %}
+			</ul>
+		{% else %}
+			There are no rooms
+		{% endif %}
+	</div>
+
+	<div>
 		<ul>
 			<li><a href="{% url 'property' %}">View all flats</a></li>
 		</ul>

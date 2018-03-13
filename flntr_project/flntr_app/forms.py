@@ -12,13 +12,15 @@ class AddFlatForm(forms.ModelForm):
 	postCode = forms.CharField()
 	numberOfRooms = forms.IntegerField()
 	description = forms.CharField(widget=forms.Textarea)
-	price = forms.DecimalField(max_digits=6, decimal_places=2)
+	averageRoomPrice = forms.DecimalField(max_digits=6, decimal_places=2)
 
 	class Meta:
 		model = Flat
-		fields = ('streetAddress', 'title', 'postCode', 'numberOfRooms', 'description', 'price')
+		fields = ('streetAddress', 'title', 'postCode', 'numberOfRooms', 'description', 'averageRoomPrice')
 
 class AddFlatImageForm(forms.ModelForm):
+	imageNumber = forms.IntegerField(widget=forms.HiddenInput(), initial=0)
+	
 	class Meta:
 		model = FlatImage
 		fields = ('image',)
