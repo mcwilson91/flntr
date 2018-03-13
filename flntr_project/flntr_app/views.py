@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse
 from flntr_app.models import Flat, FlatImage, StudentProfile, Landlord, Room
 from flntr_app.forms import AddFlatForm, FlatSearchForm, RoommateSearchForm, AgeForm, UserForm, AddFlatImageForm, ProfileForm
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
@@ -61,6 +61,16 @@ def register(request):
 		if user_form.is_valid():
 			user = user_form.save()
 			user.set_password(user.password)
+			group_choice = request.POST.get('group_choice')
+			if group_choice == 'group_choice':
+				g = Group.objects.get(name='students')
+				g.user_set.add(user)
+				age = age_form.save(commit=False)
+				age.user = user
+				age.save()
+			else:
+				g = Group.objects.get(name='landlords')
+				g.user_set.add(user)
 			user.save()
 
 			registered = True
@@ -68,6 +78,7 @@ def register(request):
 			print(user_form.errors)
 	else:
 		user_form = UserForm()
+
 
 
 	return render(request, 'flntr/register.html',
@@ -189,6 +200,7 @@ def edit_profile(request):
 				profile.picture = request.FILES['picture']
 
 			profile.save()
+			age.save()
 			edit = True
 			return redirect('show_user_profile', student_profile_slug=profile.slug)
 			#HttpResponseRedirect(reverse('show_user_account user.username'))
