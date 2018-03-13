@@ -54,12 +54,10 @@ class RoommateSearchForm(forms.Form):
 
 class UserForm(forms.ModelForm):
 	password = forms.CharField(min_length=6, widget=forms.PasswordInput())
-	groups = forms.ModelChoiceField(label='I am a',
-	queryset=Group.objects.all(),
-	required=True)
+
 	class Meta:
 		model = User
-		fields = ('first_name', 'last_name', 'username', 'email', 'groups', 'password')
+		fields = ('first_name', 'last_name', 'username', 'email', 'password')
 
 class AgeForm(forms.ModelForm):
 	age  = forms.ChoiceField(choices=[(x, x) for x in range(16, 99)])

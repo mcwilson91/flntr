@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse
 from flntr_app.models import Flat, FlatImage, StudentProfile, Landlord, Room
 from flntr_app.forms import AddFlatForm, FlatSearchForm, RoommateSearchForm, AgeForm, UserForm, AddFlatImageForm, ProfileForm
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
@@ -58,21 +58,36 @@ def register(request):
 
 	if request.method == 'POST':
 		user_form = UserForm(data=request.POST)
-
+		age_form = AgeForm(data=request.POST)
 		if user_form.is_valid():
 			user = user_form.save()
 			user.set_password(user.password)
-			user.save()
+			group_choice = request.POST.get('group_choice')
 
+			user.save()
+			if group_choice == 'Student':
+				g = Group.objects.get(name='students')
+				g.user_set.add(user)
+				profile = age_form.save(commit=False)
+				profile.user = user
+
+				profile.save()
+			else:
+				g = Group.objects.get(name='landlords')
+				g.user_set.add(user)
+				p = Landlord.objects.get_or_create(user=user)[0]
+				p.save()
 			registered = True
 		else:
 			print(user_form.errors)
 	else:
 		user_form = UserForm()
+		age_form = AgeForm()
 
 
 	return render(request, 'flntr/register.html',
 					{'user_form': user_form,
+					'age_form': age_form,
 					'registered': registered})
 
 
@@ -190,6 +205,7 @@ def edit_profile(request):
 				profile.picture = request.FILES['picture']
 
 			profile.save()
+			age.save()
 			edit = True
 			return redirect('show_user_profile', student_profile_slug=profile.slug)
 			#HttpResponseRedirect(reverse('show_user_account user.username'))
