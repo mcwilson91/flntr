@@ -1,4 +1,5 @@
 {% extends 'flntr/base.html' %}
+{% load staticfiles %}
 
 {% block title_block %}
 	this page works
@@ -13,38 +14,28 @@
 		<div id="form_p1">
 			{{ flat_form.as_p }}
 			{{ image_form.as_p }}
-			<Button type="button" id="proceed_button">Proceed</button>
-		</div>
-		<div id="form_p2" style="display: none">
-			<div id="room_form">
-				<h3>Room 1</h3>
-				{{ room_form.as_p }}
-			</div>
-			<div id="additional_room_forms">
-			</div>
-			<Button type="button" id="back_button">Back</button>
-			<input type="submit" name="submit" value="Submit"/>
+
+			 {{ room_formset.management_form }}
+
+			{% for form in room_formset %}
+        		<div class="link-formset">
+            		Size{{ form.size }}
+            		Price{{ form.price }}
+        		</div>
+    		{% endfor %}
+		</br><input type="submit" name="submit" value="Submit"/>
 		</div>
 	</form>
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="{% static 'jquery.formset.js' %}"></script>
 
 <script>
-$("#proceed_button").click(function(){
-    $("#form_p1").hide();
-	$("#form_p2").show();
-
-	var rooms = $("#id_numberOfRooms").val();
-	for(var i = 1; i < rooms; i++){
-		$("#room_form").clone().appendTo("#additional_room_forms");
-	}
-});
-
-$("#back_button").click(function(){
-    $("#form_p1").show();
-	$("#form_p2").hide();
-});
+    $('.link-formset').formset({
+        addText: 'add room',
+        deleteText: 'remove'
+    });
 </script>
 
 {% endblock %}

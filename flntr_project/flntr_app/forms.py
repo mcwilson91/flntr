@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.models import User, Group
 from flntr_app.models import Flat, FlatImage, StudentProfile, Room
 from multiupload.fields import MultiImageField
+from django.forms.formsets import BaseFormSet
 
 
 
@@ -28,12 +29,10 @@ class AddFlatImageForm(forms.ModelForm):
 		#fields = ('image',)
 		exclude = ('image', 'flat',)
 
-class AddRoomForm(forms.ModelForm):
-	size = forms.CharField(max_length=8)
+class AddRoomForm(forms.Form):
+	size = forms.CharField(max_length=8,widget=forms.TextInput(attrs={'placeholder': 'size',}),required=False)
 	price = forms.DecimalField(max_digits=9, decimal_places=2)
-	class Meta:
-		model = Room
-		fields = ('size', 'price')
+	
 	
 		
 class FlatSearchForm(forms.Form):

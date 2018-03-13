@@ -11,6 +11,7 @@ from django.contrib.auth import logout
 from datetime import datetime
 from django.contrib import messages
 import requests
+from django.forms.formsets import formset_factory
 
 from django.views.generic.edit import FormView
 
@@ -287,10 +288,11 @@ def user_logout(request):
 def add_flat(request):
 	flat_form = AddFlatForm()
 	image_form = AddFlatImageForm()
-	room_form = AddRoomForm()
+	room_formset = formset_factory(AddRoomForm)
 	if request.method == 'POST':
 		flat_form = AddFlatForm(request.POST)
 		image_form = AddFlatImageForm(request.POST, request.FILES)
+		room_formset = room_formset(request.POST)		
 		if flat_form.is_valid():
 			flat = flat_form.save(commit=False)
 			flat.owner = Landlord.objects.get(pk=1)
@@ -308,25 +310,30 @@ def add_flat(request):
 			print(distance)
 
 			flat.save()
-
-			#picture = image_form.save(commit=False)
-			#picture.flat = flat
-			#if 'image' in request.FILES:
-			#	picture.image = request.FILES['image']
-			#picture.save()
 		
-			
 			if image_form.is_valid():
 				image_num = 0;
-				for each in image_form.cleaned_data['files']:
-					FlatImage.objects.create(image=each, imageNumber=image_num, flat=flat)
+				for file in image_form.cleaned_data['files']:
+					FlatImage.objects.create(image=file, imageNumber=image_num, flat=flat)
 					image_num += 1
-						
+			
+			
+			if room_formset.is_valid():
+				room_num = 1
+				
+				for room_form in room_formset:
+					size = room_form.cleaned_data.get('size')
+					price = room_form.cleaned_data.get('price')
+					room_num += 1
+
+					if size and price:
+						Room.objects.create(flat=flat, roomNumber=room_num, size=size, price=price)
+			
 			return index(request)
 		else:
 			print(flat_form.errors)
 	else:
 		flat_form = AddFlatForm()
-	return render(request, 'flntr/add_flat.html', {'flat_form':flat_form, 'image_form':image_form, 'room_form':room_form})
+	return render(request, 'flntr/add_flat.html', {'flat_form':flat_form, 'image_form':image_form, 'room_formset':room_formset})
 
 #def edit_flat(request):
