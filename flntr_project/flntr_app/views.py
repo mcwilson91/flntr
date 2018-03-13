@@ -12,6 +12,8 @@ from datetime import datetime
 from django.contrib import messages
 import requests
 
+from django.views.generic.edit import FormView
+
 # Create your views here.
 def index(request):
 	recent_flat_list = Flat.objects.order_by('-dayAdded')[:3]
@@ -306,11 +308,20 @@ def add_flat(request):
 
 			flat.save()
 
-			picture = image_form.save(commit=False)
-			picture.flat = flat
-			if 'image' in request.FILES:
-				picture.image = request.FILES['image']
-			picture.save()
+			#picture = image_form.save(commit=False)
+			#picture.flat = flat
+			#if 'image' in request.FILES:
+			#	picture.image = request.FILES['image']
+			#picture.save()
+		
+			
+			if image_form.is_valid():
+				image_num = 0;
+				for each in image_form.cleaned_data['files']:
+					FlatImage.objects.create(image=each, imageNumber=image_num, flat=flat)
+					image_num += 1
+			#return super(UploadView, self).form_valid(form)
+			
 			return index(request)
 		else:
 			print(flat_form.errors)

@@ -62,7 +62,7 @@ class Room(models.Model):
 
 class FlatImage(models.Model):
 	flat = models.ForeignKey(Flat, related_name='images')
-	imageNumber = models.IntegerField()
+	imageNumber = models.IntegerField(default=0)
 	image = models.ImageField(upload_to='flat_images', blank=True)
 	
 	def __str__(self):

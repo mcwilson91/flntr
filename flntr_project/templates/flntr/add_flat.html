@@ -11,28 +11,9 @@
 	<form id="flat_form" method="post" action="{% url 'add_flat' %}" enctype="multipart/form-data">
 		{% csrf_token %}
 		{{ flat_form.as_p }}
-		<div id="add_image_div">
-			{{ image_form.as_p }}
-		</div>
-		<Button id="more_images_button" type="button">Add additional images</Button></br>
+		{{ image_form.as_p }}
 		<input type="submit" name="submit" value="Submit"/>
 	</form>
 </div>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
-<script>
-var numImages = 1;
-$("#more_images_button").click(function(){
-	if(numImages <5){
-		$("#id_image").clone().appendTo("#add_image_div");
-		numImages++;
-		if(numImages >= 5){
-			$("#more_images_button").hide();
-		}
-	}
-});
-
-</script>
 
 {% endblock %}

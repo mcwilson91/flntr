@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User, Group
 from flntr_app.models import Flat, FlatImage, StudentProfile
+from multiupload.fields import MultiImageField
 
 
 
@@ -20,10 +21,12 @@ class AddFlatForm(forms.ModelForm):
 
 class AddFlatImageForm(forms.ModelForm):
 	imageNumber = forms.IntegerField(widget=forms.HiddenInput(), initial=0)
+	files = MultiImageField(min_num=0, max_num=5, max_file_size=1024*1024*5)
 	
 	class Meta:
 		model = FlatImage
-		fields = ('image',)
+		#fields = ('image',)
+		exclude = ('image', 'flat',)
 
 class FlatSearchForm(forms.Form):
 
