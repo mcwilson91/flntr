@@ -57,32 +57,36 @@ def register(request):
 
 	if request.method == 'POST':
 		user_form = UserForm(data=request.POST)
-
+		age_form = AgeForm(data=request.POST)
 		if user_form.is_valid():
 			user = user_form.save()
 			user.set_password(user.password)
 			group_choice = request.POST.get('group_choice')
-			if group_choice == 'group_choice':
+
+			user.save()
+			if group_choice == 'Student':
 				g = Group.objects.get(name='students')
 				g.user_set.add(user)
-				age = age_form.save(commit=False)
-				age.user = user
-				age.save()
+				profile = age_form.save(commit=False)
+				profile.user = user
+
+				profile.save()
 			else:
 				g = Group.objects.get(name='landlords')
 				g.user_set.add(user)
-			user.save()
-
+				p = Landlord.objects.get_or_create(user=user)[0]
+				p.save()
 			registered = True
 		else:
 			print(user_form.errors)
 	else:
 		user_form = UserForm()
-
+		age_form = AgeForm()
 
 
 	return render(request, 'flntr/register.html',
 					{'user_form': user_form,
+					'age_form': age_form,
 					'registered': registered})
 
 
