@@ -6,14 +6,45 @@
 
 {% block body_block %}
 
-<h1>Add a room</h1>
+<h1>Add Flat</h1>
 <div>
 	<form id="flat_form" method="post" action="{% url 'add_flat' %}" enctype="multipart/form-data">
 		{% csrf_token %}
-		{{ flat_form.as_p }}
-		{{ image_form.as_p }}
-		<input type="submit" name="submit" value="Submit"/>
+		<div id="form_p1">
+			{{ flat_form.as_p }}
+			{{ image_form.as_p }}
+			<Button type="button" id="proceed_button">Proceed</button>
+		</div>
+		<div id="form_p2" style="display: none">
+			<div id="room_form">
+				<h3>Room 1</h3>
+				{{ room_form.as_p }}
+			</div>
+			<div id="additional_room_forms">
+			</div>
+			<Button type="button" id="back_button">Back</button>
+			<input type="submit" name="submit" value="Submit"/>
+		</div>
 	</form>
 </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script>
+$("#proceed_button").click(function(){
+    $("#form_p1").hide();
+	$("#form_p2").show();
+
+	var rooms = $("#id_numberOfRooms").val();
+	for(var i = 1; i < rooms; i++){
+		$("#room_form").clone().appendTo("#additional_room_forms");
+	}
+});
+
+$("#back_button").click(function(){
+    $("#form_p1").show();
+	$("#form_p2").hide();
+});
+</script>
 
 {% endblock %}

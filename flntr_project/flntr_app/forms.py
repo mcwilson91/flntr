@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User, Group
-from flntr_app.models import Flat, FlatImage, StudentProfile
+from flntr_app.models import Flat, FlatImage, StudentProfile, Room
 from multiupload.fields import MultiImageField
 
 
@@ -8,16 +8,16 @@ from multiupload.fields import MultiImageField
 
 
 class AddFlatForm(forms.ModelForm):
-	streetAddress = forms.CharField(help_text="Please enter the adress of the room")
+	streetAddress = forms.CharField(help_text="Please enter the address of the room")
 	title =  forms.CharField(help_text="Please enter a brief description of the room")
 	postCode = forms.CharField()
 	numberOfRooms = forms.IntegerField()
 	description = forms.CharField(widget=forms.Textarea)
-	averageRoomPrice = forms.DecimalField(max_digits=6, decimal_places=2)
+	#averageRoomPrice = forms.DecimalField(max_digits=6, decimal_places=2)
 
 	class Meta:
 		model = Flat
-		fields = ('streetAddress', 'title', 'postCode', 'numberOfRooms', 'description', 'averageRoomPrice')
+		fields = ('title', 'streetAddress', 'postCode', 'description', 'numberOfRooms',)
 
 class AddFlatImageForm(forms.ModelForm):
 	imageNumber = forms.IntegerField(widget=forms.HiddenInput(), initial=0)
@@ -28,6 +28,14 @@ class AddFlatImageForm(forms.ModelForm):
 		#fields = ('image',)
 		exclude = ('image', 'flat',)
 
+class AddRoomForm(forms.ModelForm):
+	size = forms.CharField(max_length=8)
+	price = forms.DecimalField(max_digits=9, decimal_places=2)
+	class Meta:
+		model = Room
+		fields = ('size', 'price')
+	
+		
 class FlatSearchForm(forms.Form):
 
 	min_price_options = [ (0, '<100'), (100, '100'), (200, '200'), (300, '300'), (400, '400'), (500, '500'), (600, '600'), (700, '700'), (800, '800') ]

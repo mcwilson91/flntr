@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse
 from flntr_app.models import Flat, FlatImage, StudentProfile, Landlord, Room
-from flntr_app.forms import AddFlatForm, FlatSearchForm, RoommateSearchForm, AgeForm, UserForm, AddFlatImageForm, ProfileForm
+from flntr_app.forms import AddFlatForm, FlatSearchForm, RoommateSearchForm, AgeForm, UserForm, AddFlatImageForm, ProfileForm, AddRoomForm
 from django.contrib.auth.models import User, Group
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
@@ -287,6 +287,7 @@ def user_logout(request):
 def add_flat(request):
 	flat_form = AddFlatForm()
 	image_form = AddFlatImageForm()
+	room_form = AddRoomForm()
 	if request.method == 'POST':
 		flat_form = AddFlatForm(request.POST)
 		image_form = AddFlatImageForm(request.POST, request.FILES)
@@ -320,13 +321,12 @@ def add_flat(request):
 				for each in image_form.cleaned_data['files']:
 					FlatImage.objects.create(image=each, imageNumber=image_num, flat=flat)
 					image_num += 1
-			#return super(UploadView, self).form_valid(form)
-			
+						
 			return index(request)
 		else:
 			print(flat_form.errors)
 	else:
-		room_form = AddFlatForm()
-	return render(request, 'flntr/add_flat.html', {'flat_form':flat_form, 'image_form':image_form})
+		flat_form = AddFlatForm()
+	return render(request, 'flntr/add_flat.html', {'flat_form':flat_form, 'image_form':image_form, 'room_form':room_form})
 
 #def edit_flat(request):
