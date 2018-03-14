@@ -20,8 +20,7 @@
 
 	</form>
 	<br><br>
-  <!-- <form Id="delete_flat" action="{% url 'edit_flat' flat.slug %}" method "post" enctype="multipart/form-data">
-    {% csrf_token %}
-    <input type="submit" name="submit" value="Delete Flat" />
-  </form> -->
+  <a href="{% url 'delete_flat' flat.slug %}"><button type="button"
+		class="btn btn-default"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Delete Flat</button></a>
+
 {% endblock %}

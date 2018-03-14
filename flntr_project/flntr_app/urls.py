@@ -36,4 +36,5 @@ urlpatterns = [
 	url(r'^property/(?P<flat_id_slug>[\w\-]+)/send_request/(?P<room_number>[\w\-]+)$',
         views.send_request, name='send_request'),
     url(r'^edit_flat/(?P<flat_id_slug>[\w\-]+)/$', views.edit_flat, name='edit_flat'),
+    url(r'^delete_flat/(?P<flat_id_slug>[\w\-]+)/$', views.delete_flat, name='delete_flat'),
 ]
