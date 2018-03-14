@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User, Group
-from flntr_app.models import Flat, FlatImage, StudentProfile, Room
+from flntr_app.models import Flat, FlatImage, StudentProfile, Room, Request
 from multiupload.fields import MultiImageField
 from django.forms.formsets import BaseFormSet
 
@@ -90,3 +90,9 @@ class ProfileForm(forms.ModelForm):
 	class Meta:
 		model = StudentProfile
 		fields = ('bio', 'picture')
+
+class RequestForm(forms.ModelForm):
+	message = forms.CharField(widget=forms.Textarea)
+	class Meta:
+		model = Request
+		fields = ('message',)

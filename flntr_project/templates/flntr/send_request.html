@@ -1,0 +1,12 @@
+{% extends 'flntr/base.html' %}
+
+{% block title_block %}
+	this page works
+{% endblock %}
+{% block body_block %}
+	<form  method="post" action="{% url 'send_request' flat.slug room.roomNumber %}">
+		{% csrf_token %}
+		{{ request_form.as_p}}
+		<input type="submit" name="submit" value="Send"/>
+	</form>
+{% endblock %}

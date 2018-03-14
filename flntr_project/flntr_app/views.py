@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse
 from flntr_app.models import Flat, FlatImage, StudentProfile, Landlord, Room, Request
-from flntr_app.forms import AddFlatForm, FlatSearchForm, RoommateSearchForm, AgeForm, UserForm, AddFlatImageForm, ProfileForm, AddRoomForm
+from flntr_app.forms import AddFlatForm, FlatSearchForm, RoommateSearchForm, AgeForm, UserForm, AddFlatImageForm, ProfileForm, AddRoomForm, RequestForm, EditFlatForm
 from django.contrib.auth.models import User, Group
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
@@ -127,6 +127,7 @@ def property(request):
 
 def show_property(request, flat_id_slug):
 	context_dict = {}
+	context_dict['flat_id_slug'] = flat_id_slug
 	try:
 		flat = Flat.objects.get(slug=flat_id_slug)
 		flat.views = flat.views + 1
@@ -180,6 +181,7 @@ def show_user_account(request):
 
 
 def show_user_profile(request, student_profile_slug):
+<<<<<<< HEAD
 		context_dict = {}
 		try:
 			profile = StudentProfile.objects.get(slug=student_profile_slug)
@@ -194,6 +196,17 @@ def show_user_profile(request, student_profile_slug):
 		except StudentProfile.DoesNotExist:
 			context_dict['studentprofile'] = None
 		return render(request, 'flntr/show_user_profile.html', context_dict)
+=======
+	context_dict = {}
+	try:
+		profile = StudentProfile.objects.get(slug=student_profile_slug)
+		context_dict['studentprofile'] = profile
+		profile_form = UserForm(initial={'bio': profile.bio, 'picture': profile.picture})
+		age_form = AgeForm(initial={'age': profile.age, 'gender': profile.gender})
+	except StudentProfile.DoesNotExist:
+		context_dict['studentprofile'] = None
+	return render(request, 'flntr/show_user_profile.html', context_dict)
+>>>>>>> 7fdafbfb2ea6da97ad7786dc46980d15ada1f594
 
 def edit_profile(request):
 	edit = False
@@ -235,7 +248,7 @@ def edit_profile(request):
 		except StudentProfile.DoesNotExist:
 			context_dict['studentprofile'] = None
 
-		return render(request, 'flntr/edit_profile.html', context_dict)
+	return render(request, 'flntr/edit_profile.html', context_dict)
 
 def delete_profile(request):
 
@@ -298,23 +311,25 @@ def user_logout(request):
 	logout(request)
 	return HttpResponseRedirect(reverse('index'))
 
-def edit_flat(request, flat):
-
+def edit_flat(request, flat_id_slug):
+	flat = Flat.objects.get(slug=flat_id_slug)
+	context_dict = {}
 	if request.method == 'POST':
 		edit_flat_form = EditFlatForm(data=request.POST, instance=flat)
 		if edit_flat_form.is_valid():
 			flat = edit_flat_form.save(commit=False)
 
 			flat.save()
+			return HttpResponseRedirect(reverse('show_user_account'))
 		else:
 			print(edit_flat_form.errors)
 	else:
-		context_dict = {}
+
 		context_dict['flat'] = flat
 		edit_flat_form = EditFlatForm(instance=flat, initial={'title': flat.title, 'description': flat.description})
 		context_dict['edit_flat_form'] = edit_flat_form
 
-		return render(request, 'flntr/edit_flat.html', context_dict)
+	return render(request, 'flntr/edit_flat.html', context_dict)
 
 def add_flat(request):
 	flat_form = AddFlatForm()
@@ -374,4 +389,28 @@ def add_flat(request):
 		flat_form = AddFlatForm()
 	return render(request, 'flntr/add_flat.html', {'flat_form':flat_form, 'image_form':image_form, 'room_formset':room_formset})
 
+def send_request(request, flat_id_slug, room_number):
+	request_form = RequestForm()
+	params = request.get_full_path().split('/')
+	flat = Flat.objects.get(slug=params[3])
+	room = Room.objects.get(flat=flat, roomNumber=params[5])
+	
+	if request.method== 'POST':
+		request_form=RequestForm(request.POST)
+		if request_form.is_valid():
+			flat = Flat.objects.get(slug=flat_id_slug)
+			room = Room.objects.get(flat=flat, roomNumber=room_number)
+			#student = request.user
+			student = User.objects.get(username='n.nilsson@gmail.com')
+			student = StudentProfile.objects.get(user=student)
+			landlord = flat.owner
+			message = request_form.cleaned_data.get('message')
+			
+			Request.objects.create(room=room, student=student, landlord=landlord, message=message)
+			
+			return index(request)
+	
+	return render(request, 'flntr/send_request.html', {'request_form':request_form, 'flat':flat, 'room':room})
+	
+	
 #def edit_flat(request):

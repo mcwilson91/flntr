@@ -15,7 +15,6 @@
 <div>
 	{% if requests %}
 	<ul>
-		blah
 		{% for request in requests %}
 		<li><a href="{% url 'show_user_properties_aProperty' request.landlord.slug request.room.flat.slug %}">{{ request.room.flat }}</a></li>
 		<ul>
