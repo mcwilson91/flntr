@@ -151,7 +151,7 @@ def add_landlord(fname, sname, email):
 	return p;
 
 def add_flat(owner, location, averageRoomPrice, postcode, numberOfRooms, description, title, distance, distanceText):
-	f = Flat.objects.get_or_create(owner=owner, streetAddress=location, averageRoomPrice=averageRoomPrice, postCode=postcode, numberOfRooms=numberOfRooms, description=description, title=title, distanceFromUniversity=distance, distanceText=distanceText)[0]
+	f = Flat.objects.get_or_create(owner=owner, streetAddress=location, averageRoomPrice=averageRoomPrice, postCode=postcode, numberOfRooms=numberOfRooms, description=description, title=title, distanceFromUniversity=distance, distanceText=distanceText, availableRooms=numberOfRooms)[0]
 	f.save()
 	#d = RoomDescription.objects.get_or_create(room=r)[0]
 	#d.save()

@@ -17,8 +17,8 @@ from django.views.generic.edit import FormView
 
 # Create your views here.
 def index(request):
-	recent_flat_list = Flat.objects.order_by('-dayAdded')[:3]
-	most_viewed_flats = Flat.objects.order_by('-views')[:3]
+	recent_flat_list = Flat.objects.filter(availableRooms__gte=1).order_by('-dayAdded')[:3]
+	most_viewed_flats = Flat.objects.filter(availableRooms__gte=1).order_by('-views')[:3]
 	context_dict = {'recentflats': recent_flat_list, 'mostviewed':most_viewed_flats}
 	return render(request, 'flntr/index.html', context_dict)
 
@@ -45,6 +45,7 @@ def search(request):
 def results(request, params):
 
 	results = Flat.objects.filter(
+						availableRooms__gte=1,
 						averageRoomPrice__gte=params['min_price'],
 						averageRoomPrice__lte=params['max_price'],
 						numberOfRooms__gte=params['min_rooms'],
@@ -380,6 +381,7 @@ def add_flat(request):
 				averagePrice = averagePrice / room_num
 				flat.averageRoomPrice = averagePrice
 				flat.numberOfRooms = room_num
+				flat.availableRooms = room_num
 				flat.save()
 
 			return index(request)
@@ -414,3 +416,11 @@ def send_request(request, flat_id_slug, room_number):
 	
 	
 #def edit_flat(request):
+#def is_full(flat_slug):
+#	flat = Flat.objects.get(slug=flat_slug)
+#	rooms = Room.objects.all.filter(flat=flat, student__isnull=True)
+#	if rooms.len() > 0:
+#		return False
+#	else:
+#		return True
+		
