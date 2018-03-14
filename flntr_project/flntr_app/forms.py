@@ -1,28 +1,40 @@
 from django import forms
 from django.contrib.auth.models import User, Group
-from flntr_app.models import Flat, FlatImage, StudentProfile
+from flntr_app.models import Flat, FlatImage, StudentProfile, Room
+from multiupload.fields import MultiImageField
+from django.forms.formsets import BaseFormSet
 
 
 
 
 
 class AddFlatForm(forms.ModelForm):
-	streetAddress = forms.CharField(help_text="Please enter the adress of the room")
+	streetAddress = forms.CharField(help_text="Please enter the address of the room")
 	title =  forms.CharField(help_text="Please enter a brief description of the room")
 	postCode = forms.CharField()
 	numberOfRooms = forms.IntegerField()
 	description = forms.CharField(widget=forms.Textarea)
-	price = forms.DecimalField(max_digits=6, decimal_places=2)
+	#averageRoomPrice = forms.DecimalField(max_digits=6, decimal_places=2)
 
 	class Meta:
 		model = Flat
-		fields = ('streetAddress', 'title', 'postCode', 'numberOfRooms', 'description', 'price')
+		fields = ('title', 'streetAddress', 'postCode', 'description', 'numberOfRooms',)
 
 class AddFlatImageForm(forms.ModelForm):
+	imageNumber = forms.IntegerField(widget=forms.HiddenInput(), initial=0)
+	files = MultiImageField(min_num=0, max_num=5, max_file_size=1024*1024*5)
+	
 	class Meta:
 		model = FlatImage
-		fields = ('image',)
+		#fields = ('image',)
+		exclude = ('image', 'flat',)
 
+class AddRoomForm(forms.Form):
+	size = forms.CharField(max_length=8,widget=forms.TextInput(attrs={'placeholder': 'size',}),required=False)
+	price = forms.DecimalField(max_digits=9, decimal_places=2)
+	
+	
+		
 class FlatSearchForm(forms.Form):
 
 	min_price_options = [ (0, '<100'), (100, '100'), (200, '200'), (300, '300'), (400, '400'), (500, '500'), (600, '600'), (700, '700'), (800, '800') ]
@@ -52,12 +64,10 @@ class RoommateSearchForm(forms.Form):
 
 class UserForm(forms.ModelForm):
 	password = forms.CharField(min_length=6, widget=forms.PasswordInput())
-	group_options = [ (1, 'Student'), (1, 'Landlord') ]
-	groups = forms.ChoiceField(label='I am a ', choices=group_options, widget=forms.RadioSelect())
 
 	class Meta:
 		model = User
-		fields = ('first_name', 'last_name', 'username', 'email', 'groups', 'password')
+		fields = ('first_name', 'last_name', 'username', 'email', 'password')
 
 class AgeForm(forms.ModelForm):
 	age  = forms.ChoiceField(choices=[(x, x) for x in range(16, 99)])

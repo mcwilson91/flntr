@@ -1,4 +1,5 @@
 {% extends 'flntr/base.html' %}
+{% load staticfiles %}
 
 {% block title_block %}
 	this page works
@@ -6,13 +7,35 @@
 
 {% block body_block %}
 
-<h1>Add a room</h1>
+<h1>Add Flat</h1>
 <div>
 	<form id="flat_form" method="post" action="{% url 'add_flat' %}" enctype="multipart/form-data">
 		{% csrf_token %}
-		{{ flat_form.as_p }}
-		{{ image_form.as_p }}
-		<input type="submit" name="submit" value="Submit"/>
+		<div id="form_p1">
+			{{ flat_form.as_p }}
+			{{ image_form.as_p }}
+
+			 {{ room_formset.management_form }}
+
+			{% for form in room_formset %}
+        		<div class="link-formset">
+            		Size{{ form.size }}
+            		Price{{ form.price }}
+        		</div>
+    		{% endfor %}
+		</br><input type="submit" name="submit" value="Submit"/>
+		</div>
 	</form>
 </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="{% static 'jquery.formset.js' %}"></script>
+
+<script>
+    $('.link-formset').formset({
+        addText: 'add room',
+        deleteText: 'remove'
+    });
+</script>
+
 {% endblock %}

@@ -21,7 +21,7 @@ class Flat(models.Model):
 	streetAddress = models.CharField(max_length=64)
 	postCode = models.CharField(max_length=8)
 	description = models.TextField(blank=True)
-	averageRoomPrice = models.DecimalField(max_digits=6, decimal_places=2)
+	averageRoomPrice = models.DecimalField(max_digits=6, decimal_places=2, null=True)
 	slug = models.SlugField(unique=True)
 	dayAdded = models.DateField(default=datetime.now)
 	views = models.IntegerField(default=0)
@@ -62,7 +62,7 @@ class Room(models.Model):
 
 class FlatImage(models.Model):
 	flat = models.ForeignKey(Flat, related_name='images')
-	imageNumber = models.IntegerField()
+	imageNumber = models.IntegerField(default=0)
 	image = models.ImageField(upload_to='flat_images', blank=True)
 	
 	def __str__(self):

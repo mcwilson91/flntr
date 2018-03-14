@@ -3,19 +3,23 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse
 from flntr_app.models import Flat, FlatImage, StudentProfile, Landlord, Room
-from flntr_app.forms import AddFlatForm, FlatSearchForm, RoommateSearchForm, AgeForm, UserForm, AddFlatImageForm, ProfileForm
-from django.contrib.auth.models import User
+from flntr_app.forms import AddFlatForm, FlatSearchForm, RoommateSearchForm, AgeForm, UserForm, AddFlatImageForm, ProfileForm, AddRoomForm
+from django.contrib.auth.models import User, Group
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout
 from datetime import datetime
 from django.contrib import messages
 import requests
+from django.forms.formsets import formset_factory
+
+from django.views.generic.edit import FormView
 
 # Create your views here.
 def index(request):
 	recent_flat_list = Flat.objects.order_by('-dayAdded')[:3]
-	context_dict = {'recentflats': recent_flat_list}
+	most_viewed_flats = Flat.objects.order_by('-views')[:3]
+	context_dict = {'recentflats': recent_flat_list, 'mostviewed':most_viewed_flats}
 	return render(request, 'flntr/index.html', context_dict)
 
 def about(request):
@@ -41,8 +45,8 @@ def search(request):
 def results(request, params):
 
 	results = Flat.objects.filter(
-						price__gte=params['min_price'],
-						price__lte=params['max_price'],
+						averageRoomPrice__gte=params['min_price'],
+						averageRoomPrice__lte=params['max_price'],
 						numberOfRooms__gte=params['min_rooms'],
 						numberOfRooms__lte=params['max_rooms'],
 						dayAdded__gte=datetime.now() - timedelta(days=int(params['date_added'])),
@@ -58,20 +62,31 @@ def register(request):
 	if request.method == 'POST':
 		user_form = UserForm(data=request.POST)
 		age_form = AgeForm(data=request.POST)
-		if user_form.is_valid() and age_form.is_valid():
+		if user_form.is_valid():
 			user = user_form.save()
 			user.set_password(user.password)
-			user.save()
-			profile = age_form.save(commit=False)
-			profile.user = user
+			group_choice = request.POST.get('group_choice')
 
-			profile.save()
+			user.save()
+			if group_choice == 'Student':
+				g = Group.objects.get(name='students')
+				g.user_set.add(user)
+				profile = age_form.save(commit=False)
+				profile.user = user
+
+				profile.save()
+			else:
+				g = Group.objects.get(name='landlords')
+				g.user_set.add(user)
+				p = Landlord.objects.get_or_create(user=user)[0]
+				p.save()
 			registered = True
 		else:
-			print(user_form.errors, age_form.errors)
+			print(user_form.errors)
 	else:
 		user_form = UserForm()
 		age_form = AgeForm()
+
 
 	return render(request, 'flntr/register.html',
 					{'user_form': user_form,
@@ -193,6 +208,7 @@ def edit_profile(request):
 				profile.picture = request.FILES['picture']
 
 			profile.save()
+			age.save()
 			edit = True
 			return redirect('show_user_profile', student_profile_slug=profile.slug)
 			#HttpResponseRedirect(reverse('show_user_account user.username'))
@@ -211,6 +227,30 @@ def edit_profile(request):
 			context_dict['studentprofile'] = None
 
 		return render(request, 'flntr/edit_profile.html', context_dict)
+
+def delete_profile(request):
+
+	deleted = False
+	if request.method == 'POST':
+		password = request.POST.get('password')
+		username = request.user.username
+		user = authenticate(username=username, password=password)
+		if user:
+			user.delete()
+			messages.success(request, "User deleted")
+			#deleted = True
+			return redirect('index')
+		else:
+			user = request.user
+			# do something that alerts unsuccessful
+	context_dict = {}
+	profile = StudentProfile.objects.get(user=request.user)
+	context_dict['studentprofile'] = profile
+	context_dict['deleted'] = deleted
+	return render(request, 'flntr/delete_profile.html', context_dict)
+
+
+
 
 def show_user_properties(request, landlord_id_slug):
 	context_dict = {}
@@ -248,9 +288,11 @@ def user_logout(request):
 def add_flat(request):
 	flat_form = AddFlatForm()
 	image_form = AddFlatImageForm()
+	room_formset = formset_factory(AddRoomForm)
 	if request.method == 'POST':
 		flat_form = AddFlatForm(request.POST)
 		image_form = AddFlatImageForm(request.POST, request.FILES)
+		room_formset = room_formset(request.POST)		
 		if flat_form.is_valid():
 			flat = flat_form.save(commit=False)
 			flat.owner = Landlord.objects.get(pk=1)
@@ -268,15 +310,30 @@ def add_flat(request):
 			print(distance)
 
 			flat.save()
+		
+			if image_form.is_valid():
+				image_num = 0;
+				for file in image_form.cleaned_data['files']:
+					FlatImage.objects.create(image=file, imageNumber=image_num, flat=flat)
+					image_num += 1
+			
+			
+			if room_formset.is_valid():
+				room_num = 1
+				
+				for room_form in room_formset:
+					size = room_form.cleaned_data.get('size')
+					price = room_form.cleaned_data.get('price')
+					room_num += 1
 
-			picture = image_form.save(commit=False)
-			picture.flat = flat
-			if 'image' in request.FILES:
-				picture.image = request.FILES['image']
-			picture.save()
+					if size and price:
+						Room.objects.create(flat=flat, roomNumber=room_num, size=size, price=price)
+			
 			return index(request)
 		else:
 			print(flat_form.errors)
 	else:
-		room_form = AddFlatForm()
-	return render(request, 'flntr/add_flat.html', {'flat_form':flat_form, 'image_form':image_form})
+		flat_form = AddFlatForm()
+	return render(request, 'flntr/add_flat.html', {'flat_form':flat_form, 'image_form':image_form, 'room_formset':room_formset})
+
+#def edit_flat(request):
