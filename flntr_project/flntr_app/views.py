@@ -172,6 +172,11 @@ def show_user_requests(request, landlord_id_slug):
 	context_dict = {'requests': request_list, 'landlordname': "%s %s" % (landlord.user.first_name, landlord.user.last_name)}
 	return render(request, 'flntr/show_user_requests.html', context_dict)
 
+def show_user_requests_profile(request, landlord_id_slug, student_profile_slug):
+	profile = StudentProfile.objects.get(slug=student_profile_slug)
+	context_dict = {'studentprofile': profile}
+	return render(request, 'flntr/show_user_profile.html', context_dict)
+
 def show_user_account(request):
 	# user = User.objects.get(username=username)
 	user = request.user
@@ -359,7 +364,7 @@ def add_flat(request):
 		room_formset = room_formset(request.POST)
 		if flat_form.is_valid():
 			flat = flat_form.save(commit=False)
-			flat.owner = Landlord.objects.get(pk=1)
+			flat.owner = Landlord.objects.get(user=request.user)
 
 			originAddress = flat_form.cleaned_data['streetAddress'].replace(" ", "+")
 			destinationAddress = "University of Glasgow".replace(" ", "+")
@@ -390,7 +395,7 @@ def add_flat(request):
 					size = room_form.cleaned_data.get('size')
 					price = room_form.cleaned_data.get('price')
 					averagePrice += price
-					room_num += 1
+					room_num = room_num + 1
 
 					if size and price:
 						Room.objects.create(flat=flat, roomNumber=room_num, size=size, price=price)
@@ -409,10 +414,20 @@ def add_flat(request):
 	return render(request, 'flntr/add_flat.html', {'flat_form':flat_form, 'image_form':image_form, 'room_formset':room_formset})
 
 def send_request(request, flat_id_slug, room_number):
+
 	request_form = RequestForm()
+
 	params = request.get_full_path().split('/')
 	flat = Flat.objects.get(slug=params[3])
 	room = Room.objects.get(flat=flat, roomNumber=params[5])
+
+	student = StudentProfile.objects.get(user=request.user)
+
+	try:
+		hasRequested = Request.objects.get(student=student)
+		return HttpResponse("you have already requested a room")
+	except Request.DoesNotExist:
+		pass
 
 	if request.method== 'POST':
 		request_form=RequestForm(request.POST)
@@ -420,8 +435,8 @@ def send_request(request, flat_id_slug, room_number):
 			flat = Flat.objects.get(slug=flat_id_slug)
 			room = Room.objects.get(flat=flat, roomNumber=room_number)
 			#student = request.user
-			student = User.objects.get(username='n.nilsson@gmail.com')
-			student = StudentProfile.objects.get(user=student)
+			#student = User.objects.get(username='n.nilsson@gmail.com')
+			student = StudentProfile.objects.get(user=request.user)
 			landlord = flat.owner
 			message = request_form.cleaned_data.get('message')
 
