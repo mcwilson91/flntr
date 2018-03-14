@@ -4,7 +4,7 @@
 {% block title_block %}
 	this page works
 {% endblock %}
-	
+{% block body_block %}	
 <div>
 	{% if landlordname %}
 	<h2>{{ landlordname }}</h2>
@@ -15,18 +15,24 @@
 <div>
 	{% if requests %}
 	<ul>
+		blah
 		{% for request in requests %}
-		<li>{{ request.room.flat }}</li>
+		<li><a href="{% url 'show_user_properties_aProperty' request.landlord.slug request.room.flat.slug %}">{{ request.room.flat }}</a></li>
 		<ul>
 			<li>For Room {{ request.room.roomNumber }}</li>
-			<li>From: {{ request.room }}</li>
+			<li>From: {{ request.student }}</li>
 			<li><a href="{% url 'show_user_profile' request.student.slug %}" target="_blank">View their profile</a></li>
 			{% if request.message %}
 			<li>Message: {{ request.message }}</li>
+			{% endif %}
+			<li>Approve Request</li>
+			<li>Delete Request</li>
 		</ul>
 		{% endfor %}
 	</ul>
+	{% else %}
+	You have no outstanding requests
 	{% endif %}
 </div>
-{% block body_block %}
+
 {% endblock %}

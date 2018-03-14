@@ -71,7 +71,7 @@ class FlatImage(models.Model):
 class Request(models.Model):
 	room = models.ForeignKey(Room)
 	landlord = models.ForeignKey(Landlord, null=True, blank=True)
-	student = models.ForeignKey(StudentProfile)
+	student = models.OneToOneField(StudentProfile)
 	message = models.TextField(blank=True)
 
 	def save(self):

@@ -15,7 +15,7 @@ urlpatterns = [
         views.show_property_user_profile, name='show_property_user_profile'),
     # url(r'^user/(?P<user_id_slug>[\w\-]+)/$',
     #     views.show_user, name='show_user'),
-    url(r'^user/(?P<user_id_slug>[\w\-]+)/requests/$',
+    url(r'^user/(?P<landlord_id_slug>[\w\-]+)/requests/$',
         views.show_user_requests, name='show_user_requests'),
     url(r'^user/my-account/$',
         views.show_user_account, name='show_user_account'),

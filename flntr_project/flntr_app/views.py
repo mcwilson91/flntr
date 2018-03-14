@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse
-from flntr_app.models import Flat, FlatImage, StudentProfile, Landlord, Room
+from flntr_app.models import Flat, FlatImage, StudentProfile, Landlord, Room, Request
 from flntr_app.forms import AddFlatForm, FlatSearchForm, RoommateSearchForm, AgeForm, UserForm, AddFlatImageForm, ProfileForm, AddRoomForm
 from django.contrib.auth.models import User, Group
 from datetime import datetime, timedelta
@@ -164,8 +164,8 @@ def show_user_invitations(request):
 
 def show_user_requests(request, landlord_id_slug):
 	landlord = Landlord.objects.get(slug=landlord_id_slug)
-	request_list = Request.objects.filter(landlord)
-	context_dict = {'requests': request_list, 'landlordname': landlord.first_name + " " + landlord.last_name}
+	request_list = Request.objects.filter(landlord=landlord)
+	context_dict = {'requests': request_list, 'landlordname': "%s %s" % (landlord.user.first_name, landlord.user.last_name)}
 	return render(request, 'flntr/show_user_requests.html', context_dict)
 
 def show_user_account(request):
@@ -184,6 +184,11 @@ def show_user_profile(request, student_profile_slug):
 		try:
 			profile = StudentProfile.objects.get(slug=student_profile_slug)
 			context_dict['studentprofile'] = profile
+			try:
+				studentRequest = Request.objects.get(student=profile)
+				context_dict['requestsent'] = studentRequest
+			except Request.DoesNotExist:
+				context_dict['requestsent'] = None
 			profile_form = UserForm(initial={'bio': profile.bio, 'picture': profile.picture})
 			age_form = AgeForm(initial={'age': profile.age, 'gender': profile.gender})
 		except StudentProfile.DoesNotExist:
@@ -262,7 +267,8 @@ def delete_profile(request):
 def show_user_properties(request, landlord_id_slug):
 	context_dict = {}
 	landlord = Landlord.objects.get(slug=landlord_id_slug)
-	context_dict['landlordname'] = landlord.user.first_name + " " + landlord.user.last_name
+	context_dict['landlord'] = landlord
+	context_dict['landlordname'] = "%s %s" % (landlord.user.first_name, landlord.user.last_name)
 	landlord_flat_list = Flat.objects.filter(owner=landlord).order_by('-dayAdded')
 	context_dict['landlordflats'] = landlord_flat_list
 	return render(request, 'flntr/show_user_properties.html', context_dict)
