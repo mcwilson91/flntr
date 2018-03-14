@@ -273,9 +273,11 @@ def delete_profile(request):
 
 def change_password(request):
 	if request.method == 'POST':
-		change_password_form = PasswordChangeForm(request.user, request.POST)
+		user = request.user
+		change_password_form = PasswordChangeForm(user, request.POST)
 		if change_password_form.is_valid():
-			user.change_password_form.save()
+
+			user = change_password_form.save()
 			update_session_auth_hash(request, user)
 			messages.success(request, 'Your password is now updated!')
 			return redirect('change_password')
@@ -283,7 +285,7 @@ def change_password(request):
 			messages.error(request, "Something went wrong, please try again.")
 	else:
 		change_password_form = PasswordChangeForm(request.user)
-	return render(request, 'accounts/change_password.html', {'change_password_form': change_password_form } )
+	return render(request, 'flntr/change_password.html', {'change_password_form': change_password_form } )
 
 
 
