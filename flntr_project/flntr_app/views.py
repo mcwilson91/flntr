@@ -12,6 +12,8 @@ from datetime import datetime
 from django.contrib import messages
 import requests
 from django.forms.formsets import formset_factory
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
 
 from django.views.generic.edit import FormView
 
@@ -264,11 +266,24 @@ def delete_profile(request):
 		profile = StudentProfile.objects.get(user=request.user)
 	except StudentProfile.DoesNotExist:
 		profile = Landlord.objects.get(user=u)
-	
+
 	context_dict['studentprofile'] = profile
 	context_dict['deleted'] = deleted
 	return render(request, 'flntr/delete_profile.html', context_dict)
 
+def change_password(request):
+	if request.method == 'POST':
+		change_password_form = PasswordChangeForm(request.user, request.POST)
+		if change_password_form.is_valid():
+			user.change_password_form.save()
+			update_session_auth_hash(request, user)
+			messages.success(request, 'Your password is now updated!')
+			return redirect('change_password')
+		else:
+			messages.error(request, "Something went wrong, please try again.")
+	else:
+		change_password_form = PasswordChangeForm(request.user)
+	return render(request, 'accounts/change_password.html', {'change_password_form': change_password_form } )
 
 
 
@@ -396,7 +411,7 @@ def send_request(request, flat_id_slug, room_number):
 	params = request.get_full_path().split('/')
 	flat = Flat.objects.get(slug=params[3])
 	room = Room.objects.get(flat=flat, roomNumber=params[5])
-	
+
 	if request.method== 'POST':
 		request_form=RequestForm(request.POST)
 		if request_form.is_valid():
@@ -407,14 +422,14 @@ def send_request(request, flat_id_slug, room_number):
 			student = StudentProfile.objects.get(user=student)
 			landlord = flat.owner
 			message = request_form.cleaned_data.get('message')
-			
+
 			Request.objects.create(room=room, student=student, landlord=landlord, message=message)
-			
+
 			return index(request)
-	
+
 	return render(request, 'flntr/send_request.html', {'request_form':request_form, 'flat':flat, 'room':room})
-	
-	
+
+
 #def edit_flat(request):
 #def is_full(flat_slug):
 #	flat = Flat.objects.get(slug=flat_slug)
@@ -423,4 +438,3 @@ def send_request(request, flat_id_slug, room_number):
 #		return False
 #	else:
 #		return True
-		

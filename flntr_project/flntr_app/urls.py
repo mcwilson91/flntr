@@ -37,4 +37,5 @@ urlpatterns = [
         views.send_request, name='send_request'),
     url(r'^edit_flat/(?P<flat_id_slug>[\w\-]+)/$', views.edit_flat, name='edit_flat'),
     url(r'^delete_flat/(?P<flat_id_slug>[\w\-]+)/$', views.delete_flat, name='delete_flat'),
+    url(r'^change_password/$', views.change_password, name='change_password'),
 ]
