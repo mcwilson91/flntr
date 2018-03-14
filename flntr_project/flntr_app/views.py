@@ -181,7 +181,6 @@ def show_user_account(request):
 
 
 def show_user_profile(request, student_profile_slug):
-<<<<<<< HEAD
 		context_dict = {}
 		try:
 			profile = StudentProfile.objects.get(slug=student_profile_slug)
@@ -196,17 +195,7 @@ def show_user_profile(request, student_profile_slug):
 		except StudentProfile.DoesNotExist:
 			context_dict['studentprofile'] = None
 		return render(request, 'flntr/show_user_profile.html', context_dict)
-=======
-	context_dict = {}
-	try:
-		profile = StudentProfile.objects.get(slug=student_profile_slug)
-		context_dict['studentprofile'] = profile
-		profile_form = UserForm(initial={'bio': profile.bio, 'picture': profile.picture})
-		age_form = AgeForm(initial={'age': profile.age, 'gender': profile.gender})
-	except StudentProfile.DoesNotExist:
-		context_dict['studentprofile'] = None
-	return render(request, 'flntr/show_user_profile.html', context_dict)
->>>>>>> 7fdafbfb2ea6da97ad7786dc46980d15ada1f594
+
 
 def edit_profile(request):
 	edit = False
