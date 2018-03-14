@@ -33,5 +33,5 @@ urlpatterns = [
         views.show_user_properties_aProperty, name='show_user_properties_aProperty'),
     url(r'^logout/$', views.user_logout, name='logout'),
 	url(r'^add_flat/$', views.add_flat, name='add_flat'),
-    url(r'^edit_flat/$', views.edit_flat, name='edit_flat'),
+    url(r'^edit_flat/(?P<flat_id_slug>[\w\-]+)/$', views.edit_flat, name='edit_flat'),
 ]

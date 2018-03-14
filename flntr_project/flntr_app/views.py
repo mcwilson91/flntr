@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse
 from flntr_app.models import Flat, FlatImage, StudentProfile, Landlord, Room
-from flntr_app.forms import AddFlatForm, FlatSearchForm, RoommateSearchForm, AgeForm, UserForm, AddFlatImageForm, ProfileForm, AddRoomForm
+from flntr_app.forms import AddFlatForm, FlatSearchForm, RoommateSearchForm, AgeForm, UserForm, AddFlatImageForm, ProfileForm, AddRoomForm, EditFlatForm
 from django.contrib.auth.models import User, Group
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
@@ -127,6 +127,7 @@ def property(request):
 
 def show_property(request, flat_id_slug):
 	context_dict = {}
+	context_dict['flat_id_slug'] = flat_id_slug
 	try:
 		flat = Flat.objects.get(slug=flat_id_slug)
 		flat.views = flat.views + 1
@@ -180,15 +181,15 @@ def show_user_account(request):
 
 
 def show_user_profile(request, student_profile_slug):
-		context_dict = {}
-		try:
-			profile = StudentProfile.objects.get(slug=student_profile_slug)
-			context_dict['studentprofile'] = profile
-			profile_form = UserForm(initial={'bio': profile.bio, 'picture': profile.picture})
-			age_form = AgeForm(initial={'age': profile.age, 'gender': profile.gender})
-		except StudentProfile.DoesNotExist:
-			context_dict['studentprofile'] = None
-		return render(request, 'flntr/show_user_profile.html', context_dict)
+	context_dict = {}
+	try:
+		profile = StudentProfile.objects.get(slug=student_profile_slug)
+		context_dict['studentprofile'] = profile
+		profile_form = UserForm(initial={'bio': profile.bio, 'picture': profile.picture})
+		age_form = AgeForm(initial={'age': profile.age, 'gender': profile.gender})
+	except StudentProfile.DoesNotExist:
+		context_dict['studentprofile'] = None
+	return render(request, 'flntr/show_user_profile.html', context_dict)
 
 def edit_profile(request):
 	edit = False
@@ -230,7 +231,7 @@ def edit_profile(request):
 		except StudentProfile.DoesNotExist:
 			context_dict['studentprofile'] = None
 
-		return render(request, 'flntr/edit_profile.html', context_dict)
+	return render(request, 'flntr/edit_profile.html', context_dict)
 
 def delete_profile(request):
 
@@ -292,23 +293,25 @@ def user_logout(request):
 	logout(request)
 	return HttpResponseRedirect(reverse('index'))
 
-def edit_flat(request, flat):
-
+def edit_flat(request, flat_id_slug):
+	flat = Flat.objects.get(slug=flat_id_slug)
+	context_dict = {}
 	if request.method == 'POST':
 		edit_flat_form = EditFlatForm(data=request.POST, instance=flat)
 		if edit_flat_form.is_valid():
 			flat = edit_flat_form.save(commit=False)
 
 			flat.save()
+			return HttpResponseRedirect(reverse('show_user_account'))
 		else:
 			print(edit_flat_form.errors)
 	else:
-		context_dict = {}
+
 		context_dict['flat'] = flat
 		edit_flat_form = EditFlatForm(instance=flat, initial={'title': flat.title, 'description': flat.description})
 		context_dict['edit_flat_form'] = edit_flat_form
 
-		return render(request, 'flntr/edit_flat.html', context_dict)
+	return render(request, 'flntr/edit_flat.html', context_dict)
 
 def add_flat(request):
 	flat_form = AddFlatForm()
