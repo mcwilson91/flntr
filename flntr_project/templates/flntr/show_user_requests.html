@@ -20,7 +20,7 @@
 		<ul>
 			<li>For Room {{ request.room.roomNumber }}</li>
 			<li>From: {{ request.student }}</li>
-			<li><a href="{% url 'show_user_profile' request.student.slug %}" target="_blank">View their profile</a></li>
+			<li><a href="{% url 'show_user_requests_profile' request.landlord.slug request.student.slug %}">View their profile</a></li>
 			{% if request.message %}
 			<li>Message: {{ request.message }}</li>
 			{% endif %}

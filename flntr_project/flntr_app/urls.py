@@ -17,6 +17,8 @@ urlpatterns = [
     #     views.show_user, name='show_user'),
     url(r'^user/(?P<landlord_id_slug>[\w\-]+)/requests/$',
         views.show_user_requests, name='show_user_requests'),
+    url(r'^user/(?P<landlord_id_slug>[\w\-]+)/requests/(?P<student_profile_slug>[\w\-]+)/$',
+        views.show_user_requests_profile, name='show_user_requests_profile'),
     url(r'^user/my-account/$',
         views.show_user_account, name='show_user_account'),
     url(r'^user/(?P<student_profile_slug>[\w\-]+)/profile/$',
@@ -37,4 +39,5 @@ urlpatterns = [
         views.send_request, name='send_request'),
     url(r'^edit_flat/(?P<flat_id_slug>[\w\-]+)/$', views.edit_flat, name='edit_flat'),
     url(r'^delete_flat/(?P<flat_id_slug>[\w\-]+)/$', views.delete_flat, name='delete_flat'),
+    url(r'^change_password/$', views.change_password, name='change_password'),
 ]
