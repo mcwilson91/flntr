@@ -1,0 +1,27 @@
+{% extends 'flntr/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+	this page works
+{% endblock %}
+
+{% block body_block %}
+	<div>
+		<br>
+		<br>
+		<h2>{{ Flat.title }}</h2>
+	</div>
+  <form Id="edit_flat_form" action="{% url 'edit_flat' %}" method="post" enctype="multipart/form-data">
+		{% csrf_token %}
+
+		{{ edit_flat_form.as_p }}
+
+		<input type="submit" name="submit" value="Update Flat" />
+
+	</form>
+	<br><br>
+  <!-- <form Id="delete_flat" action="{% url 'edit_flat' %}" method "post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="submit" name="submit" value="Delete Flat" />
+  </form> -->
+{% endblock %}

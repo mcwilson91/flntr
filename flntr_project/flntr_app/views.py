@@ -156,8 +156,8 @@ def show_property_user_profile(request, flat_id_slug, student_profile_slug):
 		context_dict['studentprofile'] = None
 	return render(request, 'flntr/show_user_profile.html', context_dict)
 
-def show_user(request):
-	return render(request, 'flntr/show_user.html')
+# def show_user(request):
+# 	return render(request, 'flntr/show_user.html')
 
 def show_user_invitations(request):
 	return render(request, 'flntr/show_user_invitations.html')
@@ -165,8 +165,9 @@ def show_user_invitations(request):
 def show_user_requests(request):
 	return render(request, 'flntr/show_user_requests.html')
 
-def show_user_account(request, username):
-	user = User.objects.get(username=username)
+def show_user_account(request):
+	# user = User.objects.get(username=username)
+	user = request.user
 	try:
 		studentProfile = StudentProfile.objects.get(user=user)
 		return redirect('show_user_profile', student_profile_slug=studentProfile.slug)
@@ -287,6 +288,24 @@ def show_user_properties_aProperty(request, landlord_id_slug, flat_id_slug):
 def user_logout(request):
 	logout(request)
 	return HttpResponseRedirect(reverse('index'))
+
+def edit_flat(request, flat):
+
+	if request.method == 'POST':
+		edit_flat_form = EditFlatForm(data=request.POST, instance=flat)
+		if edit_flat_form.is_valid():
+			flat = edit_flat_form.save(commit=False)
+
+			flat.save()
+		else:
+			print(edit_flat_form.errors)
+	else:
+		context_dict = {}
+		context_dict['flat'] = flat
+		edit_flat_form = EditFlatForm(instance=flat, initial={'title': flat.title, 'description': flat.description})
+		context_dict['edit_flat_form'] = edit_flat_form
+
+		return render(request, 'flntr/edit_flat.html', context_dict)
 
 def add_flat(request):
 	flat_form = AddFlatForm()

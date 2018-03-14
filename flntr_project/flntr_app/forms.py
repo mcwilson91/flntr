@@ -7,6 +7,14 @@ from django.forms.formsets import BaseFormSet
 
 
 
+class EditFlatForm(forms.ModelForm):
+	title =  forms.CharField(help_text="Please enter a brief description of the room")
+	description = forms.CharField(widget=forms.Textarea)
+
+	class Meta:
+		model = Flat
+		fields = ('title', 'description',)
+
 
 class AddFlatForm(forms.ModelForm):
 	streetAddress = forms.CharField(help_text="Please enter the address of the room")
