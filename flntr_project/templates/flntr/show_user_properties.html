@@ -7,30 +7,32 @@
 
 {% block body_block %}
 <div>
-	{% if landlordname %}
-		<h2>{{ landlordname }}'s Flats</h2>
+	{% if landlord %}
+		{% if landlordname %}
+			<h2>{{ landlordname }}'s Flats</h2>
+		{% endif %}
+</div>
+	<div>
+		{% if landlordflats %}
+			<ul>
+			{% for flat in landlordflats %}
+				<li><a href="{% url 'show_user_properties_aProperty' flat.owner.slug flat.slug %}">{{ flat.title }}</a></li>
+				<ul>
+					<li>Location: {{ flat.streetAddress }}</li>
+					<li>Average Price per Room: {{ flat.averageRoomPrice }}</li>
+					<li>Date added: {{ flat.dayAdded }}</li>
+				</ul>
+			{% endfor %}
+			</ul>
+		{% else %}
+			There are no rooms
+		{% endif %}
+
+		<a href="{% url 'delete_profile' %}"><button type="button"
+			class="btn btn-default"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Delete Account</button></a>
+		<a href="{% url 'show_user_requests' landlord.slug %}">View Room Requests</a>
 	{% else %}
 		Does not exist
 	{% endif %}
-</div>
-<div>
-	{% if landlordflats %}
-		<ul>
-		{% for flat in landlordflats %}
-			<li><a href="{% url 'show_user_properties_aProperty' flat.owner.slug flat.slug %}">{{ flat.title }}</a></li>
-			<ul>
-				<li>Location: {{ flat.streetAddress }}</li>
-				<li>Average Price per Room: {{ flat.averageRoomPrice }}</li>
-				<li>Date added: {{ flat.dayAdded }}</li>
-			</ul>
-		{% endfor %}
-		</ul>
-	{% else %}
-		There are no rooms
-	{% endif %}
-
-	<a href="{% url 'delete_profile' %}"><button type="button"
-		class="btn btn-default"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Delete Account</button></a>
-
-</div>
+	</div>
 {% endblock %}

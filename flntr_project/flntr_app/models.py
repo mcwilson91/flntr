@@ -71,13 +71,13 @@ class FlatImage(models.Model):
 class Request(models.Model):
 	room = models.ForeignKey(Room)
 	landlord = models.ForeignKey(Landlord, null=True, blank=True)
-	student = models.ForeignKey(StudentProfile)
+	student = models.OneToOneField(StudentProfile)
 	message = models.TextField(blank=True)
 
-	def save(self):
-		if not self.id:
-			self.landlord = self.room.flat.owner
-		super(Request, self).save()
+	#def save(self):
+	#	if not self.id:
+	#		self.landlord = self.room.flat.owner
+	#	super(Request, self).save()
 
 	def __str__(self):
 		return "%s %s" % (self.room, self.student)

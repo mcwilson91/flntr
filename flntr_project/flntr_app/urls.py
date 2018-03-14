@@ -15,7 +15,7 @@ urlpatterns = [
         views.show_property_user_profile, name='show_property_user_profile'),
     # url(r'^user/(?P<user_id_slug>[\w\-]+)/$',
     #     views.show_user, name='show_user'),
-    url(r'^user/(?P<user_id_slug>[\w\-]+)/requests/$',
+    url(r'^user/(?P<landlord_id_slug>[\w\-]+)/requests/$',
         views.show_user_requests, name='show_user_requests'),
     url(r'^user/my-account/$',
         views.show_user_account, name='show_user_account'),
@@ -33,6 +33,8 @@ urlpatterns = [
         views.show_user_properties_aProperty, name='show_user_properties_aProperty'),
     url(r'^logout/$', views.user_logout, name='logout'),
 	url(r'^add_flat/$', views.add_flat, name='add_flat'),
+	url(r'^property/(?P<flat_id_slug>[\w\-]+)/send_request/(?P<room_number>[\w\-]+)$',
+        views.send_request, name='send_request'),
     url(r'^edit_flat/(?P<flat_id_slug>[\w\-]+)/$', views.edit_flat, name='edit_flat'),
     url(r'^delete_flat/(?P<flat_id_slug>[\w\-]+)/$', views.delete_flat, name='delete_flat'),
 ]
