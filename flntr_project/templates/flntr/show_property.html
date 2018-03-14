@@ -98,7 +98,9 @@
 				<li>This room is available</li>
 				<li>Price: £{{ room.price }}</li>
 				<li>Size: {{ room.size }}</li>
+					{% if perms.flntr_app.change_studentprofile %}
 				<li><a href="{% url 'send_request' flat.slug room.roomNumber %}">Request this room</a></li>
+					{% endif %}
 				{% endif %}
 			</ul>
 			{% endfor %}
