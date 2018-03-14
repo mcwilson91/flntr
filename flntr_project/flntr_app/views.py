@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse
-from flntr_app.models import Flat, FlatImage, StudentProfile, Landlord, Room
-from flntr_app.forms import AddFlatForm, FlatSearchForm, RoommateSearchForm, AgeForm, UserForm, AddFlatImageForm, ProfileForm, AddRoomForm
+from flntr_app.models import Flat, FlatImage, StudentProfile, Landlord, Room, Request
+from flntr_app.forms import AddFlatForm, FlatSearchForm, RoommateSearchForm, AgeForm, UserForm, AddFlatImageForm, ProfileForm, AddRoomForm, RequestForm
 from django.contrib.auth.models import User, Group
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
@@ -346,4 +346,28 @@ def add_flat(request):
 		flat_form = AddFlatForm()
 	return render(request, 'flntr/add_flat.html', {'flat_form':flat_form, 'image_form':image_form, 'room_formset':room_formset})
 
+def send_request(request, flat_id_slug, room_number):
+	request_form = RequestForm()
+	params = request.get_full_path().split('/')
+	flat = Flat.objects.get(slug=params[3])
+	room = Room.objects.get(flat=flat, roomNumber=params[5])
+	
+	if request.method== 'POST':
+		request_form=RequestForm(request.POST)
+		if request_form.is_valid():
+			flat = Flat.objects.get(slug=flat_id_slug)
+			room = Room.objects.get(flat=flat, roomNumber=room_number)
+			#student = request.user
+			student = User.objects.get(username='n.nilsson@gmail.com')
+			student = StudentProfile.objects.get(user=student)
+			landlord = flat.owner
+			message = request_form.cleaned_data.get('message')
+			
+			Request.objects.create(room=room, student=student, landlord=landlord, message=message)
+			
+			return index(request)
+	
+	return render(request, 'flntr/send_request.html', {'request_form':request_form, 'flat':flat, 'room':room})
+	
+	
 #def edit_flat(request):
