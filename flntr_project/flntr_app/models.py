@@ -17,7 +17,7 @@ class Landlord(models.Model):
 class Flat(models.Model):
 	owner = models.ForeignKey(Landlord)
 	title = models.CharField(max_length=250)
-	numberOfRooms = models.IntegerField()
+	numberOfRooms = models.IntegerField(default=0)
 	streetAddress = models.CharField(max_length=64)
 	postCode = models.CharField(max_length=8)
 	description = models.TextField(blank=True)

@@ -322,15 +322,22 @@ def add_flat(request):
 			
 			
 			if room_formset.is_valid():
-				room_num = 1
+				room_num = 0
+				averagePrice = 0
 				
 				for room_form in room_formset:
 					size = room_form.cleaned_data.get('size')
 					price = room_form.cleaned_data.get('price')
+					averagePrice += price
 					room_num += 1
 
 					if size and price:
 						Room.objects.create(flat=flat, roomNumber=room_num, size=size, price=price)
+				
+				averagePrice = averagePrice / room_num
+				flat.averageRoomPrice = averagePrice
+				flat.numberOfRooms = room_num
+				flat.save()
 			
 			return index(request)
 		else:
