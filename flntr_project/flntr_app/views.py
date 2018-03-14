@@ -12,8 +12,8 @@ from datetime import datetime
 from django.contrib import messages
 import requests
 from django.forms.formsets import formset_factory
-
 from django.views.generic.edit import FormView
+
 
 # Create your views here.
 def index(request):
@@ -351,11 +351,15 @@ def add_flat(request):
 			print(url)
 			r = requests.get(url)
 			js = r.json()
+					
+			if js['rows'][0]['elements'][0]['status'] == 'NOT_FOUND':
+				return HttpResponse("Could not find {}".format(originAddress).replace("+", " "))
+				
 			distance = int(js['rows'][0]['elements'][0]['distance']['value'])
 			flat.distanceFromUniversity = distance
 			flat.distanceText = js['rows'][0]['elements'][0]['distance']['text']
 			print(distance)
-
+				
 			flat.save()
 
 			if image_form.is_valid():

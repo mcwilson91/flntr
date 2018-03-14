@@ -24,7 +24,7 @@ class Flat(models.Model):
 	description = models.TextField(blank=True)
 	averageRoomPrice = models.DecimalField(max_digits=6, decimal_places=2, null=True)
 	slug = models.SlugField(unique=True)
-	dayAdded = models.DateField(default=datetime.now)
+	dayAdded = models.DateTimeField(default=datetime.now)
 	views = models.IntegerField(default=0)
 	distanceFromUniversity = models.IntegerField(default = 0)
 	distanceText = models.CharField(max_length=8, default = "0 mi")

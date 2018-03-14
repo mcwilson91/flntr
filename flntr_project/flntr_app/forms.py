@@ -28,15 +28,15 @@ class AddFlatForm(forms.ModelForm):
 		fields = ('title', 'streetAddress', 'postCode', 'description',)
 
 class AddFlatImageForm(forms.ModelForm):
-	imageNumber = forms.IntegerField(widget=forms.HiddenInput(), initial=0)
-	files = MultiImageField(min_num=0, max_num=5, max_file_size=1024*1024*5)
+	imageNumber = forms.IntegerField(widget=forms.HiddenInput(), initial=0, required=False)
+	files = MultiImageField(min_num=0, max_num=5, max_file_size=1024*1024*5, required=False)
 
 	class Meta:
 		model = FlatImage
 		exclude = ('image', 'flat',)
 
 class AddRoomForm(forms.Form):
-	size = forms.CharField(max_length=8,widget=forms.TextInput(attrs={'placeholder': 'size',}),required=False)
+	size = forms.CharField(max_length=8,widget=forms.Select(choices=[('Single','Single'),('Double','Double')]),required=False)
 	price = forms.DecimalField(max_digits=9, decimal_places=2)
 
 

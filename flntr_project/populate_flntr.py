@@ -129,7 +129,7 @@ def add_groups(name):
 
 def add_student(fname, sname, email, pictureName, bio, age, gender):
 	s = User.objects.get_or_create(username = email, first_name=fname, last_name=sname, email=email)[0]
-	s.set_password("piaudwefhpdf")
+	s.set_password("password")
 	g = Group.objects.get(name='students')
 	g.user_set.add(s)
 	s.save()
@@ -141,7 +141,7 @@ def add_student(fname, sname, email, pictureName, bio, age, gender):
 
 def add_landlord(fname, sname, email):
 	l = User.objects.get_or_create(username = email, first_name=fname, last_name=sname, email=email)[0]
-	l.set_password("piaudwefhpdf")
+	l.set_password("password")
 	g = Group.objects.get(name='landlords')
 	g.user_set.add(l)
 	l.save()
