@@ -162,8 +162,11 @@ def show_property_user_profile(request, flat_id_slug, student_profile_slug):
 def show_user_invitations(request):
 	return render(request, 'flntr/show_user_invitations.html')
 
-def show_user_requests(request):
-	return render(request, 'flntr/show_user_requests.html')
+def show_user_requests(request, landlord_id_slug):
+	landlord = Landlord.objects.get(slug=landlord_id_slug)
+	request_list = Request.objects.filter(landlord)
+	context_dict = {'requests': request_list, 'landlordname': landlord.first_name + " " + landlord.last_name}
+	return render(request, 'flntr/show_user_requests.html', context_dict)
 
 def show_user_account(request):
 	# user = User.objects.get(username=username)
@@ -341,15 +344,22 @@ def add_flat(request):
 
 
 			if room_formset.is_valid():
-				room_num = 1
+				room_num = 0
+				averagePrice = 0
 
 				for room_form in room_formset:
 					size = room_form.cleaned_data.get('size')
 					price = room_form.cleaned_data.get('price')
+					averagePrice += price
 					room_num += 1
 
 					if size and price:
 						Room.objects.create(flat=flat, roomNumber=room_num, size=size, price=price)
+
+				averagePrice = averagePrice / room_num
+				flat.averageRoomPrice = averagePrice
+				flat.numberOfRooms = room_num
+				flat.save()
 
 			return index(request)
 		else:

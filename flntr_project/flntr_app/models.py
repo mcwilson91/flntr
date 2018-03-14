@@ -17,7 +17,7 @@ class Landlord(models.Model):
 class Flat(models.Model):
 	owner = models.ForeignKey(Landlord)
 	title = models.CharField(max_length=250)
-	numberOfRooms = models.IntegerField()
+	numberOfRooms = models.IntegerField(default=0)
 	streetAddress = models.CharField(max_length=64)
 	postCode = models.CharField(max_length=8)
 	description = models.TextField(blank=True)
@@ -67,6 +67,20 @@ class FlatImage(models.Model):
 	
 	def __str__(self):
 		return "%s %s" % (self.flat.title, self.imageNumber)
+
+class Request(models.Model):
+	room = models.ForeignKey(Room)
+	landlord = models.ForeignKey(Landlord, null=True, blank=True)
+	student = models.ForeignKey(StudentProfile)
+	message = models.TextField(blank=True)
+
+	def save(self):
+		if not self.id:
+			self.landlord = self.room.flat.owner
+		super(Request, self).save()
+
+	def __str__(self):
+		return "%s %s" % (self.room, self.student)
 
 
 

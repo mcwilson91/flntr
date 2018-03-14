@@ -5,5 +5,28 @@
 	this page works
 {% endblock %}
 	
+<div>
+	{% if landlordname %}
+	<h2>{{ landlordname }}</h2>
+	{% else %}
+	Could not find landlord profile
+	{% endif %}
+</div>
+<div>
+	{% if requests %}
+	<ul>
+		{% for request in requests %}
+		<li>{{ request.room.flat }}</li>
+		<ul>
+			<li>For Room {{ request.room.roomNumber }}</li>
+			<li>From: {{ request.room }}</li>
+			<li><a href="{% url 'show_user_profile' request.student.slug %}" target="_blank">View their profile</a></li>
+			{% if request.message %}
+			<li>Message: {{ request.message }}</li>
+		</ul>
+		{% endfor %}
+	</ul>
+	{% endif %}
+</div>
 {% block body_block %}
 {% endblock %}
