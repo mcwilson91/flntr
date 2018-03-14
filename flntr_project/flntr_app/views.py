@@ -170,6 +170,11 @@ def show_user_requests(request, landlord_id_slug):
 	context_dict = {'requests': request_list, 'landlordname': "%s %s" % (landlord.user.first_name, landlord.user.last_name)}
 	return render(request, 'flntr/show_user_requests.html', context_dict)
 
+def show_user_requests_profile(request, landlord_id_slug, student_profile_slug):
+	profile = StudentProfile.objects.get(slug=student_profile_slug)
+	context_dict = {'studentprofile': profile}
+	return render(request, 'flntr/show_user_profile.html', context_dict)
+
 def show_user_account(request):
 	# user = User.objects.get(username=username)
 	user = request.user
