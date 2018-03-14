@@ -23,7 +23,7 @@ class AddFlatForm(forms.ModelForm):
 class AddFlatImageForm(forms.ModelForm):
 	imageNumber = forms.IntegerField(widget=forms.HiddenInput(), initial=0)
 	files = MultiImageField(min_num=0, max_num=5, max_file_size=1024*1024*5)
-	
+
 	class Meta:
 		model = FlatImage
 		#fields = ('image',)
@@ -32,9 +32,9 @@ class AddFlatImageForm(forms.ModelForm):
 class AddRoomForm(forms.Form):
 	size = forms.CharField(max_length=8,widget=forms.TextInput(attrs={'placeholder': 'size',}),required=False)
 	price = forms.DecimalField(max_digits=9, decimal_places=2)
-	
-	
-		
+
+
+
 class FlatSearchForm(forms.Form):
 
 	min_price_options = [ (0, '<100'), (100, '100'), (200, '200'), (300, '300'), (400, '400'), (500, '500'), (600, '600'), (700, '700'), (800, '800') ]

@@ -242,6 +242,9 @@ def delete_profile(request):
 			return redirect('index')
 		else:
 			user = request.user
+			messages.info(request, 'Invalid login details')
+			# print("Invalid login details: {0}, {1}".format(username, password))
+			return HttpResponseRedirect(reverse('delete_profile'))
 			# do something that alerts unsuccessful
 	context_dict = {}
 	profile = StudentProfile.objects.get(user=request.user)
@@ -292,7 +295,7 @@ def add_flat(request):
 	if request.method == 'POST':
 		flat_form = AddFlatForm(request.POST)
 		image_form = AddFlatImageForm(request.POST, request.FILES)
-		room_formset = room_formset(request.POST)		
+		room_formset = room_formset(request.POST)
 		if flat_form.is_valid():
 			flat = flat_form.save(commit=False)
 			flat.owner = Landlord.objects.get(pk=1)
@@ -310,17 +313,17 @@ def add_flat(request):
 			print(distance)
 
 			flat.save()
-		
+
 			if image_form.is_valid():
 				image_num = 0;
 				for file in image_form.cleaned_data['files']:
 					FlatImage.objects.create(image=file, imageNumber=image_num, flat=flat)
 					image_num += 1
-			
-			
+
+
 			if room_formset.is_valid():
 				room_num = 1
-				
+
 				for room_form in room_formset:
 					size = room_form.cleaned_data.get('size')
 					price = room_form.cleaned_data.get('price')
@@ -328,7 +331,7 @@ def add_flat(request):
 
 					if size and price:
 						Room.objects.create(flat=flat, roomNumber=room_num, size=size, price=price)
-			
+
 			return index(request)
 		else:
 			print(flat_form.errors)
