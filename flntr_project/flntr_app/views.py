@@ -162,8 +162,11 @@ def show_user(request):
 def show_user_invitations(request):
 	return render(request, 'flntr/show_user_invitations.html')
 
-def show_user_requests(request):
-	return render(request, 'flntr/show_user_requests.html')
+def show_user_requests(request, landlord_id_slug):
+	landlord = Landlord.objects.get(slug=landlord_id_slug)
+	request_list = Request.objects.filter(landlord)
+	context_dict = {'requests': request_list, 'landlordname': landlord.first_name + " " + landlord.last_name}
+	return render(request, 'flntr/show_user_requests.html', context_dict)
 
 def show_user_account(request, username):
 	user = User.objects.get(username=username)
