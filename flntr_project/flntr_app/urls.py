@@ -34,4 +34,5 @@ urlpatterns = [
     url(r'^logout/$', views.user_logout, name='logout'),
 	url(r'^add_flat/$', views.add_flat, name='add_flat'),
     url(r'^edit_flat/(?P<flat_id_slug>[\w\-]+)/$', views.edit_flat, name='edit_flat'),
+    url(r'^delete_flat/(?P<flat_id_slug>[\w\-]+)/$', views.delete_flat, name='delete_flat'),
 ]

@@ -252,7 +252,12 @@ def delete_profile(request):
 			return HttpResponseRedirect(reverse('delete_profile'))
 			# do something that alerts unsuccessful
 	context_dict = {}
-	profile = StudentProfile.objects.get(user=request.user)
+	u = request.user
+	try:
+		profile = StudentProfile.objects.get(user=request.user)
+	except StudentProfile.DoesNotExist:
+		profile = Landlord.objects.get(user=u)
+	
 	context_dict['studentprofile'] = profile
 	context_dict['deleted'] = deleted
 	return render(request, 'flntr/delete_profile.html', context_dict)
@@ -293,11 +298,17 @@ def user_logout(request):
 	logout(request)
 	return HttpResponseRedirect(reverse('index'))
 
+def delete_flat(request, flat_id_slug):
+	flat = Flat.objects.get(slug=flat_id_slug)
+	flat.delete()
+	return HttpResponseRedirect(reverse('show_user_account'))
+
 def edit_flat(request, flat_id_slug):
 	flat = Flat.objects.get(slug=flat_id_slug)
 	context_dict = {}
 	if request.method == 'POST':
 		edit_flat_form = EditFlatForm(data=request.POST, instance=flat)
+
 		if edit_flat_form.is_valid():
 			flat = edit_flat_form.save(commit=False)
 
