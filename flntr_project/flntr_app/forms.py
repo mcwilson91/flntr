@@ -7,6 +7,14 @@ from django.forms.formsets import BaseFormSet
 
 
 
+class EditFlatForm(forms.ModelForm):
+	title =  forms.CharField(help_text="Please enter a brief description of the room")
+	description = forms.CharField(widget=forms.Textarea)
+
+	class Meta:
+		model = Flat
+		fields = ('title', 'description',)
+
 
 class AddFlatForm(forms.ModelForm):
 	streetAddress = forms.CharField(help_text="Please enter the address of the room")
@@ -22,7 +30,7 @@ class AddFlatForm(forms.ModelForm):
 class AddFlatImageForm(forms.ModelForm):
 	imageNumber = forms.IntegerField(widget=forms.HiddenInput(), initial=0)
 	files = MultiImageField(min_num=0, max_num=5, max_file_size=1024*1024*5)
-	
+
 	class Meta:
 		model = FlatImage
 		exclude = ('image', 'flat',)
@@ -30,9 +38,9 @@ class AddFlatImageForm(forms.ModelForm):
 class AddRoomForm(forms.Form):
 	size = forms.CharField(max_length=8,widget=forms.TextInput(attrs={'placeholder': 'size',}),required=False)
 	price = forms.DecimalField(max_digits=9, decimal_places=2)
-	
-	
-		
+
+
+
 class FlatSearchForm(forms.Form):
 
 	min_price_options = [ (0, '<100'), (100, '100'), (200, '200'), (300, '300'), (400, '400'), (500, '500'), (600, '600'), (700, '700'), (800, '800') ]

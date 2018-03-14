@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse
 from flntr_app.models import Flat, FlatImage, StudentProfile, Landlord, Room, Request
-from flntr_app.forms import AddFlatForm, FlatSearchForm, RoommateSearchForm, AgeForm, UserForm, AddFlatImageForm, ProfileForm, AddRoomForm, RequestForm
+from flntr_app.forms import AddFlatForm, FlatSearchForm, RoommateSearchForm, AgeForm, UserForm, AddFlatImageForm, ProfileForm, AddRoomForm, RequestForm, EditFlatForm
 from django.contrib.auth.models import User, Group
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
@@ -127,6 +127,7 @@ def property(request):
 
 def show_property(request, flat_id_slug):
 	context_dict = {}
+	context_dict['flat_id_slug'] = flat_id_slug
 	try:
 		flat = Flat.objects.get(slug=flat_id_slug)
 		flat.views = flat.views + 1
@@ -156,8 +157,8 @@ def show_property_user_profile(request, flat_id_slug, student_profile_slug):
 		context_dict['studentprofile'] = None
 	return render(request, 'flntr/show_user_profile.html', context_dict)
 
-def show_user(request):
-	return render(request, 'flntr/show_user.html')
+# def show_user(request):
+# 	return render(request, 'flntr/show_user.html')
 
 def show_user_invitations(request):
 	return render(request, 'flntr/show_user_invitations.html')
@@ -168,8 +169,9 @@ def show_user_requests(request, landlord_id_slug):
 	context_dict = {'requests': request_list, 'landlordname': landlord.first_name + " " + landlord.last_name}
 	return render(request, 'flntr/show_user_requests.html', context_dict)
 
-def show_user_account(request, username):
-	user = User.objects.get(username=username)
+def show_user_account(request):
+	# user = User.objects.get(username=username)
+	user = request.user
 	try:
 		studentProfile = StudentProfile.objects.get(user=user)
 		return redirect('show_user_profile', student_profile_slug=studentProfile.slug)
@@ -179,15 +181,15 @@ def show_user_account(request, username):
 
 
 def show_user_profile(request, student_profile_slug):
-		context_dict = {}
-		try:
-			profile = StudentProfile.objects.get(slug=student_profile_slug)
-			context_dict['studentprofile'] = profile
-			profile_form = UserForm(initial={'bio': profile.bio, 'picture': profile.picture})
-			age_form = AgeForm(initial={'age': profile.age, 'gender': profile.gender})
-		except StudentProfile.DoesNotExist:
-			context_dict['studentprofile'] = None
-		return render(request, 'flntr/show_user_profile.html', context_dict)
+	context_dict = {}
+	try:
+		profile = StudentProfile.objects.get(slug=student_profile_slug)
+		context_dict['studentprofile'] = profile
+		profile_form = UserForm(initial={'bio': profile.bio, 'picture': profile.picture})
+		age_form = AgeForm(initial={'age': profile.age, 'gender': profile.gender})
+	except StudentProfile.DoesNotExist:
+		context_dict['studentprofile'] = None
+	return render(request, 'flntr/show_user_profile.html', context_dict)
 
 def edit_profile(request):
 	edit = False
@@ -229,7 +231,7 @@ def edit_profile(request):
 		except StudentProfile.DoesNotExist:
 			context_dict['studentprofile'] = None
 
-		return render(request, 'flntr/edit_profile.html', context_dict)
+	return render(request, 'flntr/edit_profile.html', context_dict)
 
 def delete_profile(request):
 
@@ -245,6 +247,9 @@ def delete_profile(request):
 			return redirect('index')
 		else:
 			user = request.user
+			messages.info(request, 'Invalid login details')
+			# print("Invalid login details: {0}, {1}".format(username, password))
+			return HttpResponseRedirect(reverse('delete_profile'))
 			# do something that alerts unsuccessful
 	context_dict = {}
 	profile = StudentProfile.objects.get(user=request.user)
@@ -288,6 +293,26 @@ def user_logout(request):
 	logout(request)
 	return HttpResponseRedirect(reverse('index'))
 
+def edit_flat(request, flat_id_slug):
+	flat = Flat.objects.get(slug=flat_id_slug)
+	context_dict = {}
+	if request.method == 'POST':
+		edit_flat_form = EditFlatForm(data=request.POST, instance=flat)
+		if edit_flat_form.is_valid():
+			flat = edit_flat_form.save(commit=False)
+
+			flat.save()
+			return HttpResponseRedirect(reverse('show_user_account'))
+		else:
+			print(edit_flat_form.errors)
+	else:
+
+		context_dict['flat'] = flat
+		edit_flat_form = EditFlatForm(instance=flat, initial={'title': flat.title, 'description': flat.description})
+		context_dict['edit_flat_form'] = edit_flat_form
+
+	return render(request, 'flntr/edit_flat.html', context_dict)
+
 def add_flat(request):
 	flat_form = AddFlatForm()
 	image_form = AddFlatImageForm()
@@ -295,7 +320,7 @@ def add_flat(request):
 	if request.method == 'POST':
 		flat_form = AddFlatForm(request.POST)
 		image_form = AddFlatImageForm(request.POST, request.FILES)
-		room_formset = room_formset(request.POST)		
+		room_formset = room_formset(request.POST)
 		if flat_form.is_valid():
 			flat = flat_form.save(commit=False)
 			flat.owner = Landlord.objects.get(pk=1)
@@ -313,18 +338,18 @@ def add_flat(request):
 			print(distance)
 
 			flat.save()
-		
+
 			if image_form.is_valid():
 				image_num = 0;
 				for file in image_form.cleaned_data['files']:
 					FlatImage.objects.create(image=file, imageNumber=image_num, flat=flat)
 					image_num += 1
-			
-			
+
+
 			if room_formset.is_valid():
 				room_num = 0
 				averagePrice = 0
-				
+
 				for room_form in room_formset:
 					size = room_form.cleaned_data.get('size')
 					price = room_form.cleaned_data.get('price')
@@ -333,12 +358,12 @@ def add_flat(request):
 
 					if size and price:
 						Room.objects.create(flat=flat, roomNumber=room_num, size=size, price=price)
-				
+
 				averagePrice = averagePrice / room_num
 				flat.averageRoomPrice = averagePrice
 				flat.numberOfRooms = room_num
 				flat.save()
-			
+
 			return index(request)
 		else:
 			print(flat_form.errors)

@@ -1,65 +1,56 @@
-<!DOCTYPE html>
+<!doctype html>
 
-{% load staticfiles %}
+{% load static %}
 
-<html>
-<head lang="en">
-  <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>
-  flntr - Rooms You Can View
-  {% block title_block %}
-  {% endblock %}
-  </title>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+    	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  		<meta name="viewport" content="width=device-width, initial-scale=1">
+  		<title>
+  			flntr - Rooms You Can View
+  			{% block title_block %}
+  			{% endblock %}
+  		</title>
 
-  <!-- Bootstrap core CSS -->
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-    <link href="../../dist/css/bootstrap.min.css" rel="stylesheet">
+  		<!-- Bootstrap core CSS -->
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <link href="../../assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
-    <link href="../static/css/flntr.css" rel="stylesheet">
-</head>
-<body>
-   <nav class="navbar navbar-custom navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">flntr</a>
-        </div>
-         <div id="navbar" class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-          {% if user.is_authenticated %}
-      <li><a href="{% url 'logout' %}">Logout</a></li>
-        {% if perms.flntr_app.add_flat %}
-        <li><a href="{% url 'add_flat' %}">Add Flat</a></li>
-        <li><a href="{% url 'show_user_account' user.username %}">Manage Flats</a></li>
-        {% endif %}
-        {% if perms.flntr_app.change_studentprofile %}
-        <li><a href="{% url 'show_user_account' user.username %}">View My Profile</a></li>
+    	<!-- Custom styles for this template -->
+    	<link rel="stylesheet" type="text/css" href="{% static 'CSS/flntr.css' %}">
+	</head>
+	<body>
+   		<nav class="navbar navbar-expand-lg navbar-custom navbar-fixed-top">
+      		<div class="container">
+        		<div class="navbar-header">
+ 	 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    				<span class="navbar-toggler-icon"></span>
+  					</button>
+          			<a class="navbar-brand" href="#">flntr</a>
+        		</div>
+         		<div id="navbar" class="collapse navbar-collapse">
+          			<ul class="nav navbar-nav">
+          			{% if user.is_authenticated %}
+      					<li class="nav-item"><a class="nav-link" href="{% url 'logout' %}">Logout</a></li>
+        				{% if perms.flntr_app.add_flat %}
+        				<li class="nav-item"><a class="nav-link" href="{% url 'add_flat' %}">Add Flat</a></li>
+        				<li class="nav-item"><a class="nav-link" href="{% url 'show_user_account' user.username %}">Manage Flats</a></li>
+        				{% endif %}
+        				{% if perms.flntr_app.change_studentprofile %}
+        				<li class="nav-item"><a class="nav-link" href="{% url 'show_user_account' user.username %}">View My Profile</a></li>
         {% endif %}
       {% else %}
-      <li><a href="{% url 'login' %}">Log In</a></li>
-      <li><a href="{% url 'register' %}">Register</a></li>
+      <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Log In</a></li>
+      <li class="nav-item"><a class="nav-link" href="{% url 'register' %}">Register</a></li>
       {% endif %}
-      <li><a href="{% url 'about' %}">About</a></li>
-      <li><a href="{% url 'index' %}">Homepage</a></li>
-      <li><a href="{% url 'search' %}">Search</a></li>
+      <li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a></li>
+      <li class="nav-item"><a class="nav-link" href="{% url 'index' %}">Homepage</a></li>
+      <li class="nav-item"><a class="nav-link" href="{% url 'search' %}">Search</a></li>
       </ul>
-
         </div><!-- /.nav-collapse -->
       </div>
     </nav>
-  <div>
+  <div class="container">
     {% block body_block %}
     {% endblock %}
   </div>
@@ -84,5 +75,9 @@
    		</ul>
   </div>
   <hr />
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
   </body>
 </html>
