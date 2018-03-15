@@ -18,7 +18,7 @@ class ContactForm(forms.Form):
         super(ContactForm, self).__init__(*args, **kwargs)
         self.fields['contact_name'].label = "Your name:"
         self.fields['contact_email'].label = "Your email:"
-        self.fields['content'].label = "What's on your mind?"
+        self.fields['content'].label = "Your message:"
 
 class EditFlatForm(forms.ModelForm):
 	title =  forms.CharField(help_text="Please enter a brief description of the room")
