@@ -28,6 +28,8 @@ class Flat(models.Model):
 	views = models.IntegerField(default=0)
 	distanceFromUniversity = models.IntegerField(default = 0)
 	distanceText = models.CharField(max_length=8, default = "0 mi")
+	latitude = models.DecimalField(max_digits=12, decimal_places=8, default = 0)
+	longitude = models.DecimalField(max_digits=12, decimal_places=8, default = 0)
 
 	def save(self, *args, **kwargs):
 		self.slug = slugify(self.streetAddress)

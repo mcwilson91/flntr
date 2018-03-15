@@ -381,7 +381,16 @@ def add_flat(request):
 			flat.distanceFromUniversity = distance
 			flat.distanceText = js['rows'][0]['elements'][0]['distance']['text']
 			print(distance)
-				
+			
+			url2 = "https://maps.googleapis.com/maps/api/geocode/json?address={},Glasgow&key={}".format(originAddress, key)
+			r2 = requests.get(url2)
+			js2 = r2.json()
+			if js2['status'] == 'OK':
+				lat = js2['results'][0]['geometry']['location']['lat']
+				lng = js2['results'][0]['geometry']['location']['lng']
+				flat.latitude = lat
+				flat.longitude = lng			
+			
 			flat.save()
 
 			if image_form.is_valid():
@@ -399,7 +408,7 @@ def add_flat(request):
 					size = room_form.cleaned_data.get('size')
 					price = room_form.cleaned_data.get('price')
 					averagePrice += price
-					room_num = room_num + 1
+					room_num += 1
 
 					if size and price:
 						Room.objects.create(flat=flat, roomNumber=room_num, size=size, price=price)

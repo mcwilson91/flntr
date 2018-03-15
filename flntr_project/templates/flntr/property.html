@@ -4,23 +4,82 @@
 {% block title_block %}
 	this page works
 {% endblock %}
-	
+
 {% block body_block %}
 	<div>
 		<h2>All Flats</h2>
 		{% if allflats %}
 			<ul>
-			{% for flat in allflats %} 
+			{% for flat in allflats %}
 				<li><a href="{% url 'show_property' flat.slug %}">{{ flat.title }}</a></li>
 				<ul>
 					<li>Location: {{ flat.streetAddress }}</li>
 					<li>Average Price per Room: {{ flat.averageRoomPrice }}</li>
 					<li>Date added: {{ flat.dayAdded }}</li>
 				</ul>
-			{% endfor %} 
+			{% endfor %}
 			</ul>
 		{% else %}
 			There are no rooms
 		{% endif %}
 	</div>
+
+	<style>
+	  #map {
+	 	width: 100%;
+		height: 300px;
+	  }
+	</style>
+
+	<div id="map"></div>
+	    <script>
+	      var map;
+	      function initMap() {
+	        map = new google.maps.Map(document.getElementById('map'), {
+	          center: {lat: 55.8721211, lng:-4.2882},
+	          zoom: 14
+	        });
+
+			var LatLng;
+			var infowindows = [];
+
+				{% for flat in allflats %}
+				LatLng = {lat: parseFloat("{{flat.latitude}}"), lng: parseFloat("{{flat.longitude}}")};
+					var marker{{flat.pk}} = new google.maps.Marker({
+				  	position: LatLng,
+				  	map: map,
+				  	title: "{{flat.title}}",
+					animation: google.maps.Animation.DROP
+					});
+
+					var contentString{{flat.pk}} = "<h6><a href=\"{% url 'show_property' flat.slug %}\">{{ flat.title }}</a></h6></br>"
+					+ "<div>" + "{{flat.description}}" + "<ul>" + "<li>£{{flat.averageRoomPrice}}</li><li>{{flat.numberOfRooms}}</li><li>£{{flat.streetAddress}}</li><li>£{{flat.distanceText}} from University</li></ul></div>";
+
+					var infowindow{{flat.pk}} = new google.maps.InfoWindow({
+  					content: contentString{{flat.pk}}
+					});
+					infowindows.push(infowindow{{flat.pk}});
+
+					marker{{flat.pk}}.addListener('click', function() {
+						for(var i = 0; i < infowindows.length; i++){
+							infowindows[i].close();
+						}
+          				infowindow{{flat.pk}}.open(map, marker{{flat.pk}});
+        			});
+
+
+				{% endfor %}
+
+
+
+	      }
+	    </script>
+	    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBW0crhPrG5Yc6_hh9fbjb8_LqqW2Je3Ho&callback=initMap"
+	    async defer></script>
+
+
+
+
+
+
 {% endblock %}
