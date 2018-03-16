@@ -3,7 +3,8 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse
 from flntr_app.models import Flat, FlatImage, StudentProfile, Landlord, Room, Request
-from flntr_app.forms import AddFlatForm, FlatSearchForm, RoommateSearchForm, AgeForm, UserForm, AddFlatImageForm, ProfileForm, AddRoomForm, RequestForm, EditFlatForm
+from flntr_app.forms import AddFlatForm, FlatSearchForm, RoommateSearchForm, AgeForm, UserForm, AddFlatImageForm, ProfileForm, AddRoomForm, RequestForm, EditFlatForm, ContactForm
+# from flntr_app.middleware import AjaxMessaging
 from django.contrib.auth.models import User, Group
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
@@ -15,7 +16,9 @@ from django.forms.formsets import formset_factory
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.views.generic.edit import FormView
-
+from django.core.mail import EmailMessage
+from django.template import Context
+from django.template.loader import get_template
 
 # Create your views here.
 def index(request):
@@ -25,7 +28,33 @@ def index(request):
 	return render(request, 'flntr/index.html', context_dict)
 
 def about(request):
-	return render(request, 'flntr/about.html')
+	contact_form = ContactForm()
+
+	if request.method == 'POST':
+		form = ContactForm(data=request.POST)
+
+		if form.is_valid():
+			contact_name = request.POST.get('contact_name', '')
+			contact_email = request.POST.get('contact_email', '')
+			form_content = request.POST.get('content', '')
+
+			# Email the profile with the
+			# contact information
+
+			context = {
+			'contact_name': contact_name,
+			'contact_email': contact_email,
+			'form_content': form_content,
+			}
+			content = get_template('email_forms/contact_template.txt').render(context)
+			email = EmailMessage("New contact form submission",	content, "flntr" +'', ['contact@flntr.co.uk'],
+			headers = {'Reply-To': contact_email })
+
+			email.send()
+			return redirect('about')
+
+	context_dict = {'contact_form': contact_form }
+	return render(request, 'flntr/about.html', context_dict)
 
 def search(request):
 	search_form = FlatSearchForm();
@@ -90,35 +119,25 @@ def register(request):
 		user_form = UserForm()
 		age_form = AgeForm()
 
-
 	return render(request, 'flntr/register.html',
 					{'user_form': user_form,
 					'age_form': age_form,
 					'registered': registered})
 
-
-
-
 def user_login(request):
 	if request.method == 'POST':
-
 		username = request.POST.get('username')
 		password = request.POST.get('password')
-
 		user = authenticate(username=username, password=password)
-
-
 		if user:
 			if user.is_active:
 				login(request, user)
 				return HttpResponseRedirect(reverse('index'))
 			else:
-				# An inactive account was used - no logging in!
 				return HttpResponse("Your flntr account is disabled.")
 		else:
-			# Bad login details were provided. So we can't log the user in.
 			messages.info(request, 'Invalid login details')
-			# print("Invalid login details: {0}, {1}".format(username, password))
+			print("Invalid login details: {0}, {1}".format(username, password))
 			return HttpResponseRedirect(reverse('login'))
 	else:
 		return render(request, 'flntr/login.html', {})
@@ -189,26 +208,25 @@ def show_user_account(request):
 
 
 def show_user_profile(request, student_profile_slug):
-		context_dict = {}
+	context_dict = {}
+	try:
+		profile = StudentProfile.objects.get(slug=student_profile_slug)
+		context_dict['studentprofile'] = profile
 		try:
-			profile = StudentProfile.objects.get(slug=student_profile_slug)
-			context_dict['studentprofile'] = profile
-			try:
-				studentRequest = Request.objects.get(student=profile)
-				context_dict['requestsent'] = studentRequest
-			except Request.DoesNotExist:
-				context_dict['requestsent'] = None
-			profile_form = UserForm(initial={'bio': profile.bio, 'picture': profile.picture})
-			age_form = AgeForm(initial={'age': profile.age, 'gender': profile.gender})
-		except StudentProfile.DoesNotExist:
-			context_dict['studentprofile'] = None
-		return render(request, 'flntr/show_user_profile.html', context_dict)
+			studentRequest = Request.objects.get(student=profile)
+			context_dict['requestsent'] = studentRequest
+		except Request.DoesNotExist:
+			context_dict['requestsent'] = None
+		profile_form = UserForm(initial={'bio': profile.bio, 'picture': profile.picture})
+		age_form = AgeForm(initial={'age': profile.age, 'gender': profile.gender})
+	except StudentProfile.DoesNotExist:
+		context_dict['studentprofile'] = None
+	return render(request, 'flntr/show_user_profile.html', context_dict)
 
-
+@login_required
 def edit_profile(request):
 	edit = False
 	user = request.user
-	current_user = user
 	try:
 		profile = StudentProfile.objects.get(user=user)
 	except StudentProfile.DoesNotExist:
@@ -221,8 +239,8 @@ def edit_profile(request):
 			profile = profile_form.save(commit=False)
 			age = age_form.save(commit=False)
 
-			profile.user = current_user
-			age.user = current_user
+			profile.user = user
+			age.user = user
 			if 'picture' in request.FILES:
 				profile.picture = request.FILES['picture']
 
@@ -230,7 +248,6 @@ def edit_profile(request):
 			age.save()
 			edit = True
 			return redirect('show_user_profile', student_profile_slug=profile.slug)
-			#HttpResponseRedirect(reverse('show_user_account user.username'))
 		else:
 			print(profile_form.errors, age_form.errors)
 	else:
@@ -247,6 +264,7 @@ def edit_profile(request):
 
 	return render(request, 'flntr/edit_profile.html', context_dict)
 
+@login_required
 def delete_profile(request):
 
 	deleted = False
@@ -261,7 +279,7 @@ def delete_profile(request):
 			return redirect('index')
 		else:
 			user = request.user
-			messages.info(request, 'Invalid login details')
+			messages.info(request, 'Incorrect Password')
 			# print("Invalid login details: {0}, {1}".format(username, password))
 			return HttpResponseRedirect(reverse('delete_profile'))
 			# do something that alerts unsuccessful
@@ -276,6 +294,7 @@ def delete_profile(request):
 	context_dict['deleted'] = deleted
 	return render(request, 'flntr/delete_profile.html', context_dict)
 
+@login_required
 def change_password(request):
 	if request.method == 'POST':
 		user = request.user
@@ -328,11 +347,13 @@ def user_logout(request):
 	logout(request)
 	return HttpResponseRedirect(reverse('index'))
 
+@login_required
 def delete_flat(request, flat_id_slug):
 	flat = Flat.objects.get(slug=flat_id_slug)
 	flat.delete()
 	return HttpResponseRedirect(reverse('show_user_account'))
 
+@login_required
 def edit_flat(request, flat_id_slug):
 	flat = Flat.objects.get(slug=flat_id_slug)
 	context_dict = {}
@@ -373,15 +394,15 @@ def add_flat(request):
 			print(url)
 			r = requests.get(url)
 			js = r.json()
-					
+
 			if js['rows'][0]['elements'][0]['status'] == 'NOT_FOUND':
 				return HttpResponse("Could not find {}".format(originAddress).replace("+", " "))
-				
+
 			distance = int(js['rows'][0]['elements'][0]['distance']['value'])
 			flat.distanceFromUniversity = distance
 			flat.distanceText = js['rows'][0]['elements'][0]['distance']['text']
 			print(distance)
-			
+
 			url2 = "https://maps.googleapis.com/maps/api/geocode/json?address={},Glasgow&key={}".format(originAddress, key)
 			r2 = requests.get(url2)
 			js2 = r2.json()
@@ -389,8 +410,8 @@ def add_flat(request):
 				lat = js2['results'][0]['geometry']['location']['lat']
 				lng = js2['results'][0]['geometry']['location']['lng']
 				flat.latitude = lat
-				flat.longitude = lng			
-			
+				flat.longitude = lng
+
 			flat.save()
 
 			if image_form.is_valid():

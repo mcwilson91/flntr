@@ -4,6 +4,24 @@
 {% block title_block %}
 	this page works
 {% endblock %}
-	
+
 {% block body_block %}
+<div class="about">
+	<h1>About flntr</h1>
+	<p>flntr is a web application connecting students in need of a room with landlords in need of tenants in Glasgow.</p>
+	<p>flntr is ideal for students who can’t or don’t want to find flatmates before looking for a flat. They can view flats as well as the students who are already signed up to each flat.</p>
+	<p>fltnr makes the whole process easier for landlords as they no longer have to wait for groups of students to fill their flat. Instead, students simply apply to join a flat as individuals.</p>
+</div>
+<br>
+<hr>
+
+<div class="contact">
+	<h1>Contact</h1>
+	<form role="form" action="" method="post">
+	    {% csrf_token %}
+	    {{ contact_form.as_p }}
+	    <button type="submit">Submit</button>
+	</form>
+</div>
+
 {% endblock %}
