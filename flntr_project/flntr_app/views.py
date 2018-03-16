@@ -23,8 +23,16 @@ from django.template.loader import get_template
 # Create your views here.
 def index(request):
 	recent_flat_list = Flat.objects.filter(availableRooms__gte=1).order_by('-dayAdded')[:3]
+	
+	try:
+		recent_flat_images = FlatImage.objects.filter(flat__in=recent_flat_list, imageNumber=1)
+	except FlatImage.DoesNotExist:
+		recent_flat_images = None
+		
 	most_viewed_flats = Flat.objects.filter(availableRooms__gte=1).order_by('-views')[:3]
-	context_dict = {'recentflats': recent_flat_list, 'mostviewed':most_viewed_flats}
+	
+	context_dict = {'recentflats': recent_flat_list, 'mostviewed':most_viewed_flats, 'recent_flat_images':recent_flat_images}
+	
 	return render(request, 'flntr/index.html', context_dict)
 
 def about(request):
