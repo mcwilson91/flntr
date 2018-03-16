@@ -1,11 +1,4 @@
-{% extends 'flntr/base.html' %}
-{% load staticfiles %}
 
-{% block title_block %}
-	flntr - !
-{% endblock %}
-
-{% block body_block %}
 <div id="messages">
     {% for message in messages %}
         <div {% if message.tags %}class="alert alert-dismissable alert-{{ message.tags }}"{% endif %}>
@@ -14,4 +7,3 @@
         </div>
     {% endfor %}
 </div>
-{% endblock %}
