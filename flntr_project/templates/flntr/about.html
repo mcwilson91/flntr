@@ -2,7 +2,6 @@
 {% load staticfiles %}
 
 {% block title_block %}
-	this page works
 {% endblock %}
 
 {% block body_block %}
@@ -15,12 +14,12 @@
 <br>
 <hr>
 
-<div class="contact">
+<div class="form-group">
 	<h1>Contact</h1>
 	<form role="form" action="" method="post">
 	    {% csrf_token %}
 	    {{ contact_form.as_p }}
-	    <button type="submit">Submit</button>
+	    <button type="submit" class="btn btn-primary">Submit</input>
 	</form>
 </div>
 
