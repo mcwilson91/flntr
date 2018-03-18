@@ -35,10 +35,30 @@ class Flat(models.Model):
 
 	def save(self, *args, **kwargs):
 		self.slug = slugify(self.streetAddress)
+		self.averageAge = calculateAverageAge(self)
 		super(Flat, self).save(*args, **kwargs)
 	def __str__(self):
 		return self.title
 
+def calculateAverageAge(flat):
+	try:
+		rooms = Room.objects.filter(flat=flat)
+		num_students = 0
+		total_age = 0
+		for room in rooms:
+			if not room is None:
+				user = room.student
+				if not user is None:
+					num_students += 1
+					total_age += user.age
+		if(num_students > 0):
+			return round((total_age/num_students),2)
+		else:
+			return None
+	except Room.DoesNotExist:
+		return None
+		
+		
 class StudentProfile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE,)
 	picture = models.ImageField(upload_to='profile_images', blank=True)
