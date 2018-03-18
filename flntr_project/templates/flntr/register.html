@@ -1,4 +1,4 @@
-{% extends 'flntr/base.html' %}
+    {% extends 'flntr/base.html' %}
 {% load staticfiles %}
 
 {% block title_block %}
@@ -6,16 +6,122 @@
 {% endblock %}
 
 {% block body_block %}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '181153349170544',
+      cookie     : true,
+      xfbml      : true,
+      version    : 'v2.12'
+    });
+
+    FB.getLoginStatus(function(response) {
+        statusChangeCallback(response);
+    });
+
+    // FB.Event.subscribe('auth.authResponseChange', function(response){
+    //     console.log(response);
+    //     getStuff();
+    // });
+
+    // FB.Event.subscribe('FB.login', function(response){
+    //     console.log(response);
+    //     getStuff();
+    // });
+
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "https://connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+
+   function statusChangeCallback(response){
+       if(response.status === 'connected'){
+           console.log('logged in');
+       } else {
+           console.log('not logged in');
+       }
+   }
+
+   function logout(){
+       FB.logout(function(response){
+       })
+   }
+
+   function getStuff(){
+       FB.api('/me?fields=first_name,last_name,email,picture,gender,about', function(response){
+           if(response && !response.error){
+               console.log(response);
+
+               // $('#id_first_name').val(response.first_name);
+               // $('#id_last_name').val(response.last_name);
+               // $('#id_username').val(response.first_name + response.last_name + 'FB');
+               // $('#id_email').val(response.email);
+               // $('#id_password').val((Math.floor((Math.random() * 1000000) + 999999)));
+               //
+               // if(response.gender === 'female'){
+               //     $('#id_gender_0').prop('checked',true);
+               // } else if (response.gender === 'male'){
+               //     $('#id_gender_1').prop('checked',true);
+               // } else {
+               //     $('#id_gender_2').prop('checked',true);
+               // }
+               //
+               // $('#id_password').val((Math.floor((Math.random() * 1000000) + 999999)));
+               // $('#id_age').val(21);
+
+           }
+       })
+   }
+
+</script>
+
+
+
+
+
+
 <h1>Register with flntr</h1>
 {% if registered %}
 	<strong>thank you for registering!</strong>
 	<a href="{% url 'index' %}">Return to the homepage.</a><br />
 {% else %}
 	<strong>register here!</strong><br /> Click <a href="{% url 'index' %}">here</a> to go to the homepage<br />
-	<form Id="user_form" action="{% url 'register' %}" method="post" enctype="multipart/form-data">
-		{% csrf_token %}
 
-		{{ user_form.as_p }}
+    <form class="fb_login_form" action="index.html" method="post">
+        <div class="fb-login-button" scope="public_profile,email" data-width="250" data-max-rows="1" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="true"></div>
+    </form>
+
+    <!-- <fb:login-button
+        scope="public_profile,email"
+        onlogin="checkLoginState();">
+    </fb:login-button> -->
+
+    <a href="#" onclick="logout()">Log Out</a>
+
+
+<!-- scope="public_profile,email,user_birthday,User_about_me" -->
+
+<script>
+
+    function checkLoginState() {
+        FB.getLoginStatus(function(response) {
+            statusChangeCallback(response);
+        });
+    }
+
+</script>
+
+	<form Id="user_form" action="{% url 'register' %}" method="post" enctype="multipart/form-data">
+	{% csrf_token %}
+	{{ user_form.as_p }}
     {{ age_form.as_p }}
     <strong>I am a:</strong>
     <select name="group_choice">
@@ -23,8 +129,10 @@
       <option value="Landlord">Landlord</option>
     </select>
     <br> <br>
-		<input type="submit" name="submit" value="Register" />
+		<input type="submit" name="submit" id="submit_button" value="Register" />
 
 	</form>
 {% endif %}
+
+
 {% endblock %}

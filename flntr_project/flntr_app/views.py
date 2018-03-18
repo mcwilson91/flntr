@@ -19,6 +19,7 @@ from django.views.generic.edit import FormView
 from django.core.mail import EmailMessage
 from django.template import Context
 from django.template.loader import get_template
+from django.db.models import Q
 
 # Create your views here.
 def index(request):
@@ -69,28 +70,47 @@ def search(request):
 	roommate_form = RoommateSearchForm();
 	if request.method == 'POST':
 		room_form = FlatSearchForm(request.POST)
+		roommate_form = RoommateSearchForm(request.POST)
 		if room_form.is_valid(): # All validation rules pass
-			#print(room_form.cleaned_data['min_price'])
 			min_price = room_form.cleaned_data['min_price']
 			max_price = room_form.cleaned_data['max_price']
 			min_rooms = room_form.cleaned_data['min_rooms']
 			max_rooms = room_form.cleaned_data['max_rooms']
 			date_added = room_form.cleaned_data['date']
 			max_distance = room_form.cleaned_data['distance']
-			params = {'min_price': min_price, 'max_price':max_price, 'min_rooms':min_rooms, 'max_rooms':max_rooms, 'date_added':date_added, 'max_distance':max_distance}
+			flatmate_gender = 'mixed'
+			flatmate_min_age = 0
+			flatmate_max_age = 999
+			
+			if roommate_form.is_valid():
+				profile = StudentProfile.objects.get(user=request.user)
+				if roommate_form.cleaned_data['gender'] == '2':
+					user_gender = profile.gender.lower()
+					if user_gender == 'male' or user_gender == 'female':
+						flatmate_gender = user_gender
+				if roommate_form.cleaned_data['age'] == '2':
+					user_age = profile.age
+					flatmate_min_age = int(user_age * 0.85)
+					flatmate_max_age = int(user_age * 1.15)
+					
+			
+			params = {'min_price': min_price, 'max_price':max_price, 'min_rooms':min_rooms, 'max_rooms':max_rooms, 'date_added':date_added, 'max_distance':max_distance, 'gender':flatmate_gender, 'min_age':flatmate_min_age, 'max_age':flatmate_max_age}
 			return results(request, params)
 	return render(request, 'flntr/search.html', {'search_form':search_form, 'roommate_form':roommate_form})
 
 def results(request, params):
 
 	results = Flat.objects.filter(
-						availableRooms__gte=1,
-						averageRoomPrice__gte=params['min_price'],
-						averageRoomPrice__lte=params['max_price'],
-						numberOfRooms__gte=params['min_rooms'],
-						numberOfRooms__lte=params['max_rooms'],
-						dayAdded__gte=datetime.now() - timedelta(days=int(params['date_added'])),
-						distanceFromUniversity__lte=params['max_distance'])
+						Q(availableRooms__gte=1),
+						Q(averageRoomPrice__gte=params['min_price']),
+						Q(averageRoomPrice__lte=params['max_price']),
+						Q(numberOfRooms__gte=params['min_rooms']),
+						Q(numberOfRooms__lte=params['max_rooms']),
+						Q(dayAdded__gte=datetime.now() - timedelta(days=int(params['date_added']))),
+						Q(distanceFromUniversity__lte=params['max_distance']),
+						Q(flatmateGender=params['gender']),
+						Q(averageAge__gte=params['min_age']) | Q(averageAge__isnull=True),
+						Q(averageAge__lte=params['max_age']) | Q(averageAge__isnull=True))
 
 
 	context_dict = {'results':results}

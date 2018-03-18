@@ -75,10 +75,10 @@ class FlatSearchForm(forms.Form):
 
 class RoommateSearchForm(forms.Form):
 	age_options=[ ( 1 ,'Don\'t mind'), (2,'Similar Age')]
-	age = forms.ChoiceField(choices=age_options, widget=forms.RadioSelect())
+	age = forms.ChoiceField(choices=age_options, widget=forms.RadioSelect(), required=False)
 
 	gender_options =[ ( 1 ,'Don\'t mind'), (2,'Same Gender') ]
-	gender = forms.ChoiceField(choices=gender_options, widget=forms.RadioSelect())
+	gender = forms.ChoiceField(choices=gender_options, widget=forms.RadioSelect(), required=False)
 
 
 class UserForm(forms.ModelForm):

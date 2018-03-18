@@ -4,7 +4,7 @@
 {% block title_block %}
 	this page works
 {% endblock %}
-	
+
 {% block body_block %}
 
 <h1>Search</h1>
@@ -13,8 +13,10 @@
 		 {% csrf_token %}
 		<h3>Room</h3>
 		{{ search_form.as_p }}
+		{% if user.is_authenticated %}
 		<h3>Flatmates</h3>
 		{{ roommate_form.as_p }}
+		{% endif %}
 		<input type="submit" name="submit" value="Submit"/>
 	</form>
 </div>
@@ -25,7 +27,7 @@ var maxPriceOption = document.getElementById('id_max_price');
     maxPriceOption.value = 9999;
 var maxRoomsOption = document.getElementById('id_max_rooms');
     maxRoomsOption.value = 99;
-	
+
 var maxRoomsOption = document.getElementById('id_distance');
     maxRoomsOption.value = 1600;
 

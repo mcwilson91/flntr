@@ -30,6 +30,8 @@ class Flat(models.Model):
 	distanceText = models.CharField(max_length=8, default = "0 mi")
 	latitude = models.DecimalField(max_digits=12, decimal_places=8, default = 0)
 	longitude = models.DecimalField(max_digits=12, decimal_places=8, default = 0)
+	averageAge = models.DecimalField(max_digits=4, decimal_places=1, null=True)
+	flatmateGender = models.CharField(max_length=6, default='mixed')
 
 	def save(self, *args, **kwargs):
 		self.slug = slugify(self.streetAddress)
@@ -85,5 +87,8 @@ class Request(models.Model):
 	def __str__(self):
 		return "%s %s" % (self.room, self.student)
 
-
+#class SocialAccount(models.Model):
+#	user = models.OneToOneField(User, on_delete=models.CASCADE,)
+#	type = models.CharField(max_length=2)
+	
 
