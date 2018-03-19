@@ -36,6 +36,7 @@ class Flat(models.Model):
 	def save(self, *args, **kwargs):
 		self.slug = slugify(self.streetAddress)
 		self.averageAge = calculateAverageAge(self)
+		self.flatmateGender = calculateGenderProfile(self)
 		super(Flat, self).save(*args, **kwargs)
 	def __str__(self):
 		return self.title
@@ -57,7 +58,26 @@ def calculateAverageAge(flat):
 			return None
 	except Room.DoesNotExist:
 		return None
-		
+
+def calculateGenderProfile(flat):
+	try:
+		rooms = Room.objects.filter(flat=flat)
+		flat_gender = flat.flatmateGender
+		student_count = 0
+		for room in rooms:
+			if not room is None:
+				user = room.student
+				if not user is None:
+					student_count += 1
+					if student_count == 1:
+						flat_gender = user.gender
+					else:
+						if user.gender != flat_gender:
+							return 'mixed'
+				return flat_gender
+	except Room.DoesNotExist:
+		return 'mixed'
+	
 		
 class StudentProfile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE,)
