@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse
 from flntr_app.models import Flat, FlatImage, StudentProfile, Landlord, Room, Request
-from flntr_app.forms import AddFlatForm, FlatSearchForm, RoommateSearchForm, AgeForm, UserForm, AddFlatImageForm, ProfileForm, AddRoomForm, RequestForm, EditFlatForm, ContactForm, LoginForm
+from flntr_app.forms import AddFlatForm, FlatSearchForm, RoommateSearchForm, AgeForm, UserForm, AddFlatImageForm, ProfileForm, AddRoomForm, RequestForm, EditFlatForm, ContactForm, RequestResponseForm, LoginForm
 # from flntr_app.middleware import AjaxMessaging
 from django.contrib.auth.models import User, Group
 from datetime import datetime, timedelta
@@ -233,9 +233,11 @@ def show_user_invitations(request):
 	return render(request, 'flntr/show_user_invitations.html')
 
 def show_user_requests(request, landlord_id_slug):
+	request_response_form = RequestResponseForm();
+
 	landlord = Landlord.objects.get(slug=landlord_id_slug)
 	request_list = Request.objects.filter(landlord=landlord)
-	context_dict = {'requests': request_list, 'landlordname': "%s %s" % (landlord.user.first_name, landlord.user.last_name)}
+	context_dict = {'requests': request_list, 'landlordname': "%s %s" % (landlord.user.first_name, landlord.user.last_name), 'request_response_form': request_response_form}
 	return render(request, 'flntr/show_user_requests.html', context_dict)
 
 def show_user_requests_profile(request, landlord_id_slug, student_profile_slug):

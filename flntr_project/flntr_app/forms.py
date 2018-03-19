@@ -112,3 +112,13 @@ class RequestForm(forms.ModelForm):
 	class Meta:
 		model = Request
 		fields = ('message',)
+
+class RequestResponseForm(forms.ModelForm):
+	response_options = [ (1, 'Accept Request'), (2, 'Decline Request')]
+	response = forms.ChoiceField(label='Request response', choices=response_options, widget=forms.Select())
+	studentSlug = forms.CharField(widget=forms.HiddenInput())
+	room = forms.CharField(widget=forms.HiddenInput())
+	class Meta:
+		model = Request
+		fields = ('reponse')
+
