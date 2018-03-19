@@ -13,6 +13,7 @@
 	{% endif %}
 </div>
 <div>
+
 	{% if requests %}
 	<ul>
 		{% for request in requests %}
@@ -25,14 +26,12 @@
 			<li>Message: {{ request.message }}</li>
 			{% endif %}
 			<form id="request_response_form" method="post" action="{% url 'show_user_requests' request.landlord.slug %}">
-				{% csrf token %}
+				{% csrf_token %}
 				{% load bootstrap %}
 				{{ request_response_form|bootstrap }}
-				<input type="submit" name="submit" value="Send Response" />
+				<input class="btn btn-primary" type="submit" name="submit" value="Send Response" />
 			</form>
 
-			<li>Approve Request</li>
-			<li>Delete Request</li>
 		</ul>
 		{% endfor %}
 	</ul>
