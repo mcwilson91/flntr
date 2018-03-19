@@ -88,6 +88,7 @@
 
 
 
+
 <h1>Register with flntr</h1>
 {% if registered %}
 	<strong>thank you for registering!</strong>
@@ -96,6 +97,10 @@
 	<strong>register here!</strong><br /> Click <a href="{% url 'index' %}">here</a> to go to the homepage<br />
 
     <form class="fb_login_form" action="index.html" method="post">
+
+
+
+
         <div class="fb-login-button" scope="public_profile,email" data-width="250" data-max-rows="1" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="true"></div>
     </form>
 
@@ -121,8 +126,10 @@
 
 	<form Id="user_form" action="{% url 'register' %}" method="post" enctype="multipart/form-data">
 	{% csrf_token %}
-	{{ user_form.as_p }}
-    {{ age_form.as_p }}
+  {% load bootstrap %}
+
+  {{ user_form|bootstrap }}
+    {{ age_form|bootstrap }}
     <strong>I am a:</strong>
     <select name="group_choice">
       <option value="Student">Student</option>

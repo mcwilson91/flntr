@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse
 from flntr_app.models import Flat, FlatImage, StudentProfile, Landlord, Room, Request
-from flntr_app.forms import AddFlatForm, FlatSearchForm, RoommateSearchForm, AgeForm, UserForm, AddFlatImageForm, ProfileForm, AddRoomForm, RequestForm, EditFlatForm, ContactForm, RequestResponseForm
+from flntr_app.forms import AddFlatForm, FlatSearchForm, RoommateSearchForm, AgeForm, UserForm, AddFlatImageForm, ProfileForm, AddRoomForm, RequestForm, EditFlatForm, ContactForm, RequestResponseForm, LoginForm
 # from flntr_app.middleware import AjaxMessaging
 from django.contrib.auth.models import User, Group
 from datetime import datetime, timedelta
@@ -24,16 +24,21 @@ from django.db.models import Q
 # Create your views here.
 def index(request):
 	recent_flat_list = Flat.objects.filter(availableRooms__gte=1).order_by('-dayAdded')[:3]
-	
+
 	try:
 		recent_flat_images = FlatImage.objects.filter(flat__in=recent_flat_list, imageNumber=1)
 	except FlatImage.DoesNotExist:
 		recent_flat_images = None
-		
+
 	most_viewed_flats = Flat.objects.filter(availableRooms__gte=1).order_by('-views')[:3]
-	
-	context_dict = {'recentflats': recent_flat_list, 'mostviewed':most_viewed_flats, 'recent_flat_images':recent_flat_images}
-	
+
+	try:
+		viewed_flat_images = FlatImage.objects.filter(flat__in=most_viewed_flats, imageNumber=1)
+	except FlatImage.DoesNotExist:
+		viewed_flat_images = None
+
+	context_dict = {'recentflats': recent_flat_list, 'mostviewed':most_viewed_flats, 'recent_flat_images':recent_flat_images, 'viewed_flat_images':viewed_flat_images}
+
 	return render(request, 'flntr/index.html', context_dict)
 
 def about(request):
@@ -81,8 +86,8 @@ def search(request):
 			flatmate_gender = 'mixed'
 			flatmate_min_age = 0
 			flatmate_max_age = 999
-			
-			if roommate_form.is_valid():
+
+			if roommate_form.is_valid() and request.user.is_authenticated:
 				profile = StudentProfile.objects.get(user=request.user)
 				if roommate_form.cleaned_data['gender'] == '2':
 					user_gender = profile.gender.lower()
@@ -92,8 +97,8 @@ def search(request):
 					user_age = profile.age
 					flatmate_min_age = int(user_age * 0.85)
 					flatmate_max_age = int(user_age * 1.15)
-					
-			
+
+
 			params = {'min_price': min_price, 'max_price':max_price, 'min_rooms':min_rooms, 'max_rooms':max_rooms, 'date_added':date_added, 'max_distance':max_distance, 'gender':flatmate_gender, 'min_age':flatmate_min_age, 'max_age':flatmate_max_age}
 			return results(request, params)
 	return render(request, 'flntr/search.html', {'search_form':search_form, 'roommate_form':roommate_form})
@@ -108,12 +113,17 @@ def results(request, params):
 						Q(numberOfRooms__lte=params['max_rooms']),
 						Q(dayAdded__gte=datetime.now() - timedelta(days=int(params['date_added']))),
 						Q(distanceFromUniversity__lte=params['max_distance']),
-						Q(flatmateGender=params['gender']),
+						Q(flatmateGender=params['gender']) | Q(flatmateGender__isnull=True),
 						Q(averageAge__gte=params['min_age']) | Q(averageAge__isnull=True),
 						Q(averageAge__lte=params['max_age']) | Q(averageAge__isnull=True))
 
 
-	context_dict = {'results':results}
+	try:
+		flat_images = FlatImage.objects.filter(flat__in=results, imageNumber=1)
+	except FlatImage.DoesNotExist:
+		flat_images = None
+
+	context_dict = {'results':results, 'flat_images':flat_images}
 	return render(request, 'flntr/results.html', context_dict)
 
 def register(request):
@@ -154,8 +164,9 @@ def register(request):
 
 def user_login(request):
 	if request.method == 'POST':
-		username = request.POST.get('username')
-		password = request.POST.get('password')
+		login_form = LoginForm(data=request.POST)
+		username = login_form.data['username']
+		password = login_form.data['password']
 		user = authenticate(username=username, password=password)
 		if user:
 			if user.is_active:
@@ -168,11 +179,19 @@ def user_login(request):
 			print("Invalid login details: {0}, {1}".format(username, password))
 			return HttpResponseRedirect(reverse('login'))
 	else:
-		return render(request, 'flntr/login.html', {})
+		login_form = LoginForm()
+		context_dict = {'login_form': login_form}
+		return render(request, 'flntr/login.html', context_dict)
 
 def property(request):
 	all_flat_list = Flat.objects.order_by('-dayAdded')
-	context_dict = {'allflats': all_flat_list}
+
+	try:
+		flat_images = FlatImage.objects.filter(flat__in=all_flat_list, imageNumber=1)
+	except FlatImage.DoesNotExist:
+		flat_images = None
+
+	context_dict = {'allflats': all_flat_list, 'flat_images': flat_images}
 	return render(request, 'flntr/property.html', context_dict)
 
 def show_property(request, flat_id_slug):
@@ -470,7 +489,9 @@ def add_flat(request):
 				flat.availableRooms = room_num
 				flat.save()
 
-			return index(request)
+			landlord = Landlord.objects.get(user=request.user)
+			slug = landlord.slug
+			return HttpResponseRedirect(reverse('index')
 		else:
 			print(flat_form.errors)
 	else:
