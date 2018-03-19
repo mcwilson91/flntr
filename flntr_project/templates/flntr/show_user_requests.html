@@ -1,5 +1,6 @@
 {% extends 'flntr/base.html' %}
 {% load staticfiles %}
+{% load widget_tweaks %}
 
 {% block title_block %}
 	this page works
@@ -25,10 +26,13 @@
 			{% if request.message %}
 			<li>Message: {{ request.message }}</li>
 			{% endif %}
-			<form id="request_response_form" method="post" action="{% url 'show_user_requests' request.landlord.slug %}">
+			<form id="request_response_form {{ request.room.roomNumber }}" method="post" action="{% url 'show_user_requests' request.landlord.slug %}">
 				{% csrf_token %}
 				{% load bootstrap %}
 				{{ request_response_form|bootstrap }}
+				{% render_field request_response_form.studentSlug value=request.student.slug %}
+				{% render_field request_response_form.room value=request.room.roomNumber %}
+				{% render_field request_response_form.flat value=request.room.flat %}
 				<input class="btn btn-primary" type="submit" name="submit" value="Send Response" />
 			</form>
 

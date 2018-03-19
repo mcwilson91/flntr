@@ -233,7 +233,26 @@ def show_user_invitations(request):
 	return render(request, 'flntr/show_user_invitations.html')
 
 def show_user_requests(request, landlord_id_slug):
+
 	request_response_form = RequestResponseForm();
+
+	if request.method == 'POST':
+		request_response_form = RequestResponseForm(request.POST)
+		studentslug = request_response_form.data['studentSlug']
+		student = StudentProfile.objects.get(slug=studentslug)
+		requestmade = Request.objects.get(student=student)
+		requestmade.delete()
+
+		if request_response_form.data['response'] == 1:
+			roomnumber = request_response_form.data['room']
+			flattitle = request_response_form.data['flat']
+			flat = Flat.objects.get(title=flattitle)
+			room = Room.objects.get(roomNumber=roomnumber, flat=flat)
+
+			room.student = student
+			room.save()
+		return redirect('show_user_requests', landlord_id_slug=landlord_id_slug)
+
 
 	landlord = Landlord.objects.get(slug=landlord_id_slug)
 	request_list = Request.objects.filter(landlord=landlord)
