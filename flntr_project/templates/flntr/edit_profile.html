@@ -13,9 +13,11 @@
 	</div>
   <form Id="profile_form" action="{% url 'edit_profile' %}" method="post" enctype="multipart/form-data">
 		{% csrf_token %}
+		{% load bootstrap %}
 
-		{{ profile_form.as_p }}
-      {{ age_form.as_p }}
+		{{ profile_form|bootstrap }}
+			{{ age_form|bootstrap }}
+
 
 		<input type="submit" name="submit" value="Update Profile" />
 

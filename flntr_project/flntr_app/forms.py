@@ -5,6 +5,9 @@ from multiupload.fields import MultiImageField
 from django.forms.formsets import BaseFormSet
 
 
+class LoginForm(forms.Form):
+    username = forms.CharField(required=True)
+    password = forms.CharField(widget=forms.PasswordInput)
 
 class ContactForm(forms.Form):
     contact_name = forms.CharField(required=True)

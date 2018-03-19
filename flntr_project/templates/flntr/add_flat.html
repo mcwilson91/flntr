@@ -12,15 +12,19 @@
 	<form id="flat_form" method="post" action="{% url 'add_flat' %}" enctype="multipart/form-data">
 		{% csrf_token %}
 		<div id="form_p1">
-			{{ flat_form.as_p }}
-			{{ image_form.as_p }}
+			{% load bootstrap %}
+
+		  {{ flat_form|bootstrap }}
+		  {{ image_form|bootstrap }}
+
 
 			 {{ room_formset.management_form }}
 
 			{% for form in room_formset %}
         		<div class="link-formset">
-            		Size{{ form.size }}
-            		Price{{ form.price }}
+							{% load bootstrap %}
+
+							{{ room_formset|bootstrap }}
         		</div>
     		{% endfor %}
 		</br><input type="submit" name="submit" value="Submit"/>
