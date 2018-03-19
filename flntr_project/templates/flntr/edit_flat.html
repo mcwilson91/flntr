@@ -14,9 +14,9 @@
   <form Id="edit_flat_form" action="{% url 'edit_flat' flat.slug %}" method="post" enctype="multipart/form-data">
 		{% csrf_token %}
 		{% load bootstrap %}
-		{{ edit_flat_form|bootstrap }}
+		{{ edit_flat_form|bootstrap_horizontal }}
 
-		<input Id="edit_flat_form" type="submit" name="submit" value="Update Flat" />
+		<input class="btn btn-primary"  type="submit" name="submit" value="Update Flat" />
 
 	</form>
 	<br><br>

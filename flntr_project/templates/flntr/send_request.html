@@ -7,7 +7,7 @@
 	<form  method="post" action="{% url 'send_request' flat.slug room.roomNumber %}">
 		{% csrf_token %}
 				{% load bootstrap %}
-		{{ request_form|bootstrap }}
-		<input type="submit" name="submit" value="Send"/>
+		{{ request_form|bootstrap_horizontal }}
+		<input class="btn btn-primary" type="submit" name="submit" value="Send"/>
 	</form>
 {% endblock %}

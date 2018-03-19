@@ -128,15 +128,15 @@
 	{% csrf_token %}
   {% load bootstrap %}
 
-  {{ user_form|bootstrap }}
-    {{ age_form|bootstrap }}
+  {{ user_form|bootstrap_horizontal }}
+    {{ age_form|bootstrap_horizontal }}
     <strong>I am a:</strong>
     <select name="group_choice">
       <option value="Student">Student</option>
       <option value="Landlord">Landlord</option>
     </select>
     <br> <br>
-		<input type="submit" name="submit" id="submit_button" value="Register" />
+		<input class="btn btn-primary" type="submit" name="submit" id="submit_button" value="Register" />
 
 	</form>
 {% endif %}

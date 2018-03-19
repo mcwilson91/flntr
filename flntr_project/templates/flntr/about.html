@@ -18,7 +18,8 @@
 	<h1>Contact</h1>
 	<form role="form" action="" method="post">
 	    {% csrf_token %}
-	    {{ contact_form.as_p }}
+			{% load bootstrap %}
+	    {{ contact_form|bootstrap_horizontal }}
 	    <button type="submit" class="btn btn-primary">Submit</input>
 	</form>
 </div>

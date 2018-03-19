@@ -422,6 +422,7 @@ def edit_flat(request, flat_id_slug):
 
 	return render(request, 'flntr/edit_flat.html', context_dict)
 
+	
 def add_flat(request):
 	flat_form = AddFlatForm()
 	image_form = AddFlatImageForm()
@@ -487,14 +488,85 @@ def add_flat(request):
 				flat.availableRooms = room_num
 				flat.save()
 
-			landlord = Landlord.objects.get(user=request.user)
-			slug = landlord.slug
-			return HttpResponseRedirect(reverse('index')
+			return index(request)
 		else:
 			print(flat_form.errors)
 	else:
 		flat_form = AddFlatForm()
 	return render(request, 'flntr/add_flat.html', {'flat_form':flat_form, 'image_form':image_form, 'room_formset':room_formset})
+# def add_flat(request):
+# 	flat_form = AddFlatForm()
+# 	image_form = AddFlatImageForm()
+# 	room_formset = formset_factory(AddRoomForm)
+# 	if request.method == 'POST':
+# 		flat_form = AddFlatForm(request.POST)
+# 		image_form = AddFlatImageForm(request.POST, request.FILES)
+# 		room_formset = room_formset(request.POST)
+# 		if flat_form.is_valid():
+# 			flat = flat_form.save(commit=False)
+# 			flat.owner = Landlord.objects.get(user=request.user)
+#
+# 			originAddress = flat_form.cleaned_data['streetAddress'].replace(" ", "+")
+# 			destinationAddress = "University of Glasgow".replace(" ", "+")
+# 			key = "AIzaSyBW0crhPrG5Yc6_hh9fbjb8_LqqW2Je3Ho"
+# 			url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins={},Glasgow&destinations={}&key={}".format(originAddress, destinationAddress, key)
+# 			print(url)
+# 			r = requests.get(url)
+# 			js = r.json()
+#
+# 			if js['rows'][0]['elements'][0]['status'] == 'NOT_FOUND':
+# 				return HttpResponse("Could not find {}".format(originAddress).replace("+", " "))
+#
+# 			distance = int(js['rows'][0]['elements'][0]['distance']['value'])
+# 			flat.distanceFromUniversity = distance
+# 			flat.distanceText = js['rows'][0]['elements'][0]['distance']['text']
+# 			print(distance)
+#
+# 			url2 = "https://maps.googleapis.com/maps/api/geocode/json?address={},Glasgow&key={}".format(originAddress, key)
+# 			r2 = requests.get(url2)
+# 			js2 = r2.json()
+# 			if js2['status'] == 'OK':
+# 				lat = js2['results'][0]['geometry']['location']['lat']
+# 				lng = js2['results'][0]['geometry']['location']['lng']
+# 				flat.latitude = lat
+# 				flat.longitude = lng
+#
+# 			flat.save()
+#
+# 			if image_form.is_valid():
+# 				image_num = 0;
+# 				for file in image_form.cleaned_data['files']:
+# 					FlatImage.objects.create(image=file, imageNumber=image_num, flat=flat)
+# 					image_num += 1
+#
+#
+# 			if room_formset.is_valid():
+# 				room_num = 0
+# 				averagePrice = 0
+#
+# 				for room_form in room_formset:
+# 					size = room_form.cleaned_data.get('size')
+# 					price = room_form.cleaned_data.get('price')
+# 					averagePrice += price
+# 					room_num += 1
+#
+# 					if size and price:
+# 						Room.objects.create(flat=flat, roomNumber=room_num, size=size, price=price)
+#
+# 				averagePrice = averagePrice / room_num
+# 				flat.averageRoomPrice = averagePrice
+# 				flat.numberOfRooms = room_num
+# 				flat.availableRooms = room_num
+# 				flat.save()
+#
+# 			landlord = Landlord.objects.get(user=request.user)
+# 			slug = landlord.slug
+# 			return HttpResponseRedirect(reverse('index')
+# 		else:
+# 			print(flat_form.errors)
+# 	else:
+# 		flat_form = AddFlatForm()
+# 	return render(request, 'flntr/add_flat.html', {'flat_form':flat_form, 'image_form':image_form, 'room_formset':room_formset})
 
 def send_request(request, flat_id_slug, room_number):
 
