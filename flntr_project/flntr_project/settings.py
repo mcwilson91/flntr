@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'flntr_app',
     'bootstrapform',
+    'widget_tweaks',
 ]
 
 MIDDLEWARE_CLASSES = [

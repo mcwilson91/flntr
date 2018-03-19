@@ -54,7 +54,7 @@ li a {
 }
 .navbar .navbar-text a:hover,
 .navbar .navbar-text a:focus {
-  color: #a6fffd; 
+  color: #a6fffd;
 }
 .navbar .navbar-nav .nav-link {
   color: #ffffff;
@@ -94,6 +94,7 @@ li a {
 .navbar .navbar-link:hover {
   color: #a6fffd;
 }
+
 
 @media (max-width: 575px) {
   .navbar-expand-sm .navbar-nav .show .dropdown-menu .dropdown-item {

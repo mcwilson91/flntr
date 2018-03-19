@@ -1,7 +1,7 @@
 {% extends 'flntr/base.html' %}
 
 {% block title_block %}
-	this page works
+	flntr - Request
 {% endblock %}
 {% block body_block %}
 	<form  method="post" action="{% url 'send_request' flat.slug room.roomNumber %}">
