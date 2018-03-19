@@ -233,7 +233,26 @@ def show_user_invitations(request):
 	return render(request, 'flntr/show_user_invitations.html')
 
 def show_user_requests(request, landlord_id_slug):
+
 	request_response_form = RequestResponseForm();
+
+	if request.method == 'POST':
+		request_response_form = RequestResponseForm(request.POST)
+		studentslug = request_response_form.data['studentSlug']
+		student = StudentProfile.objects.get(slug=studentslug)
+		requestmade = Request.objects.get(student=student)
+		requestmade.delete()
+
+		if request_response_form.data['response'] == 1:
+			roomnumber = request_response_form.data['room']
+			flattitle = request_response_form.data['flat']
+			flat = Flat.objects.get(title=flattitle)
+			room = Room.objects.get(roomNumber=roomnumber, flat=flat)
+
+			room.student = student
+			room.save()
+		return redirect('show_user_requests', landlord_id_slug=landlord_id_slug)
+
 
 	landlord = Landlord.objects.get(slug=landlord_id_slug)
 	request_list = Request.objects.filter(landlord=landlord)
@@ -369,6 +388,14 @@ def show_user_properties(request, landlord_id_slug):
 	context_dict['landlordname'] = "%s %s" % (landlord.user.first_name, landlord.user.last_name)
 	landlord_flat_list = Flat.objects.filter(owner=landlord).order_by('-dayAdded')
 	context_dict['landlordflats'] = landlord_flat_list
+	
+	try:
+		landlord_flat_images = FlatImage.objects.filter(flat__in=landlord_flat_list, imageNumber=1)
+	except FlatImage.DoesNotExist:
+		landlord_flat_images = None
+	
+	context_dict['landlord_flat_images'] = landlord_flat_images
+	
 	return render(request, 'flntr/show_user_properties.html', context_dict)
 
 def show_user_properties_aProperty(request, landlord_id_slug, flat_id_slug):
@@ -467,9 +494,8 @@ def add_flat(request):
 			if image_form.is_valid():
 				image_num = 0;
 				for file in image_form.cleaned_data['files']:
-					FlatImage.objects.create(image=file, imageNumber=image_num, flat=flat)
 					image_num += 1
-
+					FlatImage.objects.create(image=file, imageNumber=image_num, flat=flat)
 
 			if room_formset.is_valid():
 				room_num = 0
@@ -489,86 +515,14 @@ def add_flat(request):
 				flat.numberOfRooms = room_num
 				flat.availableRooms = room_num
 				flat.save()
-
-			return index(request)
+				
+			return redirect('show_property', flat_id_slug=flat.slug)
 		else:
 			print(flat_form.errors)
 	else:
 		flat_form = AddFlatForm()
 	return render(request, 'flntr/add_flat.html', {'flat_form':flat_form, 'image_form':image_form, 'room_formset':room_formset})
-# def add_flat(request):
-# 	flat_form = AddFlatForm()
-# 	image_form = AddFlatImageForm()
-# 	room_formset = formset_factory(AddRoomForm)
-# 	if request.method == 'POST':
-# 		flat_form = AddFlatForm(request.POST)
-# 		image_form = AddFlatImageForm(request.POST, request.FILES)
-# 		room_formset = room_formset(request.POST)
-# 		if flat_form.is_valid():
-# 			flat = flat_form.save(commit=False)
-# 			flat.owner = Landlord.objects.get(user=request.user)
-#
-# 			originAddress = flat_form.cleaned_data['streetAddress'].replace(" ", "+")
-# 			destinationAddress = "University of Glasgow".replace(" ", "+")
-# 			key = "AIzaSyBW0crhPrG5Yc6_hh9fbjb8_LqqW2Je3Ho"
-# 			url = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins={},Glasgow&destinations={}&key={}".format(originAddress, destinationAddress, key)
-# 			print(url)
-# 			r = requests.get(url)
-# 			js = r.json()
-#
-# 			if js['rows'][0]['elements'][0]['status'] == 'NOT_FOUND':
-# 				return HttpResponse("Could not find {}".format(originAddress).replace("+", " "))
-#
-# 			distance = int(js['rows'][0]['elements'][0]['distance']['value'])
-# 			flat.distanceFromUniversity = distance
-# 			flat.distanceText = js['rows'][0]['elements'][0]['distance']['text']
-# 			print(distance)
-#
-# 			url2 = "https://maps.googleapis.com/maps/api/geocode/json?address={},Glasgow&key={}".format(originAddress, key)
-# 			r2 = requests.get(url2)
-# 			js2 = r2.json()
-# 			if js2['status'] == 'OK':
-# 				lat = js2['results'][0]['geometry']['location']['lat']
-# 				lng = js2['results'][0]['geometry']['location']['lng']
-# 				flat.latitude = lat
-# 				flat.longitude = lng
-#
-# 			flat.save()
-#
-# 			if image_form.is_valid():
-# 				image_num = 0;
-# 				for file in image_form.cleaned_data['files']:
-# 					FlatImage.objects.create(image=file, imageNumber=image_num, flat=flat)
-# 					image_num += 1
-#
-#
-# 			if room_formset.is_valid():
-# 				room_num = 0
-# 				averagePrice = 0
-#
-# 				for room_form in room_formset:
-# 					size = room_form.cleaned_data.get('size')
-# 					price = room_form.cleaned_data.get('price')
-# 					averagePrice += price
-# 					room_num += 1
-#
-# 					if size and price:
-# 						Room.objects.create(flat=flat, roomNumber=room_num, size=size, price=price)
-#
-# 				averagePrice = averagePrice / room_num
-# 				flat.averageRoomPrice = averagePrice
-# 				flat.numberOfRooms = room_num
-# 				flat.availableRooms = room_num
-# 				flat.save()
-#
-# 			landlord = Landlord.objects.get(user=request.user)
-# 			slug = landlord.slug
-# 			return HttpResponseRedirect(reverse('index')
-# 		else:
-# 			print(flat_form.errors)
-# 	else:
-# 		flat_form = AddFlatForm()
-# 	return render(request, 'flntr/add_flat.html', {'flat_form':flat_form, 'image_form':image_form, 'room_formset':room_formset})
+
 
 def send_request(request, flat_id_slug, room_number):
 

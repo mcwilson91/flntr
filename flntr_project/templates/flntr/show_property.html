@@ -6,6 +6,35 @@
 {% endblock %}
 
 {% block body_block %}
+
+
+<style>
+.flat-view {
+	box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+   	transition: 0.3s;
+    margin: 20px 20px 0 0;
+    border-radius: 5px;
+    overflow: auto;
+	width: 20%
+}
+
+.post-title {
+    padding: 10px;
+    background: #ccc
+}
+
+.post-title {
+    padding: 10px;
+    background: #ccc
+}
+
+.room-pic{
+	float left;
+}
+
+</style>
+
+
 <div>
 	{% if flat %}
 		<h1>{{ flat.title }}</h1>
@@ -28,7 +57,7 @@
 		{% endif %}
 
 	{% if imagelist %}
-	<ul>
+	<ul  class="horizontal-list">
 	{% for flatimage in imagelist %}
 		<li>
 			<img src="{{ MEDIA_URL }}{{ flatimage.image.url }}" width="300" height="300" alt="{{ flatimage.image }}" />
@@ -81,7 +110,7 @@
     </script>
 	</div>
 	<div>
-		{% if roomlist %}
+		<!-- {% if roomlist %}
 		<ul>
 			{% for room in roomlist %}
 			<li>Room {{ room.roomNumber }}</li>
@@ -108,7 +137,43 @@
 		</ul>
 		{% else %}
 		failure
+		{% endif %} -->
+
+		{% if roomlist %}
+		{% for room in roomlist %}
+		<div class="flat-view">
+			<h5 class="post-title">Room {{ room.roomNumber }}</h5>
+
+			<div class="flat-description">
+				<ul>
+					{% if room.student %}
+					<li>This room is taken ..</li>
+					<li><a href="{% url 'show_property_user_profile' flat.slug room.student.slug %}">{{ room.student.user.username }}</a></li>
+					<div class="room-pic">
+						<li><img src="{{ MEDIA_URL }}{{ room.student.picture.url }}" width="80" height="80" alt="{{ room.student.picture }}" /></li>
+					</div>
+					<li>Age: {{ room.student.age }}</li>
+						{% if user.username == room.student.user.username %}
+						<li>Remove</li>
+						{% endif %}
+					{% else %}
+					<li><strong>This room is available</strong></li>
+					<li>Price: £{{ room.price }}</li>
+					<li>Size: {{ room.size }}</li>
+						{% if perms.flntr_app.change_studentprofile %}
+					<li><a href="{% url 'send_request' flat.slug room.roomNumber %}">Request this room</a></li>
+						{% else %}
+					<li><a href="{% url 'login' %}">Login to Request this room</a></li>
+						{% endif %}
+					{% endif %}
+				</ul>
+			</div>
+		</div>
+		{% endfor %}
 		{% endif %}
+
+
+
 	<div>
 
 			<a href="mailto:{{ flat.owner.email }}"><button type="button"
