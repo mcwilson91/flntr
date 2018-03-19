@@ -487,7 +487,9 @@ def add_flat(request):
 				flat.availableRooms = room_num
 				flat.save()
 
-			return index(request)
+			landlord = Landlord.objects.get(user=request.user)
+			slug = landlord.slug
+			return HttpResponseRedirect(reverse('index')
 		else:
 			print(flat_form.errors)
 	else:
