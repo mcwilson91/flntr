@@ -31,8 +31,13 @@ def index(request):
 		recent_flat_images = None
 		
 	most_viewed_flats = Flat.objects.filter(availableRooms__gte=1).order_by('-views')[:3]
+		
+	try:
+		viewed_flat_images = FlatImage.objects.filter(flat__in=most_viewed_flats, imageNumber=1)
+	except FlatImage.DoesNotExist:
+		viewed_flat_images = None
 	
-	context_dict = {'recentflats': recent_flat_list, 'mostviewed':most_viewed_flats, 'recent_flat_images':recent_flat_images}
+	context_dict = {'recentflats': recent_flat_list, 'mostviewed':most_viewed_flats, 'recent_flat_images':recent_flat_images, 'viewed_flat_images':viewed_flat_images}
 	
 	return render(request, 'flntr/index.html', context_dict)
 
@@ -82,7 +87,7 @@ def search(request):
 			flatmate_min_age = 0
 			flatmate_max_age = 999
 			
-			if roommate_form.is_valid():
+			if roommate_form.is_valid() and request.user.is_authenticated:
 				profile = StudentProfile.objects.get(user=request.user)
 				if roommate_form.cleaned_data['gender'] == '2':
 					user_gender = profile.gender.lower()
@@ -108,7 +113,7 @@ def results(request, params):
 						Q(numberOfRooms__lte=params['max_rooms']),
 						Q(dayAdded__gte=datetime.now() - timedelta(days=int(params['date_added']))),
 						Q(distanceFromUniversity__lte=params['max_distance']),
-						Q(flatmateGender=params['gender']),
+						Q(flatmateGender=params['gender']) | Q(flatmateGender__isnull=True),
 						Q(averageAge__gte=params['min_age']) | Q(averageAge__isnull=True),
 						Q(averageAge__lte=params['max_age']) | Q(averageAge__isnull=True))
 

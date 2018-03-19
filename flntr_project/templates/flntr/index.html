@@ -77,12 +77,20 @@
 		{% if mostviewed %}
 			<ul>
 			{% for flat in mostviewed %}
-				<li><a href="{% url 'show_property' flat.slug %}">{{ flat.title }}</a></li>
-				<ul>
-					<li>Location: {{ flat.streetAddress }}</li>
-					<li>Average Price per Room: {{ flat.averageRoomPrice }}</li>
-					<li>Date added: {{ flat.dayAdded }}</li>
-				</ul>
+			<div class="flat-view" style="cursor: pointer;" onclick="window.location='{% url 'show_property' flat.slug %}';">
+    			<h4 class="post-title">{{flat.title}}</h4>
+    			<div class="flat-image">
+					<img width="200" height="200" src="{% for flatimage in viewed_flat_images %} {% if flatimage.flat == flat %} {{ MEDIA_URL }}{{ flatimage.image.url }} {% endif %} {% endfor %}" alt="idk"/>
+				</div>
+    			<div class="flat-description">
+        			<p>{{flat.description}}</p>
+					<ul>
+						<li>Location: {{ flat.streetAddress }}</li>
+						<li>Average Price per Room: £{{ flat.averageRoomPrice }}</li>
+						<li>Date added: {{ flat.dayAdded }}</li>
+					</ul>
+				</div>
+			</div>
 			{% endfor %}
 			</ul>
 		{% else %}

@@ -31,7 +31,7 @@ class Flat(models.Model):
 	latitude = models.DecimalField(max_digits=12, decimal_places=8, default = 0)
 	longitude = models.DecimalField(max_digits=12, decimal_places=8, default = 0)
 	averageAge = models.DecimalField(max_digits=4, decimal_places=1, null=True)
-	flatmateGender = models.CharField(max_length=6, default='mixed', null=True)
+	flatmateGender = models.CharField(max_length=6, null=True)
 
 	def save(self, *args, **kwargs):
 		self.slug = slugify(self.streetAddress)
@@ -74,9 +74,9 @@ def calculateGenderProfile(flat):
 					else:
 						if user.gender != flat_gender:
 							return 'mixed'
-				return flat_gender
+				#return flat_gender
 	except Room.DoesNotExist:
-		return 'mixed'
+		return None
 	return flat_gender
 		
 class StudentProfile(models.Model):
