@@ -34,6 +34,10 @@
     padding: 10px;
     background: #ccc
 }
+
+.edit-flat-button {
+    float: right
+}
 </style>
 
 <div>
@@ -49,7 +53,7 @@
 			<div class="flat-view" style="cursor: pointer;" onclick="window.location='{% url 'show_property' flat.slug %}';">
 				<h4 class="post-title">{{flat.title}}</h4>
 				<div class="flat-image">
-					<img width="200" height="200" src="{% for flatimage in recent_flat_images %} {% if flatimage.flat == flat %} {{ MEDIA_URL }}{{ flatimage.image.url }} {% endif %} {% endfor %}" alt="idk"/>
+					<img width="200" height="200" src="{% for flatimage in landlord_flat_images %} {% if flatimage.flat == flat %} {{ MEDIA_URL }}{{ flatimage.image.url }} {% endif %} {% endfor %}" alt="No image available" onerror="this.onerror=null;this.src='{% static 'img/alt_flat_image.png' %}';""/>
 				</div>
 				<div class="flat-description">
 					<p>{{flat.description}}</p>
