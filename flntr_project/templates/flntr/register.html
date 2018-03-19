@@ -2,7 +2,7 @@
 {% load staticfiles %}
 
 {% block title_block %}
-  Register
+    flntr - Register
 {% endblock %}
 
 {% block body_block %}
@@ -88,13 +88,17 @@
 
 
 
+<div class="container-fluid">
+  <div align="center">
 
+<br><br>
 <h1>Register with flntr</h1>
 {% if registered %}
 	<strong>thank you for registering!</strong>
 	<a href="{% url 'index' %}">Return to the homepage.</a><br />
 {% else %}
-	<strong>register here!</strong><br /> Click <a href="{% url 'index' %}">here</a> to go to the homepage<br />
+
+
 
     <form class="fb_login_form" action="index.html" method="post">
 
@@ -123,7 +127,7 @@
     }
 
 </script>
-
+<hr>
 	<form Id="user_form" action="{% url 'register' %}" method="post" enctype="multipart/form-data">
 	{% csrf_token %}
   {% load bootstrap %}
@@ -141,5 +145,6 @@
 	</form>
 {% endif %}
 
-
+</div>
+</div>
 {% endblock %}
