@@ -424,7 +424,7 @@ def edit_flat(request, flat_id_slug):
 
 	return render(request, 'flntr/edit_flat.html', context_dict)
 
-	
+
 def add_flat(request):
 	flat_form = AddFlatForm()
 	image_form = AddFlatImageForm()

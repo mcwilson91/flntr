@@ -2,11 +2,16 @@
 {% load staticfiles %}
 
 {% block title_block %}
-	Login
+	flntr - Login
 {% endblock %}
 
 {% block body_block %}
-<h1>Login to flntr</h1>
+<br>
+<div align="center">
+	<h1>Login to flntr</h1>
+</div>
+<br>
+
 {% if messages %}
 <ul class="messages">
     {% for message in messages %}
@@ -14,14 +19,21 @@
     {% endfor %}
 </ul>
 {% endif %}
-
-<form id="login_form" action="/flntr/login/" method="post">
-	{% csrf_token %}
-	{% load bootstrap %}
-	{{ login_form|bootstrap_horizontal }}
+<div class="container-fluid">
+	<div align="center">
 
 
-	<input class="btn btn-primary" type="submit" value="Login" />
+	<form id="login_form" action="/flntr/login/" method="post">
+		{% csrf_token %}
+		{% load bootstrap %}
+		{{ login_form|bootstrap_horizontal:'col-lg-8'}}
 
-</form>
+
+		<input class="btn btn-primary" type="submit" value="Login" />
+
+	</form>
+		</div>
+</div>
+<br><br>
+
 {% endblock %}

@@ -2,7 +2,7 @@
 {% load staticfiles %}
 
 {% block title_block %}
-
+	flntr - Home
 {% endblock %}
 
 {% block body_block %}
@@ -35,11 +35,35 @@
     background: #ccc
 }
 
-</style>
+.jumbotronn{
+    position: relative;
+    padding:0 !important;
+    margin-top:70px !important;
+    background: #ffffff;
+    margin-top: 23px;
+    text-align:center;
+    margin-bottom: 70px !important;
+}
 
-<h2>Homepage</h2>
-	<div>
-		<h2>Most Recent Flats</h2>
+
+
+
+
+
+</style>
+<div class="container-fluid">
+
+
+<div class="container-fluid">
+	<div class="jumbotronn">
+		<h1 class="display-3">Welcome to flntr</h1>
+		<p class="lead">For easier flatsharing</p>
+	</div>
+
+</div>
+<hr>
+	<div class="jumbotron-fluid">
+		<h2 class="text-align">Most Recent Flats</h2>
 		{% if recentflats %}
 			<ul>
 			{% for flat in recentflats %}
@@ -71,9 +95,9 @@
 			There are no rooms
 		{% endif %}
 	</div>
-
-	<div>
-		<h2>Most Viewed Flats</h2>
+<hr>
+	<div class="jumbotron-fluid">
+		<h2 class="text-align">Most Viewed Flats</h2>
 		{% if mostviewed %}
 			<ul>
 			{% for flat in mostviewed %}
@@ -98,9 +122,10 @@
 		{% endif %}
 	</div>
 
-	<div>
+	<div class="container">
 		<ul>
 			<li><a href="{% url 'property' %}">View all flats</a></li>
 		</ul>
 	</div>
+</div>
 {% endblock %}
