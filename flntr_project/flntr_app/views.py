@@ -118,7 +118,12 @@ def results(request, params):
 						Q(averageAge__lte=params['max_age']) | Q(averageAge__isnull=True))
 
 
-	context_dict = {'results':results}
+	try:
+		flat_images = FlatImage.objects.filter(flat__in=results, imageNumber=1)
+	except FlatImage.DoesNotExist:
+		flat_images = None
+		
+	context_dict = {'results':results, 'flat_images':flat_images}
 	return render(request, 'flntr/results.html', context_dict)
 
 def register(request):
@@ -177,7 +182,13 @@ def user_login(request):
 
 def property(request):
 	all_flat_list = Flat.objects.order_by('-dayAdded')
-	context_dict = {'allflats': all_flat_list}
+	
+	try:
+		flat_images = FlatImage.objects.filter(flat__in=all_flat_list, imageNumber=1)
+	except FlatImage.DoesNotExist:
+		flat_images = None
+	
+	context_dict = {'allflats': all_flat_list, 'flat_images': flat_images}
 	return render(request, 'flntr/property.html', context_dict)
 
 def show_property(request, flat_id_slug):
