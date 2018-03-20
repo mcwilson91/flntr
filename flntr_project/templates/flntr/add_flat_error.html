@@ -1,0 +1,13 @@
+{% extends 'flntr/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+    Send Request
+{% endblock %}
+
+{% block body_block %}
+
+        <h3>Could not find {{ address }}</h3>
+        Check your inputs and <a href="{% url 'add_flat' %}">try again</a>
+
+{% endblock %}

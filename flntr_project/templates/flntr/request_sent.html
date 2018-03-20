@@ -1,0 +1,17 @@
+{% extends 'flntr/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+    Send Request
+{% endblock %}
+
+{% block body_block %}
+
+    {% if has_requested %}
+        <h3>You have already sent a request</h3>
+    {% else %}
+        <h3>Your request has been sent</h3>
+    {% endif %}
+
+
+{% endblock %}

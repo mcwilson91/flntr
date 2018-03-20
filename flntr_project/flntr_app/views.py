@@ -84,6 +84,8 @@ def search(request):
 			date_added = room_form.cleaned_data['date']
 			max_distance = room_form.cleaned_data['distance']
 			flatmate_gender = 'mixed'
+			flatmate_gender2 = 'Male'
+			flatmate_gender3 = 'Female'
 			flatmate_min_age = 0
 			flatmate_max_age = 999
 
@@ -93,18 +95,20 @@ def search(request):
 					user_gender = profile.gender.lower()
 					if user_gender == 'male' or user_gender == 'female':
 						flatmate_gender = user_gender
+						flatmate_gender2 = user_gender
+						flatmate_gender3 = user_gender
 				if roommate_form.cleaned_data['age'] == '2':
 					user_age = profile.age
 					flatmate_min_age = int(user_age * 0.85)
 					flatmate_max_age = int(user_age * 1.15)
 
 
-			params = {'min_price': min_price, 'max_price':max_price, 'min_rooms':min_rooms, 'max_rooms':max_rooms, 'date_added':date_added, 'max_distance':max_distance, 'gender':flatmate_gender, 'min_age':flatmate_min_age, 'max_age':flatmate_max_age}
+			params = {'min_price': min_price, 'max_price':max_price, 'min_rooms':min_rooms, 'max_rooms':max_rooms, 'date_added':date_added, 'max_distance':max_distance, 'gender':flatmate_gender, 'gender2':flatmate_gender2, 'gender3':flatmate_gender3, 'min_age':flatmate_min_age, 'max_age':flatmate_max_age}
+			print(params)
 			return results(request, params)
 	return render(request, 'flntr/search.html', {'search_form':search_form, 'roommate_form':roommate_form})
 
 def results(request, params):
-
 	results = Flat.objects.filter(
 						Q(availableRooms__gte=1),
 						Q(averageRoomPrice__gte=params['min_price']),
@@ -113,7 +117,8 @@ def results(request, params):
 						Q(numberOfRooms__lte=params['max_rooms']),
 						Q(dayAdded__gte=datetime.now() - timedelta(days=int(params['date_added']))),
 						Q(distanceFromUniversity__lte=params['max_distance']),
-						Q(flatmateGender=params['gender']) | Q(flatmateGender__isnull=True),
+						Q(flatmateGender=params['gender']) | Q(flatmateGender__isnull=True) | 
+						Q(flatmateGender=params['gender2']) | Q(flatmateGender=params['gender3']),
 						Q(averageAge__gte=params['min_age']) | Q(averageAge__isnull=True),
 						Q(averageAge__lte=params['max_age']) | Q(averageAge__isnull=True))
 
@@ -473,7 +478,8 @@ def add_flat(request):
 			js = r.json()
 
 			if js['rows'][0]['elements'][0]['status'] == 'NOT_FOUND':
-				return HttpResponse("Could not find {}".format(originAddress).replace("+", " "))
+				return render(request, 'flntr/add_flat_error.html', {'address': originAddress.replace("+", " ")})
+				#return HttpResponse("Could not find {}".format(originAddress).replace("+", " "))
 
 			distance = int(js['rows'][0]['elements'][0]['distance']['value'])
 			flat.distanceFromUniversity = distance
@@ -536,7 +542,7 @@ def send_request(request, flat_id_slug, room_number):
 
 	try:
 		hasRequested = Request.objects.get(student=student)
-		return HttpResponse("you have already requested a room")
+		return render(request, 'flntr/request_sent.html', {'has_requested':True})
 	except Request.DoesNotExist:
 		pass
 
@@ -553,7 +559,7 @@ def send_request(request, flat_id_slug, room_number):
 
 			Request.objects.create(room=room, student=student, landlord=landlord, message=message)
 
-			return index(request)
+			return render(request, 'flntr/request_sent.html', {'has_requested':False})
 
 	return render(request, 'flntr/send_request.html', {'request_form':request_form, 'flat':flat, 'room':room})
 

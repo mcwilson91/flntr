@@ -7,38 +7,6 @@
 
 {% block body_block %}
 
-
-<style>
-.flat-view {
-	box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-   	transition: 0.3s;
-    margin: 20px 20px 0 0;
-    border-radius: 5px;
-    overflow: auto
-}
-
-.flat-view:hover {
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.4);
-}
-
-.flat-image {
-    float: left;
-}
-.flat-image img {
-    display: block
-}
-.flat-description {
-    margin-left: 210px
-}
-.post-title {
-    font-weight: bold;
-    padding: 10px;
-    background: #ccc
-}
-
-</style>
-
-
 	<h1>Results</h1>
 
 	{% if results %}
@@ -62,19 +30,11 @@
 		{% endfor %}
 		</ul>
 
-
-		<style>
-		  #map {
-			width: 100%;
-			height: 300px;
-		  }
-		</style>
-
-		<div id="map"></div>
+		<div id="big-map"></div>
 			<script>
 			  var map;
 			  function initMap() {
-				map = new google.maps.Map(document.getElementById('map'), {
+				map = new google.maps.Map(document.getElementById('big-map'), {
 				  center: {lat: 55.8721211, lng:-4.2882},
 				  zoom: 14
 				});
