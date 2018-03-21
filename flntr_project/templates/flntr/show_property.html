@@ -8,33 +8,6 @@
 {% block body_block %}
 
 
-<style>
-.flat-view {
-	box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-   	transition: 0.3s;
-    margin: 20px 20px 0 0;
-    border-radius: 5px;
-    overflow: auto;
-	width: 20%
-}
-
-.post-title {
-    padding: 10px;
-    background: #ccc
-}
-
-.post-title {
-    padding: 10px;
-    background: #ccc
-}
-
-.room-pic{
-	float left;
-}
-
-</style>
-
-
 <div>
 	{% if flat %}
 		<h1>{{ flat.title }}</h1>
@@ -69,14 +42,9 @@
 	{% endif %}
 
 	<div>
-		<style>
-			#map {
-			height: 400px;
-			width: 50%;
-			}
-		</style>
 
-		<div id="map"></div>
+
+		<div id="flat-view-map"></div>
 		<form action="/action_page.php">
   			<input type="checkbox" id="food_check"> Food & Drink<br>
   			<input type="checkbox" id="ent_check"> Entertainment<br>
@@ -91,7 +59,7 @@
 	   var map;
 
 	function initMap() {
-	  	 map = new google.maps.Map(document.getElementById('map'), {
+	  	 map = new google.maps.Map(document.getElementById('flat-view-map'), {
 		 zoom: 16,
 		 center: LatLng
 	   });
@@ -110,41 +78,12 @@
     </script>
 	</div>
 	<div>
-		<!-- {% if roomlist %}
-		<ul>
-			{% for room in roomlist %}
-			<li>Room {{ room.roomNumber }}</li>
-			<ul>
-				{% if room.student %}
-				<li>This room is taken ..</li>
-				<li><a href="{% url 'show_property_user_profile' flat.slug room.student.slug %}">{{ room.student.user.username }}</a></li>
-				<li><img src="{{ MEDIA_URL }}{{ room.student.picture.url }}" width="60" height="60" alt="{{ room.student.picture }}" /></li>
-				<li>Age: {{ room.student.age }}</li>
-					{% if user.username == room.student.user.username %}
-					<li>Remove</li>
-					{% endif %}
-				{% else %}
-				<li>This room is available</li>
-				<li>Price: £{{ room.price }}</li>
-				<li>Size: {{ room.size }}</li>
-					{% if perms.flntr_app.change_studentprofile %}
-				<li><a href="{% url 'send_request' flat.slug room.roomNumber %}"><button type="button"
-					class="btn btn-success">Request this room</button></a></li>
-					{% endif %}
-				{% endif %}
-			</ul>
-			{% endfor %}
-		</ul>
-		{% else %}
-		failure
-		{% endif %} -->
-
 		{% if roomlist %}
 		{% for room in roomlist %}
-		<div class="flat-view">
-			<h5 class="post-title">Room {{ room.roomNumber }}</h5>
+		<div class="room-view">
+			<h5 class="room-title">Room {{ room.roomNumber }}</h5>
 
-			<div class="flat-description">
+			<div class="room-description">
 				<ul>
 					{% if room.student %}
 					<li>This room is taken ..</li>
@@ -321,7 +260,7 @@ $(document).ready(function() {
 	});
 
 	var sportmarker3 = new google.maps.Marker({
-	  position:  {lat : 55.860129, lng : -4.285279},
+	  position:  {lat : 55.868536, lng : -4.293976},
 
 	  title: "Kelvin Hall",
 	  icon: '{% static "map_pins/gym-pin.png" %}',
