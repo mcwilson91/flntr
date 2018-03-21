@@ -88,20 +88,22 @@ def search(request):
 			flatmate_gender3 = 'Female'
 			flatmate_min_age = 0
 			flatmate_max_age = 999
-
-			if roommate_form.is_valid() and request.user.is_authenticated:
-				profile = StudentProfile.objects.get(user=request.user)
-				if roommate_form.cleaned_data['gender'] == '2':
-					user_gender = profile.gender.lower()
-					if user_gender == 'male' or user_gender == 'female':
-						flatmate_gender = user_gender
-						flatmate_gender2 = user_gender
-						flatmate_gender3 = user_gender
-				if roommate_form.cleaned_data['age'] == '2':
-					user_age = profile.age
-					flatmate_min_age = int(user_age * 0.85)
-					flatmate_max_age = int(user_age * 1.15)
-
+			
+			if roommate_form.is_valid():
+				try:
+					profile = StudentProfile.objects.get(user=request.user)
+					if roommate_form.cleaned_data['gender'] == '2':
+						user_gender = profile.gender.lower()
+						if user_gender == 'male' or user_gender == 'female':
+							flatmate_gender = user_gender
+							flatmate_gender2 = user_gender
+							flatmate_gender3 = user_gender
+					if roommate_form.cleaned_data['age'] == '2':
+						user_age = profile.age
+						flatmate_min_age = int(user_age * 0.85)
+						flatmate_max_age = int(user_age * 1.15)
+				except StudentProfile.DoesNotExist:
+					pass
 
 			params = {'min_price': min_price, 'max_price':max_price, 'min_rooms':min_rooms, 'max_rooms':max_rooms, 'date_added':date_added, 'max_distance':max_distance, 'gender':flatmate_gender, 'gender2':flatmate_gender2, 'gender3':flatmate_gender3, 'min_age':flatmate_min_age, 'max_age':flatmate_max_age}
 			print(params)
@@ -275,6 +277,7 @@ def show_user_requests_aRequest(request, landlord_id_slug, student_profile_slug)
 			room.student = student
 			room.flat.availableRooms = room.flat.availableRooms - 1
 			room.save()
+			room.flat.save()
 		requestmade.delete()
 		return redirect('show_user_requests', landlord_id_slug=requestmade.room.flat.owner.slug)
 	return render(request, 'flntr/show_user_requests_aRequest.html', {'request': requestmade})
