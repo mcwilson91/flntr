@@ -1,0 +1,13 @@
+certifi==2018.1.18
+chardet==3.0.4
+Django==1.11
+django-bootstrap-form==3.4
+django-multiupload==0.5.2
+django-registration-redux==2.2
+django-widget-tweaks==1.4.1
+idna==2.6
+Pillow==5.0.0
+pytz==2018.3
+requests==2.18.4
+simplejson==3.13.2
+urllib3==1.22

@@ -121,7 +121,7 @@ def results(request, params):
 						Q(numberOfRooms__lte=params['max_rooms']),
 						Q(dayAdded__gte=datetime.now() - timedelta(days=int(params['date_added']))),
 						Q(distanceFromUniversity__lte=params['max_distance']),
-						Q(flatmateGender=params['gender']) | Q(flatmateGender__isnull=True) | 
+						Q(flatmateGender=params['gender']) | Q(flatmateGender__isnull=True) |
 						Q(flatmateGender=params['gender2']) | Q(flatmateGender=params['gender3']),
 						Q(averageAge__gte=params['min_age']) | Q(averageAge__isnull=True),
 						Q(averageAge__lte=params['max_age']) | Q(averageAge__isnull=True))
@@ -301,7 +301,7 @@ def show_user_account(request):
 
 
 def show_user_profile(request, student_profile_slug):
-	
+
 	if request.method == 'POST':
 		if request.POST == 'withdraw':
 			student = StudentProfile.objects.get(slug=student_profile_slug)
@@ -375,7 +375,7 @@ def delete_profile(request):
 		if user:
 			user.delete()
 			messages.success(request, "User deleted")
-			#deleted = True
+			deleted = True
 			return redirect('index')
 		else:
 			user = request.user
@@ -420,14 +420,14 @@ def show_user_properties(request, landlord_id_slug):
 	context_dict['landlordname'] = "%s %s" % (landlord.user.first_name, landlord.user.last_name)
 	landlord_flat_list = Flat.objects.filter(owner=landlord).order_by('-dayAdded')
 	context_dict['landlordflats'] = landlord_flat_list
-	
+
 	try:
 		landlord_flat_images = FlatImage.objects.filter(flat__in=landlord_flat_list, imageNumber=1)
 	except FlatImage.DoesNotExist:
 		landlord_flat_images = None
-	
+
 	context_dict['landlord_flat_images'] = landlord_flat_images
-	
+
 	return render(request, 'flntr/show_user_properties.html', context_dict)
 
 def show_user_properties_aProperty(request, landlord_id_slug, flat_id_slug):
@@ -548,7 +548,7 @@ def add_flat(request):
 				flat.numberOfRooms = room_num
 				flat.availableRooms = room_num
 				flat.save()
-				
+
 			return redirect('show_property', flat_id_slug=flat.slug)
 		else:
 			print(flat_form.errors)

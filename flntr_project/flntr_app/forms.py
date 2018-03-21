@@ -38,7 +38,7 @@ class AddFlatForm(forms.ModelForm):
     postCode = forms.CharField()
     #numberOfRooms = forms.IntegerField()
     description = forms.CharField(widget=forms.Textarea)
-    
+
     class Meta:
         model = Flat
         fields = ('title', 'streetAddress', 'postCode', 'description',)
