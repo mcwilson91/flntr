@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User, Group
 from django.template.defaultfilters import slugify
 from datetime import datetime
+from decimal import Decimal
 
 class Landlord(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE,)
@@ -21,7 +22,7 @@ class Flat(models.Model):
 	availableRooms = models.IntegerField(default=0)
 	streetAddress = models.CharField(max_length=64)
 	postCode = models.CharField(max_length=8)
-	description = models.TextField(blank=True)
+	description = models.TextField(blank=True,)
 	averageRoomPrice = models.DecimalField(max_digits=6, decimal_places=2, null=True)
 	slug = models.SlugField(unique=True)
 	dayAdded = models.DateTimeField(default=datetime.now)
@@ -78,7 +79,7 @@ def calculateGenderProfile(flat):
 	except Room.DoesNotExist:
 		return None
 	return flat_gender
-		
+
 class StudentProfile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE,)
 	picture = models.ImageField(upload_to='profile_images', blank=True)
@@ -103,13 +104,15 @@ class Room(models.Model):
 	student = models.OneToOneField(StudentProfile, null=True, blank=True)
 
 	def __str__(self):
+		if (price < 0):
+			price = 0
 		return "%s %s" % (self.flat.title, self.roomNumber)
 
 class FlatImage(models.Model):
 	flat = models.ForeignKey(Flat, related_name='images')
 	imageNumber = models.IntegerField(default=0)
 	image = models.ImageField(upload_to='flat_images', blank=True)
-	
+
 	def __str__(self):
 		return "%s %s" % (self.flat.title, self.imageNumber)
 
@@ -130,5 +133,3 @@ class Request(models.Model):
 #class SocialAccount(models.Model):
 #	user = models.OneToOneField(User, on_delete=models.CASCADE,)
 #	type = models.CharField(max_length=2)
-	
-

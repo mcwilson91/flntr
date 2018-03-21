@@ -3,7 +3,7 @@ from django.contrib.auth.models import User, Group
 from flntr_app.models import Flat, FlatImage, StudentProfile, Room, Request
 from multiupload.fields import MultiImageField
 from django.forms.formsets import BaseFormSet
-
+from django.core.exceptions import ValidationError
 
 class LoginForm(forms.Form):
     username = forms.CharField(required=True)
@@ -33,15 +33,15 @@ class EditFlatForm(forms.ModelForm):
 
 
 class AddFlatForm(forms.ModelForm):
-	streetAddress = forms.CharField(help_text="Please enter the address of the room")
-	title =  forms.CharField(help_text="Please enter a brief description of the room")
-	postCode = forms.CharField()
-	#numberOfRooms = forms.IntegerField()
-	description = forms.CharField(widget=forms.Textarea)
-
-	class Meta:
-		model = Flat
-		fields = ('title', 'streetAddress', 'postCode', 'description',)
+    streetAddress = forms.CharField(help_text="Please enter the address of the room")
+    title =  forms.CharField(help_text="Please enter a brief description of the room")
+    postCode = forms.CharField()
+    #numberOfRooms = forms.IntegerField()
+    description = forms.CharField(widget=forms.Textarea)
+    
+    class Meta:
+        model = Flat
+        fields = ('title', 'streetAddress', 'postCode', 'description',)
 
 class AddFlatImageForm(forms.ModelForm):
 	imageNumber = forms.IntegerField(widget=forms.HiddenInput(), initial=0, required=False)
@@ -119,6 +119,3 @@ class RequestResponseForm(forms.Form):
 	studentSlug = forms.CharField(widget=forms.HiddenInput())
 	room = forms.DecimalField(widget=forms.HiddenInput())
 	flat = forms.CharField(widget=forms.HiddenInput())
-
-
-
