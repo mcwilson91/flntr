@@ -14,7 +14,7 @@
 		<h3>Room</h3>
 		{% load bootstrap %}
 		{{ search_form|bootstrap_horizontal:'col-lg-10' }}
-		{% if user.is_authenticated %}
+		{% if perms.flntr_app.change_studentprofile %}
 		<h3>Flatmates</h3>
 		{{ roommate_form|bootstrap_horizontal }}
 		{% endif %}

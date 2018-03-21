@@ -175,4 +175,4 @@ if __name__ == '__main__':
 	populate()
 	print('creating superuser')
 
-	# User.objects.create_superuser(username='superuser', password='superuser', email='')
+	User.objects.create_superuser(username='superuser', password='superuser', email='')
