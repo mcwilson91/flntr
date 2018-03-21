@@ -10,7 +10,12 @@
     {% if has_requested %}
         <h3>You have already sent a request</h3>
     {% else %}
-        <h3>Your request has been sent</h3>
+        {% if has_flat %}
+            <h3>This Student has already been assigned a flat</h3>
+        {% else %}
+            <h3>Your request has been sent</h3>
+        {% endif %}
+
     {% endif %}
     <a href="{% url 'index' %}"><button type="button" class="btn btn-info">Return to Homepage</button></a>
 
