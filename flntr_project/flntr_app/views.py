@@ -276,6 +276,11 @@ def show_user_requests_aRequest(request, landlord_id_slug, student_profile_slug)
 	if request.method == 'POST':
 		if 'accept' in request.POST:
 			room = requestmade.room
+			try:
+				hasRoom = Room.objects.get(student=student)
+				return render(request, 'flntr/request_sent.html', {'has_requested':False, 'has_flat':True})
+			except Room.DoesNotExist:
+				pass
 			room.student = student
 			room.flat.availableRooms = room.flat.availableRooms - 1
 			room.save()
@@ -569,7 +574,7 @@ def send_request(request, flat_id_slug, room_number):
 
 	try:
 		hasRequested = Request.objects.get(student=student)
-		return render(request, 'flntr/request_sent.html', {'has_requested':True})
+		return render(request, 'flntr/request_sent.html', {'has_requested':True, 'has_flat':False})
 	except Request.DoesNotExist:
 		pass
 
@@ -586,7 +591,7 @@ def send_request(request, flat_id_slug, room_number):
 
 			Request.objects.create(room=room, student=student, landlord=landlord, message=message)
 
-			return render(request, 'flntr/request_sent.html', {'has_requested':False})
+			return render(request, 'flntr/request_sent.html', {'has_requested':False, 'has_flat':False})
 
 	return render(request, 'flntr/send_request.html', {'request_form':request_form, 'flat':flat, 'room':room})
 
