@@ -17,7 +17,7 @@
 		  {{ flat_form|bootstrap_horizontal }}
 		  {{ image_form|bootstrap_horizontal }}
 
-
+		  	<h4>Rooms in this flat:</h4>
 			 {{ room_formset.management_form }}
 
 			{% for form in room_formset %}
@@ -27,7 +27,7 @@
 							{{ room_formset|bootstrap_horizontal }}
         		</div>
     		{% endfor %}
-		</br><input class="btn btn-primary" type="submit" name="submit" value="Submit"/>
+		</br></br><input class="btn btn-primary" type="submit" name="submit" value="Submit"/>
 		</div>
 	</form>
 </div>
@@ -37,8 +37,8 @@
 
 <script>
     $('.link-formset').formset({
-        addText: 'add room',
-        deleteText: 'remove'
+        addText: 'add new room',
+        deleteText: 'remove this room'
     });
 </script>
 

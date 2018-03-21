@@ -104,8 +104,8 @@ class Room(models.Model):
 	student = models.OneToOneField(StudentProfile, null=True, blank=True)
 
 	def __str__(self):
-		if (price < 0):
-			price = 0
+		if (self.price < 0):
+			self.price = 0
 		return "%s %s" % (self.flat.title, self.roomNumber)
 
 class FlatImage(models.Model):
