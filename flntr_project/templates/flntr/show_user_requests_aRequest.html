@@ -1,0 +1,24 @@
+{% extends 'flntr/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+	this page works
+{% endblock %}
+{% block body_block %}	
+<div>
+	{% if request %}
+	<ul>
+		<li>Request from {{ request.student }}</li>
+		<li>For flat {{ request.room.flat }} in room {{ request.room.roomNumber }}</li>
+		<li>Message: {{ request.message }}</li>
+	</ul>
+	{% endif %}
+	<form Id="request_response" method="post" action="{% url 'show_user_requests_aRequest' request.landlord.slug request.student.slug %}">
+		{% csrf_token %}
+		{% load bootstrap %}
+		{{ response_form|bootstrap }}
+		<input class="btn btn-primary"  type="submit" name="accept" value="Accept" />
+		<input class="btn btn-primary"  type="submit" name="decline" value="Decline" />
+	</form>
+
+{% endblock %}

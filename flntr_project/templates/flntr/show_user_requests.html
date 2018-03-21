@@ -16,6 +16,7 @@
 <div>
 
 	{% if requests %}
+	<p>Your requests outstanding:</p>
 	<ul>
 		{% for request in requests %}
 		<li><a href="{% url 'show_user_properties_aProperty' request.landlord.slug request.room.flat.slug %}">{{ request.room.flat }}</a></li>
@@ -23,19 +24,10 @@
 			<li>For Room {{ request.room.roomNumber }}</li>
 			<li>From: {{ request.student }}</li>
 			<li><a href="{% url 'show_user_requests_profile' request.landlord.slug request.student.slug %}">View their profile</a></li>
-			{% if request.message %}
-			<li>Message: {{ request.message }}</li>
-			{% endif %}
-			<form id="request_response_form {{ request.room.roomNumber }}" method="post" action="{% url 'show_user_requests' request.landlord.slug %}">
-				{% csrf_token %}
-				{% load bootstrap %}
-				{{ request_response_form|bootstrap }}
-				{% render_field request_response_form.studentSlug value=request.student.slug %}
-				{% render_field request_response_form.room value=request.room.roomNumber %}
-				{% render_field request_response_form.flat value=request.room.flat %}
-				<input class="btn btn-primary" type="submit" name="submit" value="Send Response" />
-			</form>
-
+			<div class="room-pic">
+				<li><img src="{{ MEDIA_URL }}{{ request.student.picture.url }}" width="80" height="80" alt="{{ request.student.picture }}" /></li>					
+			</div>
+			<li><a href="{% url 'show_user_requests_aRequest' request.landlord.slug request.student.slug %}">View accept or decline request</a></li>
 		</ul>
 		{% endfor %}
 	</ul>

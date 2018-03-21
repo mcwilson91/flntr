@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse
 from flntr_app.models import Flat, FlatImage, StudentProfile, Landlord, Room, Request
-from flntr_app.forms import AddFlatForm, FlatSearchForm, RoommateSearchForm, AgeForm, UserForm, AddFlatImageForm, ProfileForm, AddRoomForm, RequestForm, EditFlatForm, ContactForm, RequestResponseForm, LoginForm
+from flntr_app.forms import AddFlatForm, FlatSearchForm, RoommateSearchForm, AgeForm, UserForm, AddFlatImageForm, ProfileForm, AddRoomForm, RequestForm, EditFlatForm, ContactForm, ResponseForm, LoginForm
 # from flntr_app.middleware import AjaxMessaging
 from django.contrib.auth.models import User, Group
 from datetime import datetime, timedelta
@@ -234,30 +234,47 @@ def show_user_invitations(request):
 
 def show_user_requests(request, landlord_id_slug):
 
-	request_response_form = RequestResponseForm();
+	# request_formset = formset_factory(RequestResponseForm)
 
-	if request.method == 'POST':
-		request_response_form = RequestResponseForm(request.POST)
-		studentslug = request_response_form.data['studentSlug']
-		student = StudentProfile.objects.get(slug=studentslug)
-		requestmade = Request.objects.get(student=student)
-		requestmade.delete()
+	# # if request.method == 'POST':
+	# # 	request_response_form = RequestResponseForm(request.POST)
+	# # 	studentslug = request_response_form.data['studentSlug']
+	# # 	student = StudentProfile.objects.get(slug=studentslug)
+	# # 	requestmade = Request.objects.get(student=student)
+	# # 	requestmade.delete()
+	# if request.method =='POST':
+	# 	for request_form in request_formset:
+	# 		if request_form.data['response'] == 1:
+	# 			roomnumber = request_form.data['room']
+	# 			flattitle = request_form.data['flat']
+	# 			flat = Flat.objects.get(title=flattitle)
+	# 			room = Room.objects.get(roomNumber=roomnumber, flat=flat)
 
-		if request_response_form.data['response'] == 1:
-			roomnumber = request_response_form.data['room']
-			flattitle = request_response_form.data['flat']
-			flat = Flat.objects.get(title=flattitle)
-			room = Room.objects.get(roomNumber=roomnumber, flat=flat)
-
-			room.student = student
-			room.save()
-		return redirect('show_user_requests', landlord_id_slug=landlord_id_slug)
+	# 			room.student = student
+	# 			room.save()
+	# return redirect('show_user_requests', landlord_id_slug=landlord_id_slug)
 
 
 	landlord = Landlord.objects.get(slug=landlord_id_slug)
 	request_list = Request.objects.filter(landlord=landlord)
-	context_dict = {'requests': request_list, 'landlordname': "%s %s" % (landlord.user.first_name, landlord.user.last_name), 'request_response_form': request_response_form}
+	context_dict = {'requests': request_list, 'landlordname': "%s %s" % (landlord.user.first_name, landlord.user.last_name)}
 	return render(request, 'flntr/show_user_requests.html', context_dict)
+
+def show_user_requests_aRequest(request, landlord_id_slug, student_profile_slug):
+	student = StudentProfile.objects.get(slug=student_profile_slug)
+	requestmade = Request.objects.get(student=student)
+
+	if request.method == 'POST':
+		# import pdb; pdb.set_trace()
+		response_form = ResponseForm(request.POST)
+		if 'accept' in request.POST:
+			room = requestmade.room
+			room.student = student
+			room.save()
+		# if 'decline' in request.POST:
+	response_form = ResponseForm()
+	context_dict = {'response_form': response_form, 'request': requestmade}
+	return render(request, 'flntr/show_user_requests_aRequest.html', context_dict)
 
 def show_user_requests_profile(request, landlord_id_slug, student_profile_slug):
 	profile = StudentProfile.objects.get(slug=student_profile_slug)

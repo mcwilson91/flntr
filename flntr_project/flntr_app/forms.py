@@ -113,12 +113,9 @@ class RequestForm(forms.ModelForm):
 		model = Request
 		fields = ('message',)
 
-class RequestResponseForm(forms.Form):
+class ResponseForm(forms.Form):
 	response_options = [ (1, 'Accept Request'), (2, 'Decline Request')]
 	response = forms.ChoiceField(choices=response_options, widget=forms.Select())
-	studentSlug = forms.CharField(widget=forms.HiddenInput())
-	room = forms.DecimalField(widget=forms.HiddenInput())
-	flat = forms.CharField(widget=forms.HiddenInput())
 
 
 
