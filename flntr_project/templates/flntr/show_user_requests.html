@@ -50,9 +50,11 @@
 		{% for request in requests %}
 		<div class="request-view" style="cursor: pointer;" onclick="window.location='{% url 'show_user_requests_aRequest' request.landlord.slug request.student.slug %}';">
 			<h4 class="post-title">Request from {{ request.student }}</h4>
-			<div class="request-image">
-				<li><img src="{{ MEDIA_URL }}{{ request.student.picture.url }}" width="125" height="125" alt="{{ request.student.picture }}" /></li>					
-			</div>
+				{% if reqest.student.picture %}
+				<div class="request-image">
+					<li><img src="{{ MEDIA_URL }}{{ request.student.picture.url }}" width="125" height="125" alt="{{ request.student.picture }}" /></li>					
+				</div>
+				{% endif %}
 			<div class="request-description">
 				<p>&nbsp;&nbsp;&nbsp;{{ request.student.user.first_name }} would like to be added to your flat:</p>
 				<p>&nbsp;&nbsp;&nbsp;{{ request.room.flat }}</p>
@@ -63,6 +65,10 @@
 	</ul>
 	{% else %}
 	You have no outstanding requests
+	<br/><br/>
+	<a href="{% url 'show_user_properties' landlordslug %}"><button type="button" class="btn btn-info">Return to Your Account</button></a>
+	<br/><br/>
+	<a href="{% url 'index' %}"><button type="button" class="btn btn-info">Return to Homepage</button></a>
 	{% endif %}
 </div>
 

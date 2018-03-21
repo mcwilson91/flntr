@@ -10,6 +10,7 @@
 	<h1>Results</h1>
 
 	{% if results %}
+	<a href="#big-map"><button type="button" class="btn btn-info">View All Properties on Map</button></a>
 		<ul>
 		{% for flat in results %}
 		<div class="flat-view" style="cursor: pointer;" onclick="window.location='{% url 'show_property' flat.slug %}';">
@@ -29,7 +30,7 @@
 
 		{% endfor %}
 		</ul>
-
+		<br/><br/>
 		<div id="big-map"></div>
 			<script>
 			  var map;
