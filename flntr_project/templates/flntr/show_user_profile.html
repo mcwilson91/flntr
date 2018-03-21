@@ -2,7 +2,9 @@
 {% load staticfiles %}
 
 {% block title_block %}
-	flntr - {{ student.first_name }}'s Profile
+	{% if studentprofile %}
+	flntr - {{ studentprofile.user.first_name }}'s Profile
+	{% endif %}
 {% endblock %}
 
 {% block body_block %}

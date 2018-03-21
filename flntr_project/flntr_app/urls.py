@@ -1,3 +1,4 @@
+
 from django.conf.urls import url
 from flntr_app import views
 

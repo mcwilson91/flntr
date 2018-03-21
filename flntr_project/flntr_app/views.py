@@ -240,28 +240,6 @@ def show_user_invitations(request):
 	return render(request, 'flntr/show_user_invitations.html')
 
 def show_user_requests(request, landlord_id_slug):
-
-	# request_formset = formset_factory(RequestResponseForm)
-
-	# # if request.method == 'POST':
-	# # 	request_response_form = RequestResponseForm(request.POST)
-	# # 	studentslug = request_response_form.data['studentSlug']
-	# # 	student = StudentProfile.objects.get(slug=studentslug)
-	# # 	requestmade = Request.objects.get(student=student)
-	# # 	requestmade.delete()
-	# if request.method =='POST':
-	# 	for request_form in request_formset:
-	# 		if request_form.data['response'] == 1:
-	# 			roomnumber = request_form.data['room']
-	# 			flattitle = request_form.data['flat']
-	# 			flat = Flat.objects.get(title=flattitle)
-	# 			room = Room.objects.get(roomNumber=roomnumber, flat=flat)
-
-	# 			room.student = student
-	# 			room.save()
-	# return redirect('show_user_requests', landlord_id_slug=landlord_id_slug)
-
-
 	landlord = Landlord.objects.get(slug=landlord_id_slug)
 	request_list = Request.objects.filter(landlord=landlord)
 	context_dict = {'requests': request_list, 'landlordname': "%s %s" % (landlord.user.first_name, landlord.user.last_name), 'landlordslug': landlord.slug}
@@ -301,7 +279,7 @@ def show_user_account(request):
 def show_user_profile(request, student_profile_slug):
 
 	if request.method == 'POST':
-		if request.POST == 'withdraw':
+		if 'withdraw' in request.POST:
 			student = StudentProfile.objects.get(slug=student_profile_slug)
 			requestmade = Request.objects.get(student=student)
 			requestmade.delete()

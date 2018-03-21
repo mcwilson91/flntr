@@ -11,6 +11,9 @@
 		<li><h2>Request from {{ request.student.user.first_name }} {{ request.student.user.last_name }}</h2></li>
 		<li>For flat {{ request.room.flat }} in room {{ request.room.roomNumber }}</li>
 		<li>Message: {{ request.message }}</li>
+		<li><div class="request-image">
+					<img src="{{ MEDIA_URL }}{{ request.student.picture.url }}" width="200" height="200" alt="{{ request.student.picture }}" />					
+		</div></li>
 	</ul>
 	{% endif %}
 	<br/>

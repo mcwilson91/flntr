@@ -47,8 +47,10 @@
 		{% endif %}
 </div>
 <br>
+{% if user.username == landlord.user.username %}
 <a href="{% url 'show_user_requests' landlord.slug %}"><button type="button"
 	class="btn btn-success">View Your Outstanding Room Requests</button></a>
+	{% endif %}
 	<div>
 		{% if landlordflats %}
 			<ul>

@@ -35,8 +35,7 @@ class EditFlatForm(forms.ModelForm):
 class AddFlatForm(forms.ModelForm):
     streetAddress = forms.CharField(help_text="Please enter the address of the room")
     title =  forms.CharField(help_text="Please enter a brief description of the room")
-    postCode = forms.CharField()
-    #numberOfRooms = forms.IntegerField()
+    postCode = forms.CharField(help_text="MUST be a Glasgow postcode")
     description = forms.CharField(widget=forms.Textarea)
 
     class Meta:
