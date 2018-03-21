@@ -53,7 +53,7 @@ class AddFlatImageForm(forms.ModelForm):
 
 class AddRoomForm(forms.Form):
 	size = forms.CharField(max_length=8,widget=forms.Select(choices=[('Single','Single'),('Double','Double')]),required=False)
-	price = forms.DecimalField(max_digits=9, decimal_places=2)
+	price = forms.DecimalField(max_digits=9, decimal_places=2, help_text="Enter price per month in GBP")
 
 
 
@@ -61,8 +61,8 @@ class FlatSearchForm(forms.Form):
 
 	min_price_options = [ (0, '<100'), (100, '100'), (200, '200'), (300, '300'), (400, '400'), (500, '500'), (600, '600'), (700, '700'), (800, '800') ]
 	max_price_options = [ (100, '100'), (100, '100'), (200, '200'), (300, '300'), (400, '400'), (500, '500'), (600, '600'), (700, '700'), (9999, '800+') ]
-	min_price = forms.CharField(label='Min price', widget=forms.Select(choices=min_price_options))
-	max_price = forms.CharField(label='Max price', widget=forms.Select(choices=max_price_options))
+	min_price = forms.CharField(label='Min price per month', widget=forms.Select(choices=min_price_options))
+	max_price = forms.CharField(label='Max price per month', widget=forms.Select(choices=max_price_options))
 
 	min_room_options = [ (1, '1'), (2, '2'), (3, '3'), (4, '4') ]
 	min_rooms = forms.CharField(label='Min number of rooms', widget=forms.Select(choices=min_room_options))
@@ -71,7 +71,7 @@ class FlatSearchForm(forms.Form):
 	max_rooms = forms.CharField(label='Max number of rooms', widget=forms.Select(choices=max_room_options))
 
 	distance_options = [ (800, '0.5'), (1600, '1'), (2400, '1.5'), (3200, '2'), (3, '3'), (4800, '4'), (500000, '5+') ]
-	distance = forms.CharField(label='Max distance from University', widget=forms.Select(choices=distance_options))
+	distance = forms.CharField(label='Max distance from University (in miles)', widget=forms.Select(choices=distance_options))
 
 	date_options = [ (1, 'today'), (7, 'this week'), (30, 'this month'), (999, 'all') ]
 	date = forms.CharField(label='date added', widget=forms.Select(choices=date_options))
@@ -112,10 +112,3 @@ class RequestForm(forms.ModelForm):
 	class Meta:
 		model = Request
 		fields = ('message',)
-
-class RequestResponseForm(forms.Form):
-	response_options = [ (1, 'Accept Request'), (2, 'Decline Request')]
-	response = forms.ChoiceField(choices=response_options, widget=forms.Select())
-	studentSlug = forms.CharField(widget=forms.HiddenInput())
-	room = forms.DecimalField(widget=forms.HiddenInput())
-	flat = forms.CharField(widget=forms.HiddenInput())

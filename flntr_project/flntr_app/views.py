@@ -264,7 +264,7 @@ def show_user_requests(request, landlord_id_slug):
 
 	landlord = Landlord.objects.get(slug=landlord_id_slug)
 	request_list = Request.objects.filter(landlord=landlord)
-	context_dict = {'requests': request_list, 'landlordname': "%s %s" % (landlord.user.first_name, landlord.user.last_name)}
+	context_dict = {'requests': request_list, 'landlordname': "%s %s" % (landlord.user.first_name, landlord.user.last_name), 'landlordslug': landlord.slug}
 	return render(request, 'flntr/show_user_requests.html', context_dict)
 
 def show_user_requests_aRequest(request, landlord_id_slug, student_profile_slug):
