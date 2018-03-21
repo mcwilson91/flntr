@@ -7,37 +7,6 @@
 
 {% block body_block %}
 
-<style>
-.flat-view {
-	box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-   	transition: 0.3s;
-    margin: 20px 20px 0 0;
-    border-radius: 5px;
-    overflow: auto
-}
-
-.flat-view:hover {
-    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.4);
-}
-
-.flat-image {
-    float: left;
-}
-.flat-image img {
-    display: block
-}
-.flat-description {
-    margin-left: 210px
-}
-.post-title {
-    font-weight: bold;
-    padding: 10px;
-    background: #ccc
-}
-
-</style>
-
-
 	<div>
 		<h2>All Flats</h2>
 		<a href="#map"><button type="button" class="btn btn-info">View All Properties on Map</button></a>
@@ -47,7 +16,7 @@
 			<div class="flat-view" style="cursor: pointer;" onclick="window.location='{% url 'show_property' flat.slug %}';">
 				<h4 class="post-title">{{flat.title}}</h4>
 				<div class="flat-image">
-					<img width="200" height="200" src="{% for flatimage in flat_images %} {% if flatimage.flat == flat %} {{ MEDIA_URL }}{{ flatimage.image.url }} {% endif %} {% endfor %}" alt="idk"/>
+					<img width="200" height="200" src="{% for flatimage in flat_images %} {% if flatimage.flat == flat %} {{ MEDIA_URL }}{{ flatimage.image.url }} {% endif %} {% endfor %}" alt="No image available" onerror="this.onerror=null;this.src='{% static 'img/alt_flat_image.png' %}';"/>
 				</div>
 				<div class="flat-description">
 					<p>{{flat.description}}</p>
@@ -65,14 +34,8 @@
 		{% endif %}
 	</div>
 
-	<style>
-	  #map {
-	 	width: 100%;
-		height: 300px;
-	  }
-	</style>
 
-	<div id="map"></div>
+	<div id="map", style="width: 100%; height:700px; margin-top: 25px;"></div>
 	    <script>
 	      var map;
 	      function initMap() {
