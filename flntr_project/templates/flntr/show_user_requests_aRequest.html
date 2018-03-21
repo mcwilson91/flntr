@@ -1,0 +1,29 @@
+{% extends 'flntr/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+	this page works
+{% endblock %}
+{% block body_block %}	
+<div>
+	{% if request %}
+	<ul>
+		<li><h2>Request from {{ request.student.user.first_name }} {{ request.student.user.last_name }}</h2></li>
+		<li>For flat {{ request.room.flat }} in room {{ request.room.roomNumber }}</li>
+		<li>Message: {{ request.message }}</li>
+	</ul>
+	{% endif %}
+	<br/>
+	<form Id="request_response" method="post" action="{% url 'show_user_requests_aRequest' request.landlord.slug request.student.slug %}">
+		{% csrf_token %}
+	
+		<input class="btn btn-primary"  type="submit" name="accept" value="Accept" />
+		<input class="btn btn-primary"  type="submit" name="decline" value="Decline" />
+	</form>
+	<br/>
+		<a href="mailto:{{ request.student.user.email }}"><button type="button"
+				class="btn btn-info">Contact {{ request.student.user.first_name }}</button></a>
+		<a href="{% url 'show_user_properties_aProperty' request.landlord.slug request.room.flat.slug %}"><button type="button"
+				class="btn btn-info">View Flat Details</button></a>
+
+{% endblock %}

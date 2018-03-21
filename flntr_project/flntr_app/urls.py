@@ -18,6 +18,8 @@ urlpatterns = [
     url(r'^user/(?P<landlord_id_slug>[\w\-]+)/requests/$',
         views.show_user_requests, name='show_user_requests'),
     url(r'^user/(?P<landlord_id_slug>[\w\-]+)/requests/(?P<student_profile_slug>[\w\-]+)/$',
+        views.show_user_requests_aRequest, name='show_user_requests_aRequest'),
+    url(r'^user/(?P<landlord_id_slug>[\w\-]+)/requests/(?P<student_profile_slug>[\w\-]+)/$',
         views.show_user_requests_profile, name='show_user_requests_profile'),
     url(r'^user/my-account/$',
         views.show_user_account, name='show_user_account'),

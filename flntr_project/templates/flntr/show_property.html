@@ -28,7 +28,7 @@
 </li>
 		</ul>
 		{% endif %}
-
+	<br/>	
 	{% if imagelist %}
 	<ul  class="horizontal-list">
 	{% for flatimage in imagelist %}
@@ -40,7 +40,7 @@
 	{% else %}
 		No image for this flat
 	{% endif %}
-
+	<br/>
 	<div>
 
 
@@ -78,41 +78,50 @@
     </script>
 	</div>
 	<div>
+		<br/>
+		<h2>Rooms in this Flat:</h2>
 		{% if roomlist %}
 		{% for room in roomlist %}
-		<div class="room-view">
-			<h5 class="room-title">Room {{ room.roomNumber }}</h5>
+			{% if forloop.counter0|divisibleby:4 %}
+			<div class="card-deck">
+			{% endif %}
+				<div class="room-view">
+					<h5 class="room-title">Room {{ room.roomNumber }}</h5>
 
-			<div class="room-description">
-				<ul>
-					{% if room.student %}
-					<li>This room is taken ..</li>
-					<li><a href="{% url 'show_property_user_profile' flat.slug room.student.slug %}">{{ room.student.user.username }}</a></li>
-					<div class="room-pic">
-						<li><img src="{{ MEDIA_URL }}{{ room.student.picture.url }}" width="80" height="80" alt="{{ room.student.picture }}" /></li>
+					<div class="room-description">
+						<ul>
+							{% if room.student %}
+							<li>This room is taken ..</li>
+							<li><a href="{% url 'show_property_user_profile' flat.slug room.student.slug %}">{{ room.student.user.username }}</a></li>
+							<div class="room-pic">
+								<li><img src="{{ MEDIA_URL }}{{ room.student.picture.url }}" width="80" height="80" alt="{{ room.student.picture }}" /></li>
+							</div>
+							<li>Age: {{ room.student.age }}</li>
+								{% if user.username == room.student.user.username %}
+								<li>Remove</li>
+								{% endif %}
+							{% else %}
+							<li><strong>This room is available</strong></li>
+							<li>Price: £{{ room.price }}</li>
+							<li>Size: {{ room.size }}</li>
+								{% if perms.flntr_app.change_studentprofile %}
+							<li><a href="{% url 'send_request' flat.slug room.roomNumber %}">Request this room</a></li>
+								{% else %}
+							<li><a href="{% url 'login' %}">Login to Request this room</a></li>
+								{% endif %}
+							{% endif %}
+						</ul>
 					</div>
-					<li>Age: {{ room.student.age }}</li>
-						{% if user.username == room.student.user.username %}
-						<li>Remove</li>
-						{% endif %}
-					{% else %}
-					<li><strong>This room is available</strong></li>
-					<li>Price: £{{ room.price }}</li>
-					<li>Size: {{ room.size }}</li>
-						{% if perms.flntr_app.change_studentprofile %}
-					<li><a href="{% url 'send_request' flat.slug room.roomNumber %}">Request this room</a></li>
-						{% else %}
-					<li><a href="{% url 'login' %}">Login to Request this room</a></li>
-						{% endif %}
-					{% endif %}
-				</ul>
+				</div>
+			{% if forloop.counter0|add:"-3"|divisibleby:4 %} 
 			</div>
-		</div>
+			{% endif %}
 		{% endfor %}
 		{% endif %}
+	</div>
 
 
-
+	<br/><br/>
 	<div>
 
 			<a href="mailto:{{ flat.owner.email }}"><button type="button"
