@@ -104,6 +104,8 @@ def search(request):
 						flatmate_max_age = int(user_age * 1.15)
 				except StudentProfile.DoesNotExist:
 					pass
+				except TypeError:
+					pass
 
 			params = {'min_price': min_price, 'max_price':max_price, 'min_rooms':min_rooms, 'max_rooms':max_rooms, 'date_added':date_added, 'max_distance':max_distance, 'gender':flatmate_gender, 'gender2':flatmate_gender2, 'gender3':flatmate_gender3, 'min_age':flatmate_min_age, 'max_age':flatmate_max_age}
 			print(params)
