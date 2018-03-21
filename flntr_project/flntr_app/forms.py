@@ -113,9 +113,7 @@ class RequestForm(forms.ModelForm):
 		model = Request
 		fields = ('message',)
 
-class ResponseForm(forms.Form):
-	response_options = [ (1, 'Accept Request'), (2, 'Decline Request')]
-	response = forms.ChoiceField(choices=response_options, widget=forms.Select())
+
 
 
 

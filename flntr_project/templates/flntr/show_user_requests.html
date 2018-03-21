@@ -6,6 +6,35 @@
 	this page works
 {% endblock %}
 {% block body_block %}	
+<style>
+.request-view {
+	box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+   	transition: 0.3s;
+    margin: 20px 20px 0 0;
+    border-radius: 5px;
+    overflow: auto
+}
+
+.request-view:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.4);
+}
+
+.request-image {
+    float: right;
+}
+.request-image img {
+    display: block
+}
+.request-description {
+    margin-right: 210px
+}
+.post-title {
+    font-weight: bold;
+    padding: 10px;
+    background: #ccc
+}
+
+</style>
 <div>
 	{% if landlordname %}
 	<h2>{{ landlordname }}</h2>
@@ -16,19 +45,20 @@
 <div>
 
 	{% if requests %}
-	<p>Your requests outstanding:</p>
+	<h3>Your requests outstanding:</h3>
 	<ul>
 		{% for request in requests %}
-		<li><a href="{% url 'show_user_properties_aProperty' request.landlord.slug request.room.flat.slug %}">{{ request.room.flat }}</a></li>
-		<ul>
-			<li>For Room {{ request.room.roomNumber }}</li>
-			<li>From: {{ request.student }}</li>
-			<li><a href="{% url 'show_user_requests_profile' request.landlord.slug request.student.slug %}">View their profile</a></li>
-			<div class="room-pic">
-				<li><img src="{{ MEDIA_URL }}{{ request.student.picture.url }}" width="80" height="80" alt="{{ request.student.picture }}" /></li>					
+		<div class="request-view" style="cursor: pointer;" onclick="window.location='{% url 'show_user_requests_aRequest' request.landlord.slug request.student.slug %}';">
+			<h4 class="post-title">Request from {{ request.student }}</h4>
+			<div class="request-image">
+				<li><img src="{{ MEDIA_URL }}{{ request.student.picture.url }}" width="125" height="125" alt="{{ request.student.picture }}" /></li>					
 			</div>
-			<li><a href="{% url 'show_user_requests_aRequest' request.landlord.slug request.student.slug %}">View accept or decline request</a></li>
-		</ul>
+			<div class="request-description">
+				<p>&nbsp;&nbsp;&nbsp;{{ request.student.user.first_name }} would like to be added to your flat:</p>
+				<p>&nbsp;&nbsp;&nbsp;{{ request.room.flat }}</p>
+				<p>&nbsp;&nbsp;&nbsp;In Room Number: {{ request.room.roomNumber }}</p>
+				<p>&nbsp;&nbsp;&nbsp;Click to View, Accept or Decline {{ request.student.user.first_name }}'s request</p>
+
 		{% endfor %}
 	</ul>
 	{% else %}

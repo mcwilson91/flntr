@@ -61,6 +61,7 @@ def populate():
 		{"size": "double", "price": 950.32}, {"size": "double", "price": 950.32}, {"size": "single", "price": 950.32}, {"size": "double", "price": 950.32}, {"size": "single", "price": 950.32}]
 
 
+
 	flats1 = [
 		{"address": "123 Byres Road", "averageRoomPrice": 123.45, "numberOfRooms": 2, "postcode": "G12 8TT", "description": description, "title": "A quaint 2 bedroom abode in the heart of Glasgow's west end", "distance": 174, "distanceText": "0.1 mi", "rooms": rooms1, "images": byresimages,'lat':55.8729486, 'lng':-4.2965109},
 		{"address": "456 Dumbarton Road", "averageRoomPrice": 678.90, "numberOfRooms": 3, "postcode": "G11 6SQ", "description": description, "title": "A dilapidated shack", "distance": 1526, "distanceText": "0.9 mi", "rooms": rooms2, "images": dumbartonimages, 'lat':55.8708784, 'lng':-4.3117213},
@@ -71,7 +72,7 @@ def populate():
 		{"address": "168 Great George Street", "averageRoomPrice": 400.00, "numberOfRooms": 2, "postcode": "G12 8AJ", "description": description, "title": "Traditional two bedroom apartment", "distance": 278, "distanceText": "0.2 mi", "rooms": rooms5, "images": None, 'lat':55.8756733, 'lng':-4.2924941},
 		{"address": "9 Turnberry Road", "averageRoomPrice": 890.50, "numberOfRooms": 5, "postcode": "G11 5AG", "description": description, "title": "Spacious five bedroom tenement flat", "distance": 765, "distanceText": "0.5 mi", "rooms": rooms6, "images": turnberryimages, 'lat':55.8756267, 'lng':-4.3062994},
 		{"address": "38 Clarence Drive", "averageRoomPrice": 459.00, "numberOfRooms": 3, "postcode": "G12 9TQ", "description": description, "title": "Commanding 3 bedroom, red sandstone tenement flat", "distance": 1077, "distanceText": "0.7 mi", "rooms": rooms7, "images": clarenceimages, 'lat':55.8774984, 'lng':-4.309562},
-		{"address": "Kelvingrove Art Gallery and Museum", "averageRoomPrice": 950.32, "numberOfRooms": 20, "postcode": "G3 8AG", "description": description, "title": "40 bedroom Neo-Gothic mansion (beware of dinosarurs)", "distance": 914, "distanceText": "0.6 mi", "rooms": rooms8, "images": kelvinimages, 'lat':55.8685891, 'lng':-4.2906039}]
+		{"address": "Kelvingrove Art Gallery and Museum", "averageRoomPrice": 950.32, "numberOfRooms": 20, "postcode": "G3 8AG", "description": description, "title": "20 bedroom Neo-Gothic mansion (beware of dinosarurs)", "distance": 914, "distanceText": "0.6 mi", "rooms": rooms8, "images": kelvinimages, 'lat':55.8685891, 'lng':-4.2906039}]
 
 	landlords = [
 		{

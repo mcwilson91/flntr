@@ -46,6 +46,9 @@
 			<h2>{{ landlordname }}'s Flats</h2>
 		{% endif %}
 </div>
+<br>
+<a href="{% url 'show_user_requests' landlord.slug %}"><button type="button"
+	class="btn btn-success">View Your Outstanding Room Requests</button></a>
 	<div>
 		{% if landlordflats %}
 			<ul>
@@ -70,9 +73,7 @@
 		{% else %}
 			There are no rooms
 		{% endif %}
-<br><br>
-<a href="{% url 'show_user_requests' landlord.slug %}"><button type="button"
-	class="btn btn-success">View Room Requests</button></a>
+
 <br><br>
 		<a href="{% url 'delete_profile' %}"><button type="button"
 			class="btn btn-danger"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span> Delete Account</button></a>

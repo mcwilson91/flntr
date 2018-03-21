@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth import authenticate, login
 from django.core.urlresolvers import reverse
 from flntr_app.models import Flat, FlatImage, StudentProfile, Landlord, Room, Request
-from flntr_app.forms import AddFlatForm, FlatSearchForm, RoommateSearchForm, AgeForm, UserForm, AddFlatImageForm, ProfileForm, AddRoomForm, RequestForm, EditFlatForm, ContactForm, ResponseForm, LoginForm
+from flntr_app.forms import AddFlatForm, FlatSearchForm, RoommateSearchForm, AgeForm, UserForm, AddFlatImageForm, ProfileForm, AddRoomForm, RequestForm, EditFlatForm, ContactForm, LoginForm
 # from flntr_app.middleware import AjaxMessaging
 from django.contrib.auth.models import User, Group
 from datetime import datetime, timedelta
@@ -270,16 +270,14 @@ def show_user_requests_aRequest(request, landlord_id_slug, student_profile_slug)
 	requestmade = Request.objects.get(student=student)
 
 	if request.method == 'POST':
-		# import pdb; pdb.set_trace()
-		response_form = ResponseForm(request.POST)
 		if 'accept' in request.POST:
 			room = requestmade.room
 			room.student = student
+			room.flat.availableRooms = room.flat.availableRooms - 1
 			room.save()
-		# if 'decline' in request.POST:
-	response_form = ResponseForm()
-	context_dict = {'response_form': response_form, 'request': requestmade}
-	return render(request, 'flntr/show_user_requests_aRequest.html', context_dict)
+		requestmade.delete()
+		return redirect('show_user_requests', landlord_id_slug=requestmade.room.flat.owner.slug)
+	return render(request, 'flntr/show_user_requests_aRequest.html', {'request': requestmade})
 
 def show_user_requests_profile(request, landlord_id_slug, student_profile_slug):
 	profile = StudentProfile.objects.get(slug=student_profile_slug)
@@ -298,6 +296,13 @@ def show_user_account(request):
 
 
 def show_user_profile(request, student_profile_slug):
+	
+	if request.method == 'POST':
+		if request.POST == 'withdraw':
+			student = StudentProfile.objects.get(slug=student_profile_slug)
+			requestmade = Request.objects.get(student=student)
+			requestmade.delete()
+
 	context_dict = {}
 	try:
 		profile = StudentProfile.objects.get(slug=student_profile_slug)
