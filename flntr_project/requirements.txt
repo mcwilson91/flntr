@@ -1,6 +1,6 @@
 certifi==2018.1.18
 chardet==3.0.4
-Django==1.11
+Django==1.11.28
 django-bootstrap-form==3.4
 django-multiupload==0.5.2
 django-registration-redux==2.2
